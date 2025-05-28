@@ -1,12 +1,58 @@
-// Initialize EmailJS
+// Initialize EmailJS with better error handling and fallback loading
 (function() {
-    if (typeof emailjs !== 'undefined' && typeof EMAILJS_CONFIG !== 'undefined') {
-        emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+    let initAttempts = 0;
+    const maxInitAttempts = 10;
+    
+    function loadEmailJSFallback() {
+        if (typeof emailjs === 'undefined') {
+            console.log('Loading EmailJS fallback...');
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+            script.onload = function() {
+                console.log('EmailJS fallback loaded');
+                setTimeout(initEmailJS, 500);
+            };
+            script.onerror = function() {
+                console.error('Failed to load EmailJS fallback');
+            };
+            document.head.appendChild(script);
+        }
     }
+    
+    function initEmailJS() {
+        initAttempts++;
+        console.log('EmailJS init attempt:', initAttempts);
+        
+        if (typeof emailjs !== 'undefined' && typeof EMAILJS_CONFIG !== 'undefined') {
+            try {
+                emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+                console.log('EmailJS initialized successfully on attempt:', initAttempts);
+                window.emailJSReady = true;
+            } catch (error) {
+                console.error('EmailJS initialization error:', error);
+            }
+        } else {
+            if (initAttempts < maxInitAttempts) {
+                console.warn('EmailJS or config not loaded yet, retrying...', initAttempts);
+                setTimeout(initEmailJS, 1000);
+            } else if (initAttempts === maxInitAttempts) {
+                console.warn('Max init attempts reached, trying fallback...');
+                loadEmailJSFallback();
+            }
+        }
+    }
+    
+    // Try to initialize immediately
+    initEmailJS();
 })();
 
 // Attendre que le DOM soit entièrement chargé
 document.addEventListener('DOMContentLoaded', function() {
+    // Debug information
+    console.log('DOM loaded');
+    console.log('EmailJS available:', typeof emailjs !== 'undefined');
+    console.log('Config available:', typeof EMAILJS_CONFIG !== 'undefined');
+    console.log('Current URL:', window.location.href);
     // Éléments DOM
     const header = document.getElementById('header');
     const burgerMenu = document.getElementById('burger-menu');
@@ -19,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const subjectCards = document.querySelectorAll('.subject-card');
     const appointmentForm = document.getElementById('appointment-form');
     const successMessage = document.getElementById('success-message');
-    const subjectsSelect = document.getElementById('subjects-select');
+    const subjectsInput = document.getElementById('subjects');
 
     // Elements des achievements
     const achievementCards = document.querySelectorAll('.achievement-card');
@@ -31,17 +77,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const languageOptions = document.querySelectorAll('.lang-option');
 
     // Variables pour les animations
-    let typewriterInterval;
+    // typewriterInterval removed as it's unused
 
-    // Initialisation du thème et de la langue
+    // Initialisation du thème et de la langue en premier
     initializeTheme();
     initializeLanguage();
 
     // Initialiser les icônes Lucide
     initializeLucideIcons();
 
-    // Configurer le select multiple pour les matières
-    setupSubjectsSelect();
+    // Attendre que la langue soit initialisée avant de configurer le formulaire
+    setTimeout(() => {
+        // Mettre à jour les placeholders du formulaire
+        updateFormLanguage();
+    }, 200);
 
     // Configurer les animations des achievements
     setupAchievements();
@@ -51,9 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Démarrer l'effet typewriter
     startTypewriterEffect();
-
-    // Mettre à jour les options de langue du formulaire
-    updateFormLanguage();
 
     // Navigation responsive
     if (burgerMenu) {
@@ -230,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     { id: 'analyse-fin', fr: 'Analyse financière', en: 'Financial Analysis', ar: 'التحليل المالي' }
                 ]
             },
-            'Comptabilité': {
+            'Comptabilite': {
                 fr: 'Comptabilité',
                 en: 'Accounting',
                 ar: 'المحاسبة',
@@ -263,31 +309,16 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Initialize custom multiselect
-        setupCustomMultiselect(subjectsByCategory);
+        // Simple subjects input - no multiselect needed
         
-        // Populate the hidden select with all options
-        const currentLang = document.documentElement.lang || 'fr';
-        subjectsSelect.innerHTML = '';
-        
-        Object.keys(subjectsByCategory).forEach(category => {
-            const categoryData = subjectsByCategory[category];
-            categoryData.subjects.forEach(subject => {
-                const option = document.createElement('option');
-                option.value = subject.id;
-                option.textContent = subject[currentLang];
-                subjectsSelect.appendChild(option);
-            });
-        });
-        
-        // Keep the hidden select for form submission
-        subjectsSelect.multiple = true;
+        // No complex setup needed for simple text input
     }
     
     // Clear multiselect function for form reset
     window.clearMultiselect = function() {
         const multiselectSelected = document.querySelector('.multiselect-selected');
         const multiselectOptions = document.querySelectorAll('.multiselect-option');
-        const subjectsSelect = document.getElementById('subjects-select');
+        const subjectsInput = document.getElementById('subjects');
         
         if (multiselectSelected) {
             multiselectSelected.innerHTML = '';
@@ -400,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         optionDiv.dataset.label = subject[currentLang] || subject.id;
 
                         optionDiv.addEventListener('click', () => {
-                            toggleSubject(subject.id, subject[currentLang] || subject.id);
+                            toggleSubject(subject.id);
                         });
 
                         multiselectOptions.appendChild(optionDiv);
@@ -412,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Toggle subject selection
-        function toggleSubject(id, label) {
+        function toggleSubject(id) {
             if (selectedSubjects.has(id)) {
                 selectedSubjects.delete(id);
             } else {
@@ -438,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     tag.querySelector('.multiselect-tag-remove').addEventListener('click', (e) => {
                         e.stopPropagation();
-                        toggleSubject(id, optionEl.dataset.label);
+                        toggleSubject(id);
                     });
                     
                     multiselectSelected.appendChild(tag);
@@ -496,23 +527,57 @@ document.addEventListener('DOMContentLoaded', function() {
         if (originalChangeLanguage) {
             window.changeLanguage = function(lang) {
                 originalChangeLanguage.call(this, lang);
-                renderOptions(searchInput.value);
-                updateSearchPlaceholder();
-                updateSelectedDisplay();
+                setTimeout(() => {
+                    renderOptions(searchInput.value);
+                    updateSearchPlaceholder();
+                    updateSelectedDisplay();
+                }, 50);
             };
         }
+        
+        // Also listen for language attribute changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'lang') {
+                    const newLang = document.documentElement.lang;
+                    if (newLang && newLang !== currentLang) {
+                        setTimeout(() => {
+                            renderOptions(searchInput.value);
+                            updateSearchPlaceholder();
+                            updateSelectedDisplay();
+                        }, 100);
+                    }
+                }
+            });
+        });
+        
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['lang']
+        });
         
         console.log('Multiselect dropdown initialized successfully');
     }
 
+    // Update subjects input placeholder based on language
+    function updateSubjectsPlaceholder() {
+        if (!subjectsInput) return;
+        
+        const currentLang = document.documentElement.lang || 'fr';
+        const placeholders = {
+            fr: 'Ex: Finance, Comptabilité, Gestion...',
+            en: 'Ex: Finance, Accounting, Management...',
+            ar: 'مثال: المالية، المحاسبة، الإدارة...'
+        };
+        
+        subjectsInput.placeholder = placeholders[currentLang];
+    }
+
     // Mettre à jour les options du formulaire en fonction de la langue
     function updateFormLanguage() {
-        // Attendre que la langue soit bien définie
-        setTimeout(() => {
-            // Mise à jour du select des matières
-            setupSubjectsSelect();
-        }, 100);
-
+        // Update subjects placeholder
+        updateSubjectsPlaceholder();
+        
         // Mise à jour des options du select "Méthode souhaitée"
         updateMethodSelectOptions();
     }
@@ -707,7 +772,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function initializeLanguage() {
         const savedLanguage = localStorage.getItem('language') || 'fr';
         console.log('Initializing language:', savedLanguage);
+        
+        // Set the language immediately
         document.documentElement.lang = savedLanguage;
+        document.documentElement.setAttribute('lang', savedLanguage);
+        
+        // Update language display immediately without animation
+        updateLanguageDisplay(savedLanguage);
+        updateLanguageUI(savedLanguage);
+        updateLanguageButton(savedLanguage);
+        updateActiveLanguageOption(savedLanguage);
+        
+        // Don't use animation on initial load
         changeLanguageWithAnimation(savedLanguage, false);
     }
 
@@ -918,7 +994,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fonction pour sélectionner une matière
     function selectSubject(subject) {
-        const subjectsSelect = document.getElementById('subjects-select');
+        const subjectsInput = document.getElementById('subjects');
         if (!subjectsSelect) return;
 
         // Trouver l'option correspondante
@@ -1032,7 +1108,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Get form data
         const formData = new FormData(appointmentForm);
-        const selectedSubjects = Array.from(subjectsSelect.selectedOptions).map(opt => opt.text);
+        const subjects = formData.get('subjects') || '';
         
         const templateParams = {
             fullName: formData.get('fullName'),
@@ -1041,9 +1117,9 @@ document.addEventListener('DOMContentLoaded', function() {
             city: formData.get('city'),
             method: formData.get('method'),
             hours: formData.get('hours'),
-            subjects: selectedSubjects.join(', ') || 'Aucune matière sélectionnée',
+            subjects: subjects || 'Non spécifiées',
             // Add additional fields that might be needed
-            to_email: 'fahd.maatoug9@gmail.com',
+            to_email: 'fahd.maatoug@outlook.fr',
             from_name: formData.get('fullName'),
             from_email: formData.get('email'),
             message: `Nouvelle demande de ${formData.get('fullName')} pour ${formData.get('hours')} heures de cours.`,
@@ -1055,7 +1131,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 city: formData.get('city'),
                 method: formData.get('method'),
                 hours: formData.get('hours'),
-                subjects: selectedSubjects.join(', '),
+                subjects: subjects,
                 timestamp: new Date().toISOString(),
                 source: window.location.hostname
             })
@@ -1076,46 +1152,78 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.disabled = true;
         lucide.createIcons();
 
-        // Send email using EmailJS
-        if (typeof emailjs !== 'undefined' && typeof EMAILJS_CONFIG !== 'undefined') {
-            console.log('Sending email with params:', templateParams);
-            console.log('Using service:', EMAILJS_CONFIG.SERVICE_ID);
-            console.log('Using template:', EMAILJS_CONFIG.TEMPLATE_ID);
+        // Send email using EmailJS with better error handling
+        function sendEmailWithRetry(retryCount = 0) {
+            const maxRetries = 3;
             
-            emailjs.send(
-                EMAILJS_CONFIG.SERVICE_ID,
-                EMAILJS_CONFIG.TEMPLATE_ID,
-                templateParams
-            ).then(
-                function(response) {
-                    console.log('EmailJS SUCCESS!', response.status, response.text);
-                    console.log('Full response:', response);
+            if (typeof emailjs !== 'undefined' && typeof EMAILJS_CONFIG !== 'undefined') {
+                console.log('Sending email with params:', templateParams);
+                console.log('Using service:', EMAILJS_CONFIG.SERVICE_ID);
+                console.log('Using template:', EMAILJS_CONFIG.TEMPLATE_ID);
+                console.log('Current domain:', window.location.hostname);
+                
+                // Re-initialize EmailJS for Vercel compatibility
+                try {
+                    emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+                } catch (initError) {
+                    console.warn('EmailJS re-initialization warning:', initError);
+                }
+                
+                emailjs.send(
+                    EMAILJS_CONFIG.SERVICE_ID,
+                    EMAILJS_CONFIG.TEMPLATE_ID,
+                    templateParams
+                ).then(
+                    function(response) {
+                        console.log('EmailJS SUCCESS!', response.status, response.text);
+                        console.log('Full response:', response);
+                        showSuccessMessage();
+                        appointmentForm.reset();
+                        // Clear subjects input
+                        if (subjectsInput) {
+                            subjectsInput.value = '';
+                        }
+                        submitBtn.innerHTML = submitBtnText;
+                        submitBtn.disabled = false;
+                    },
+                    function(error) {
+                        console.error('EmailJS FAILED...', error);
+                        console.error('Error details:', error.text);
+                        console.error('Retry count:', retryCount);
+                        
+                        if (retryCount < maxRetries) {
+                            console.log('Retrying email send...');
+                            setTimeout(() => {
+                                sendEmailWithRetry(retryCount + 1);
+                            }, 2000);
+                        } else {
+                            console.error('Max retries reached, showing error');
+                            showErrorMessage();
+                            submitBtn.innerHTML = submitBtnText;
+                            submitBtn.disabled = false;
+                        }
+                    }
+                );
+            } else {
+                // Wait for EmailJS to load and retry
+                if (retryCount < maxRetries) {
+                    console.warn('EmailJS not ready, waiting and retrying...', retryCount);
+                    setTimeout(() => {
+                        sendEmailWithRetry(retryCount + 1);
+                    }, 1000);
+                } else {
+                    // Fallback if EmailJS is not configured after retries
+                    console.warn('EmailJS not configured after retries. Form data stored locally only.');
                     showSuccessMessage();
                     appointmentForm.reset();
-                    // Clear multiselect
-                    if (typeof clearMultiselect === 'function') {
-                        clearMultiselect();
-                    }
-                },
-                function(error) {
-                    console.error('EmailJS FAILED...', error);
-                    console.error('Error details:', error.text);
-                    showErrorMessage();
+                    submitBtn.innerHTML = submitBtnText;
+                    submitBtn.disabled = false;
                 }
-            ).finally(() => {
-                submitBtn.innerHTML = submitBtnText;
-                submitBtn.disabled = false;
-            });
-        } else {
-            // Fallback if EmailJS is not configured
-            console.warn('EmailJS not configured. Form data stored locally only.');
-            setTimeout(() => {
-                showSuccessMessage();
-                appointmentForm.reset();
-                submitBtn.innerHTML = submitBtnText;
-                submitBtn.disabled = false;
-            }, 1500);
+            }
         }
+        
+        // Start the email sending process
+        sendEmailWithRetry();
     }
 
     // Store submission in localStorage

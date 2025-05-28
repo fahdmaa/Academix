@@ -674,35 +674,12 @@
                     </div>
 
                     <div class="form-group full-width">
-                        <label for="subjects-select">
+                        <label for="subjects">
                             <span class="fr">Matières d'intérêt (optionnel)</span>
                             <span class="en">Subjects of Interest (optional)</span>
                             <span class="ar">المواد ذات الاهتمام (اختياري)</span>
                         </label>
-                        <div class="custom-multiselect">
-                            <div class="multiselect-toggle form-control" id="multiselect-toggle">
-                                <span class="multiselect-placeholder">
-                                    <span class="fr">Sélectionnez une ou plusieurs matières</span>
-                                    <span class="en">Select one or more subjects</span>
-                                    <span class="ar">اختر مادة واحدة أو أكثر</span>
-                                </span>
-                                <span class="multiselect-selected"></span>
-                                <i data-lucide="chevron-down" class="multiselect-arrow"></i>
-                            </div>
-                            <div class="multiselect-dropdown" id="multiselect-dropdown">
-                                <div class="multiselect-search">
-                                    <label>
-                                        <input type="text" class="multiselect-search-input" placeholder="Rechercher...">
-                                    </label>
-                                </div>
-                                <div class="multiselect-options" id="multiselect-options">
-                                    <!-- Options will be populated dynamically via JavaScript -->
-                                </div>
-                            </div>
-                            <select id="subjects-select" name="subjects" class="form-control subjects-multiple-select" multiple style="display: none;">
-                                <!-- Options will be populated dynamically via JavaScript -->
-                            </select>
-                        </div>
+                        <input type="text" id="subjects" name="subjects" class="form-control" placeholder="">
                     </div>
                 </div>
 
