@@ -21,9 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const successMessage = document.getElementById('success-message');
     const subjectsSelect = document.getElementById('subjects-select');
 
-    // Elements du carousel
-    const testimonialCards = document.querySelectorAll('.testimonial-card');
-    const indicators = document.querySelectorAll('.indicator');
+    // Elements des achievements
+    const achievementCards = document.querySelectorAll('.achievement-card');
 
     // Éléments pour le thème et la langue
     const themeToggle = document.getElementById('theme-toggle');
@@ -31,9 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const languageDropdown = document.getElementById('language-dropdown');
     const languageOptions = document.querySelectorAll('.lang-option');
 
-    // Variables pour le carousel
-    let currentSlide = 0;
-    let carouselInterval;
+    // Variables pour les animations
+    let typewriterInterval;
 
     // Initialisation du thème et de la langue
     initializeTheme();
@@ -45,8 +43,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurer le select multiple pour les matières
     setupSubjectsSelect();
 
-    // Configurer le carousel
-    setupCarousel();
+    // Configurer les animations des achievements
+    setupAchievements();
+
+    // Configurer les animations de scroll
+    setupScrollAnimations();
 
     // Démarrer l'effet typewriter
     startTypewriterEffect();
@@ -131,92 +132,88 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Configuration du carousel de témoignages
-    function setupCarousel() {
-        // Définir le premier slide comme actif
-        if (testimonialCards.length > 0) {
-            updateCarousel();
-        }
+    // Configuration des animations d'achievements
+    function setupAchievements() {
+        // Observer les cartes d'achievements pour démarrer l'animation quand elles sont visibles
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.hasAttribute('data-animated')) {
+                    animateNumber(entry.target);
+                    entry.target.setAttribute('data-animated', 'true');
+                }
+            });
+        }, {
+            threshold: 0.5
+        });
 
-        // Démarrer la rotation automatique
-        startCarouselAutoRotation();
+        achievementCards.forEach(card => {
+            observer.observe(card);
+        });
+    }
 
-        // Ajouter les écouteurs d'événements pour les indicateurs
-        indicators.forEach((indicator, index) => {
-            indicator.addEventListener('click', () => {
-                currentSlide = index;
-                updateCarousel();
-                restartCarouselAutoRotation();
+    // Configuration des animations de scroll
+    function setupScrollAnimations() {
+        // Observer pour les animations de scroll
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        // Ajouter les classes d'animation aux éléments
+        const elementsToAnimate = [
+            { selector: '.section-header', animation: 'scroll-reveal' },
+            { selector: '.expertise-card', animation: 'scroll-reveal-scale' },
+            { selector: '.form-section', animation: 'scroll-reveal' },
+            { selector: '.footer', animation: 'scroll-reveal' }
+        ];
+
+        elementsToAnimate.forEach(({ selector, animation }) => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach((element, index) => {
+                element.classList.add(animation);
+                element.style.transitionDelay = `${index * 0.1}s`;
+                scrollObserver.observe(element);
             });
         });
     }
 
-    // Mettre à jour l'affichage du carousel
-    function updateCarousel() {
-        // Mettre à jour les indicateurs
-        indicators.forEach((indicator, index) => {
-            if (index === currentSlide) {
-                indicator.classList.add('active');
-            } else {
-                indicator.classList.remove('active');
+    // Animer les nombres dans une carte d'achievement
+    function animateNumber(card) {
+        const numberElement = card.querySelector('.achievement-number');
+        if (!numberElement) return;
+
+        const target = parseInt(numberElement.getAttribute('data-target'));
+        const duration = 2000; // 2 secondes
+        const increment = target / (duration / 16); // 60fps
+        let current = 0;
+
+        numberElement.textContent = '0';
+
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
             }
-        });
-
-        // Positionner les cartes avec animation de "deck of cards"
-        testimonialCards.forEach((card, index) => {
-            let position = (index - currentSlide) % testimonialCards.length;
-            if (position < 0) position += testimonialCards.length;
-
-            // Reset styles for all cards
-            card.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
-
-            if (position === 0) {
-                // Carte active (au premier plan)
-                card.style.transform = 'translateZ(0) rotateY(0) scale(1)';
-                card.style.opacity = '1';
-                card.style.zIndex = '3';
-                card.style.visibility = 'visible';
-            } else if (position === 1) {
-                // Carte juste derrière (légèrement décalée)
-                card.style.transform = 'translateZ(-50px) rotateY(-5deg) scale(0.95)';
-                card.style.opacity = '0';
-                card.style.zIndex = '2';
-                card.style.visibility = 'hidden';
-            } else if (position === 2) {
-                // Carte arrière (plus décalée)
-                card.style.transform = 'translateZ(-100px) rotateY(-10deg) scale(0.9)';
-                card.style.opacity = '0';
-                card.style.zIndex = '1';
-                card.style.visibility = 'hidden';
-            } else {
-                // Cartes cachées
-                card.style.opacity = '0';
-                card.style.zIndex = '0';
-                card.style.visibility = 'hidden';
-            }
-        });
+            numberElement.textContent = Math.floor(current);
+        }, 16);
     }
 
-    // Démarrer la rotation automatique
-    function startCarouselAutoRotation() {
-        carouselInterval = setInterval(() => {
-            currentSlide = (currentSlide + 1) % testimonialCards.length;
-            updateCarousel();
-        }, 5000); // 5 secondes de délai
-    }
-
-    // Redémarrer la rotation automatique
-    function restartCarouselAutoRotation() {
-        clearInterval(carouselInterval);
-        startCarouselAutoRotation();
-    }
-
-    // Configuration du select multiple pour les matières
+    // Configuration du select multiple pour les matières  
     function setupSubjectsSelect() {
+        console.log('setupSubjectsSelect called');
+        
         if (!subjectsSelect) {
             console.error('subjectsSelect element not found');
             return;
         }
+        
         console.log('Setting up subjects select...');
 
         // Liste de toutes les matières organisées par catégorie
@@ -345,11 +342,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Toggle dropdown
         multiselectToggle.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
-            multiselectToggle.classList.toggle('active');
-            multiselectDropdown.classList.toggle('show');
-            if (multiselectDropdown.classList.contains('show')) {
-                searchInput.focus();
+            console.log('Multiselect toggle clicked');
+            
+            const isOpen = multiselectDropdown.classList.contains('show');
+            
+            if (isOpen) {
+                multiselectToggle.classList.remove('active');
+                multiselectDropdown.classList.remove('show');
+                multiselectDropdown.style.display = 'none';
+            } else {
+                multiselectToggle.classList.add('active');
+                multiselectDropdown.classList.add('show');
+                multiselectDropdown.style.display = 'block';
+                setTimeout(() => searchInput.focus(), 100);
             }
         });
 
@@ -358,25 +365,27 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!multiselectToggle.contains(e.target) && !multiselectDropdown.contains(e.target)) {
                 multiselectToggle.classList.remove('active');
                 multiselectDropdown.classList.remove('show');
+                multiselectDropdown.style.display = 'none';
             }
         });
 
         // Render options
         function renderOptions(searchTerm = '') {
             const currentLang = document.documentElement.lang || 'fr';
+            console.log('Rendering options for language:', currentLang);
             multiselectOptions.innerHTML = '';
 
             Object.keys(subjectsByCategory).forEach(category => {
                 const categoryData = subjectsByCategory[category];
                 const filteredSubjects = categoryData.subjects.filter(subject => 
-                    subject[currentLang].toLowerCase().includes(searchTerm.toLowerCase())
+                    subject[currentLang] && subject[currentLang].toLowerCase().includes(searchTerm.toLowerCase())
                 );
 
                 if (filteredSubjects.length > 0) {
                     // Add category header
                     const categoryDiv = document.createElement('div');
                     categoryDiv.className = 'multiselect-category';
-                    categoryDiv.textContent = categoryData[currentLang];
+                    categoryDiv.textContent = categoryData[currentLang] || category;
                     multiselectOptions.appendChild(categoryDiv);
 
                     // Add subjects
@@ -386,18 +395,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (selectedSubjects.has(subject.id)) {
                             optionDiv.classList.add('selected');
                         }
-                        optionDiv.textContent = subject[currentLang];
+                        optionDiv.textContent = subject[currentLang] || subject.id;
                         optionDiv.dataset.value = subject.id;
-                        optionDiv.dataset.label = subject[currentLang];
+                        optionDiv.dataset.label = subject[currentLang] || subject.id;
 
                         optionDiv.addEventListener('click', () => {
-                            toggleSubject(subject.id, subject[currentLang]);
+                            toggleSubject(subject.id, subject[currentLang] || subject.id);
                         });
 
                         multiselectOptions.appendChild(optionDiv);
                     });
                 }
             });
+            
+            console.log('Rendered', multiselectOptions.children.length, 'elements');
         }
 
         // Toggle subject selection
@@ -467,24 +478,40 @@ document.addEventListener('DOMContentLoaded', function() {
             searchInput.placeholder = placeholders[currentLang];
         }
 
-        // Initial render
+        // Initial render and setup
+        console.log('Initializing multiselect dropdown...');
         renderOptions();
         updateSearchPlaceholder();
         
+        // Ensure dropdown is properly styled and positioned
+        multiselectDropdown.style.display = 'none';
+        multiselectDropdown.style.position = 'absolute';
+        multiselectDropdown.style.top = '100%';
+        multiselectDropdown.style.left = '0';
+        multiselectDropdown.style.right = '0';
+        multiselectDropdown.style.zIndex = '1000';
+        
         // Update when language changes
         const originalChangeLanguage = window.changeLanguage;
-        window.changeLanguage = function(lang) {
-            originalChangeLanguage.call(this, lang);
-            renderOptions(searchInput.value);
-            updateSearchPlaceholder();
-            updateSelectedDisplay();
-        };
+        if (originalChangeLanguage) {
+            window.changeLanguage = function(lang) {
+                originalChangeLanguage.call(this, lang);
+                renderOptions(searchInput.value);
+                updateSearchPlaceholder();
+                updateSelectedDisplay();
+            };
+        }
+        
+        console.log('Multiselect dropdown initialized successfully');
     }
 
     // Mettre à jour les options du formulaire en fonction de la langue
     function updateFormLanguage() {
-        // Mise à jour du select des matières
-        setupSubjectsSelect();
+        // Attendre que la langue soit bien définie
+        setTimeout(() => {
+            // Mise à jour du select des matières
+            setupSubjectsSelect();
+        }, 100);
 
         // Mise à jour des options du select "Méthode souhaitée"
         updateMethodSelectOptions();
@@ -653,7 +680,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fonction pour initialiser le thème
     function initializeTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'dark';
+        const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
 
         // Réinitialiser les icônes après changement de thème
@@ -679,6 +706,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour initialiser la langue
     function initializeLanguage() {
         const savedLanguage = localStorage.getItem('language') || 'fr';
+        console.log('Initializing language:', savedLanguage);
+        document.documentElement.lang = savedLanguage;
         changeLanguageWithAnimation(savedLanguage, false);
     }
 

@@ -1,3 +1,53 @@
+/* Smooth scrolling behavior and animations */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Scroll animations */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.scroll-reveal-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scroll-reveal-left.revealed {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.scroll-reveal-right {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scroll-reveal-right.revealed {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.scroll-reveal-scale {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scroll-reveal-scale.revealed {
+    opacity: 1;
+    transform: scale(1);
+}
+
 /* Variables CSS pour les couleurs */
 :root {
     /* Couleurs principales from logo */
@@ -467,255 +517,305 @@ body[data-theme="light"] .logo-dark {
     margin-top: 5px;
 }
 
-/* Testimonials Carousel */
-.testimonials-carousel {
-    position: relative;
-    width: 350px;
-    height: 420px;
-    perspective: 1000px;
-    margin-left: 40px;
+/* Modern Achievements Grid */
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-.testimonial-card {
-    background: var(--white);
-    padding: 24px;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    width: 350px;
+.achievement-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(199, 242, 1, 0.15);
+    border-radius: 24px;
+    padding: 32px 20px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.08),
+        0 0 40px rgba(199, 242, 1, 0.05);
+}
+
+.achievement-card::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    backface-visibility: hidden;
-    transform-origin: center center;
-    opacity: 0;
-    visibility: hidden;
-    border: 2px solid var(--primary);
-    position: relative;
-    overflow: hidden;
+    height: 3px;
+    background: var(--gradient-primary);
+    border-radius: 24px 24px 0 0;
 }
 
-.testimonial-card::before {
+.achievement-card::after {
     content: '';
     position: absolute;
-    top: -2px;
-    right: -2px;
-    width: 80px;
-    height: 80px;
-    background: var(--gradient-primary);
-    border-radius: 0 20px 0 50%;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(199, 242, 1, 0.03) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
 }
 
-.testimonial-card:nth-child(1) {
-    z-index: 3;
+.achievement-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(199, 242, 1, 0.3);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.12),
+        0 0 60px rgba(199, 242, 1, 0.15);
+}
+
+.achievement-card:hover::after {
     opacity: 1;
-    visibility: visible;
-    transform: translateZ(0) rotateY(0) scale(1);
 }
 
-.testimonial-card:nth-child(2) {
-    z-index: 2;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateZ(-50px) rotateY(-5deg) scale(0.95);
-}
-
-.testimonial-card:nth-child(3) {
-    z-index: 1;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateZ(-100px) rotateY(-10deg) scale(0.9);
-}
-
-/* Testimonial content styling */
-.testimonial-header {
+.achievement-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--gradient-primary);
+    border-radius: 20px;
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 15px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.testimonial-avatar {
-    position: relative;
-    flex-shrink: 0;
-}
-
-.avatar-img {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--primary);
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 25px rgba(199, 242, 1, 0.25);
     transition: all 0.3s ease;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1), 0 0 15px var(--primary-glow);
+    position: relative;
 }
 
-.testimonial-card:hover .avatar-img {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.achievement-card:hover .achievement-icon {
+    transform: scale(1.1) rotate(3deg);
+    box-shadow: 0 12px 35px rgba(199, 242, 1, 0.4);
 }
 
-.testimonial-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.testimonial-name {
+.achievement-icon-svg {
+    width: 28px;
+    height: 28px;
     color: var(--dark);
+    stroke-width: 2.5;
+}
+
+.achievement-content {
+    position: relative;
+    z-index: 2;
+}
+
+.achievement-stats {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.achievement-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(199, 242, 1, 0.3);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.achievement-unit {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary);
+    opacity: 0.8;
+}
+
+.achievement-title {
     font-size: 1rem;
     font-weight: 700;
-    margin: 0 0 3px 0;
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
     line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.testimonial-location {
-    color: #6B7280;
-    font-size: 0.8rem;
-    margin: 0 0 5px 0;
-    line-height: 1.2;
+.achievement-description {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 0;
     font-weight: 500;
 }
 
-.testimonial-stars {
-    color: var(--primary);
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    text-shadow: 0 0 5px var(--primary-glow);
+/* Theme adjustments */
+body[data-theme="light"] .achievement-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(127, 165, 0, 0.15);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.06),
+        0 0 40px rgba(127, 165, 0, 0.08);
 }
 
-.testimonial-content {
-    padding-top: 0;
+body[data-theme="light"] .achievement-card:hover {
+    border-color: rgba(127, 165, 0, 0.25);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 60px rgba(127, 165, 0, 0.15);
 }
 
-.testimonial-title {
-    color: var(--dark);
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin: 0 0 10px 0;
-    line-height: 1.3;
+body[data-theme="light"] .achievement-card::after {
+    background: radial-gradient(circle, rgba(127, 165, 0, 0.05) 0%, transparent 70%);
 }
 
-.testimonial-text {
-    color: #4B5563;
-    font-size: 0.85rem;
-    line-height: 1.4;
-    margin: 0;
-    font-style: italic;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* Carousel Indicators */
-.carousel-indicators {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.indicator.active {
-    background-color: var(--primary);
-    transform: scale(1.2);
-    box-shadow: 0 0 10px var(--primary-glow);
-}
-
-/* Ajustements pour le thème clair */
-body[data-theme="light"] .testimonial-card {
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-body[data-theme="light"] .testimonial-card:hover {
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
-}
-
-body[data-theme="light"] .testimonial-header {
-    border-bottom-color: rgba(0, 0, 0, 0.06);
-}
-
-/* Supprimer l'ancienne info-card ou la repositionner */
-.info-card {
-    display: none; /* On peut la cacher pour l'instant ou la repositionner */
-}
-
-/* Responsive adjustments for carousel */
-@media (max-width: 992px) {
-    .testimonials-carousel {
-        height: 300px;
-        max-width: 400px;
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .achievements-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        max-width: 800px;
     }
-
-    .testimonial-card {
-        width: 280px;
+    
+    .achievement-card {
+        padding: 28px 16px;
     }
-
-    .testimonial-card:nth-child(2) {
-        transform: translateX(calc(-50% + 160px)) translateZ(-100px) rotateY(30deg);
+    
+    .achievement-number {
+        font-size: 2.25rem;
     }
-
-    .testimonial-card:nth-child(3) {
-        transform: translateX(calc(-50% - 160px)) translateZ(-100px) rotateY(-30deg);
+    
+    .achievement-icon {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .achievement-icon-svg {
+        width: 24px;
+        height: 24px;
     }
 }
 
 @media (max-width: 768px) {
-    .testimonials-carousel {
-        height: 280px;
-        max-width: 320px;
+    .achievements-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        max-width: 500px;
     }
-
-    .testimonial-card {
-        width: 260px;
+    
+    .achievement-card {
+        padding: 24px 16px;
     }
-
-    .testimonial-card:nth-child(2),
-    .testimonial-card:nth-child(3) {
-        display: none;
+    
+    .achievement-number {
+        font-size: 2rem;
+    }
+    
+    .achievement-unit {
+        font-size: 1.1rem;
+    }
+    
+    .achievement-title {
+        font-size: 0.95rem;
+    }
+    
+    .achievement-description {
+        font-size: 0.8rem;
+    }
+    
+    .achievement-icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+    }
+    
+    .achievement-icon-svg {
+        width: 22px;
+        height: 22px;
     }
 }
 
 @media (max-width: 576px) {
-    .testimonials-carousel {
-        height: 260px;
+    .achievements-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 0 16px;
+        max-width: 400px;
+    }
+    
+    .achievement-card {
+        padding: 20px 12px;
+        border-radius: 20px;
+    }
+    
+    .achievement-number {
+        font-size: 1.75rem;
+    }
+    
+    .achievement-unit {
+        font-size: 1rem;
+    }
+    
+    .achievement-title {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+    
+    .achievement-description {
+        font-size: 0.75rem;
+    }
+    
+    .achievement-icon {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 12px;
+        border-radius: 16px;
+    }
+    
+    .achievement-icon-svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .achievements-grid {
+        grid-template-columns: 1fr;
         max-width: 280px;
     }
-
-    .testimonial-card {
-        width: 240px;
+    
+    .achievement-card {
+        padding: 24px 20px;
     }
-}
-
-.rating-card {
-    background: var(--white);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-}
-
-.rating-emoji {
-    font-size: 2.5rem;
-    margin-bottom: 5px;
+    
+    .achievement-number {
+        font-size: 2.25rem;
+    }
+    
+    .achievement-unit {
+        font-size: 1.25rem;
+    }
+    
+    .achievement-title {
+        font-size: 1rem;
+    }
+    
+    .achievement-description {
+        font-size: 0.875rem;
+    }
+    
+    .achievement-icon {
+        width: 56px;
+        height: 56px;
+        margin-bottom: 16px;
+    }
+    
+    .achievement-icon-svg {
+        width: 24px;
+        height: 24px;
+    }
 }
 
 .rating-score {
@@ -1224,9 +1324,10 @@ textarea.form-control {
     max-height: 300px;
     overflow: hidden;
     display: none;
-    z-index: 100;
+    z-index: 1000;
     box-shadow: var(--shadow-xl);
     animation: slideDown 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
 .multiselect-dropdown.show {
