@@ -1440,6 +1440,58 @@ html[lang="ar"] .ar-option {
     color: var(--text-muted);
 }
 
+/* Error Message */
+.error-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.error-message.show {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.error-content {
+    background: var(--bg-secondary);
+    padding: 50px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    margin: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 2px solid #ff4444;
+}
+
+.error-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #ff4444;
+}
+
+.error-content p {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+/* Loading Spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+
 /* Contrôles flottants (thème et langue) */
 .floating-controls {
     position: fixed;

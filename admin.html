@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OUIIPROF - Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        .admin-container {
+            min-height: 100vh;
+            padding: 40px 20px;
+            background: var(--bg-primary);
+        }
+        .admin-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .admin-title {
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .admin-subtitle {
+            color: var(--text-muted);
+        }
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .submission-count {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--dark);
+        }
+        .btn-danger {
+            background: #ff4444;
+            color: white;
+        }
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .submissions-table {
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background: var(--gradient-primary);
+            color: var(--dark);
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        tr:hover {
+            background: rgba(199, 242, 1, 0.05);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: var(--gradient-primary);
+            color: var(--dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="container">
+            <div class="admin-header">
+                <h1 class="admin-title">Tableau de Bord Admin</h1>
+                <p class="admin-subtitle">Gérez vos soumissions de formulaire</p>
+            </div>
+
+            <div class="controls-bar">
+                <div class="submission-count">
+                    Total: <span id="totalCount">0</span> soumissions
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Rechercher...">
+                    <i data-lucide="search" class="search-icon"></i>
+                </div>
+
+                <div class="control-buttons">
+                    <button class="btn btn-primary" onclick="exportToCSV()">
+                        <i data-lucide="download"></i> Exporter CSV
+                    </button>
+                    <button class="btn btn-danger" onclick="clearAllSubmissions()">
+                        <i data-lucide="trash-2"></i> Tout effacer
+                    </button>
+                    <button class="btn btn-secondary" onclick="logout()">
+                        <i data-lucide="log-out"></i> Déconnexion
+                    </button>
+                </div>
+            </div>
+
+            <div class="submissions-table" id="submissionsTable">
+                <div class="table-wrapper">
+                    <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Téléphone</th>
+                                <th>Ville</th>
+                                <th>Méthode</th>
+                                <th>Heures</th>
+                                <th>Matières</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Submissions will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-icon">📭</div>
+                    <h3>Aucune soumission</h3>
+                    <p>Les soumissions de formulaire apparaîtront ici</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Session management
+        const SESSION_KEY = 'ouiiprof_admin_session';
+        
+        // Check if user is logged in
+        function checkAuth() {
+            const session = localStorage.getItem(SESSION_KEY);
+            if (!session) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            const sessionData = JSON.parse(session);
+            if (sessionData.expires < Date.now()) {
+                localStorage.removeItem(SESSION_KEY);
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem(SESSION_KEY);
+            window.location.href = 'login.html';
+        }
+        
+        // Check auth before loading
+        if (!checkAuth()) {
+            // Stop execution if not authenticated
+            throw new Error('Not authenticated');
+        }
+        
+        // Load submissions
+        function loadSubmissions() {
+            const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const tableBody = document.getElementById('tableBody');
+            const emptyState = document.getElementById('emptyState');
+            const totalCount = document.getElementById('totalCount');
+            
+            totalCount.textContent = submissions.length;
+            
+            if (submissions.length === 0) {
+                tableBody.parentElement.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            tableBody.parentElement.style.display = 'table';
+            emptyState.style.display = 'none';
+            
+            tableBody.innerHTML = submissions.map(sub => `
+                <tr>
+                    <td>${new Date(sub.timestamp).toLocaleString('fr-FR')}</td>
+                    <td>${sub.fullName}</td>
+                    <td>${sub.email}</td>
+                    <td>${sub.phone}</td>
+                    <td>${sub.city}</td>
+                    <td><span class="badge">${sub.method}</span></td>
+                    <td>${sub.hours}h</td>
+                    <td>${sub.subjects || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#tableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Export to CSV
+        function exportToCSV() {
+            const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            if (submissions.length === 0) {
+                alert('Aucune donnée à exporter');
+                return;
+            }
+            
+            const headers = ['Date', 'Nom', 'Email', 'Téléphone', 'Ville', 'Méthode', 'Heures', 'Matières'];
+            const csvContent = [
+                headers.join(','),
+                ...submissions.map(sub => [
+                    new Date(sub.timestamp).toLocaleString('fr-FR'),
+                    sub.fullName,
+                    sub.email,
+                    sub.phone,
+                    sub.city,
+                    sub.method,
+                    sub.hours,
+                    `"${sub.subjects || '-'}"`
+                ].join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `ouiiprof_submissions_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        // Clear all submissions
+        function clearAllSubmissions() {
+            if (confirm('Êtes-vous sûr de vouloir supprimer toutes les soumissions ?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                loadSubmissions();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            loadSubmissions();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(loadSubmissions, 30000);
+        });
+    </script>
+</body>
+</html>

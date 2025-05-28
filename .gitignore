@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Environment and config files
+.env
+.env.local
+config.js
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Build files
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.temp

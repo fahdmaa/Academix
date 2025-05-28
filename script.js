@@ -1,3 +1,10 @@
+// Initialize EmailJS
+(function() {
+    if (typeof emailjs !== 'undefined' && typeof EMAILJS_CONFIG !== 'undefined') {
+        emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+    }
+})();
+
 // Attendre que le DOM soit entièrement chargé
 document.addEventListener('DOMContentLoaded', function() {
     // Éléments DOM
@@ -361,6 +368,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
+        
+        // Make it accessible globally for form reset
+        window.updateSelectedDisplay = updateSelectedDisplay;
+        window.clearMultiselect = function() {
+            selectedSubjects.clear();
+            updateSelectedDisplay();
+            updateHiddenSelect();
+        };
 
         // Update hidden select
         function updateHiddenSelect() {
@@ -870,28 +885,132 @@ document.addEventListener('DOMContentLoaded', function() {
         const submitBtn = appointmentForm.querySelector('.submit-btn');
         if (!submitBtn) return;
 
-        // Effet de chargement
+        // Get form data
+        const formData = new FormData(appointmentForm);
+        const selectedSubjects = Array.from(subjectsSelect.selectedOptions).map(opt => opt.text);
+        
+        const templateParams = {
+            fullName: formData.get('fullName'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            city: formData.get('city'),
+            method: formData.get('method'),
+            hours: formData.get('hours'),
+            subjects: selectedSubjects.join(', ') || 'Aucune matière sélectionnée',
+            // Add additional fields that might be needed
+            to_email: 'fahd.maatoug9@gmail.com  ',
+            from_name: formData.get('fullName'),
+            from_email: formData.get('email'),
+            message: `Nouvelle demande de ${formData.get('fullName')} pour ${formData.get('hours')} heures de cours.`
+        };
+
+        // Store submission locally
+        storeSubmission(templateParams);
+
+        // Loading effect
         const submitBtnText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span>...</span>';
+        const currentLang = document.documentElement.lang || 'fr';
+        const loadingText = {
+            fr: '<i data-lucide="loader-2" class="spin"></i> Envoi en cours...',
+            en: '<i data-lucide="loader-2" class="spin"></i> Sending...',
+            ar: '<i data-lucide="loader-2" class="spin"></i> جاري الإرسال...'
+        };
+        submitBtn.innerHTML = loadingText[currentLang];
         submitBtn.disabled = true;
+        lucide.createIcons();
 
-        // Simulation de délai d'envoi (à remplacer par votre vraie logique d'envoi)
-        setTimeout(() => {
-            // Réinitialiser le formulaire
-            appointmentForm.reset();
-
-            // Afficher le message de succès
-            successMessage.classList.add('show');
-
-            // Fermer automatiquement après 3 secondes
+        // Send email using EmailJS
+        if (typeof emailjs !== 'undefined' && typeof EMAILJS_CONFIG !== 'undefined') {
+            emailjs.send(
+                EMAILJS_CONFIG.SERVICE_ID,
+                EMAILJS_CONFIG.TEMPLATE_ID,
+                templateParams
+            ).then(
+                function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    showSuccessMessage();
+                    appointmentForm.reset();
+                    // Clear multiselect
+                    if (typeof clearMultiselect === 'function') {
+                        clearMultiselect();
+                    }
+                },
+                function(error) {
+                    console.error('FAILED...', error);
+                    showErrorMessage();
+                }
+            ).finally(() => {
+                submitBtn.innerHTML = submitBtnText;
+                submitBtn.disabled = false;
+            });
+        } else {
+            // Fallback if EmailJS is not configured
+            console.warn('EmailJS not configured. Form data stored locally only.');
             setTimeout(() => {
-                successMessage.classList.remove('show');
-            }, 3000);
+                showSuccessMessage();
+                appointmentForm.reset();
+                submitBtn.innerHTML = submitBtnText;
+                submitBtn.disabled = false;
+            }, 1500);
+        }
+    }
 
-            // Rétablir le bouton
-            submitBtn.innerHTML = submitBtnText;
-            submitBtn.disabled = false;
-        }, 1500);
+    // Store submission in localStorage
+    function storeSubmission(data) {
+        try {
+            const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const submission = {
+                ...data,
+                timestamp: new Date().toISOString(),
+                id: Date.now().toString()
+            };
+            
+            submissions.unshift(submission);
+            
+            // Keep only the latest MAX_STORED_SUBMISSIONS
+            if (submissions.length > MAX_STORED_SUBMISSIONS) {
+                submissions.splice(MAX_STORED_SUBMISSIONS);
+            }
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+            console.log('Submission stored locally');
+        } catch (error) {
+            console.error('Error storing submission:', error);
+        }
+    }
+
+    // Show success message
+    function showSuccessMessage() {
+        successMessage.classList.add('show');
+        setTimeout(() => {
+            successMessage.classList.remove('show');
+        }, 3000);
+    }
+
+    // Show error message
+    function showErrorMessage() {
+        const currentLang = document.documentElement.lang || 'fr';
+        const errorMessages = {
+            fr: 'Une erreur est survenue. Veuillez réessayer.',
+            en: 'An error occurred. Please try again.',
+            ar: 'حدث خطأ. يرجى المحاولة مرة أخرى.'
+        };
+        
+        // Create temporary error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message show';
+        errorDiv.innerHTML = `
+            <div class="error-content">
+                <div class="error-icon">❌</div>
+                <p>${errorMessages[currentLang]}</p>
+            </div>
+        `;
+        document.body.appendChild(errorDiv);
+        
+        setTimeout(() => {
+            errorDiv.classList.remove('show');
+            setTimeout(() => errorDiv.remove(), 300);
+        }, 3000);
     }
 
     // Permettre de fermer le message en cliquant dessus

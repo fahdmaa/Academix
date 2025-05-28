@@ -35,7 +35,15 @@ npx serve
 
 ### Key Patterns
 - No build process or bundling - direct file serving
-- localStorage for persistence (theme, language)
+- localStorage for persistence (theme, language, form submissions)
 - Event delegation for dynamic content
 - CSS animations and transitions for UI effects
 - Mobile-first responsive design with burger menu
+- EmailJS for contact form email notifications
+- Admin dashboard at admin.html for viewing submissions
+
+### Backend Integration
+- EmailJS handles email sending (config in config.js)
+- Form submissions stored in localStorage
+- CSV export functionality in admin dashboard
+- No server required - fully client-side
