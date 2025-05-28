@@ -137,6 +137,50 @@
             background: var(--gradient-primary);
             color: var(--dark);
         }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .import-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .import-dialog-content {
+            background: var(--bg-primary);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        .import-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: monospace;
+            margin: 15px 0;
+            resize: vertical;
+        }
+        .import-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
     </style>
 </head>
 <body>
@@ -160,6 +204,9 @@
                 <div class="control-buttons">
                     <button class="btn btn-primary" onclick="exportToCSV()">
                         <i data-lucide="download"></i> Exporter CSV
+                    </button>
+                    <button class="btn btn-success" onclick="showImportDialog()">
+                        <i data-lucide="upload"></i> Importer
                     </button>
                     <button class="btn btn-danger" onclick="clearAllSubmissions()">
                         <i data-lucide="trash-2"></i> Tout effacer
@@ -195,7 +242,24 @@
                     <div class="empty-icon">📭</div>
                     <h3>Aucune soumission</h3>
                     <p>Les soumissions de formulaire apparaîtront ici</p>
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-muted);">
+                        <strong>Note:</strong> Les données sont stockées localement. Pour importer des soumissions depuis vos emails, 
+                        utilisez le bouton "Importer" et collez le JSON depuis le champ "submission_data" de l'email.
+                    </p>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Import Dialog -->
+    <div id="importDialog" class="import-dialog" style="display: none;">
+        <div class="import-dialog-content">
+            <h3>Importer des soumissions</h3>
+            <p>Collez les données de soumission JSON depuis l'email reçu:</p>
+            <textarea id="importData" class="import-textarea" placeholder='Collez ici le JSON depuis "submission_data" de votre email...'></textarea>
+            <div class="import-actions">
+                <button class="btn btn-primary" onclick="importSubmissions()">Importer</button>
+                <button class="btn btn-secondary" onclick="closeImportDialog()">Annuler</button>
             </div>
         </div>
     </div>
@@ -313,6 +377,78 @@
             if (confirm('Êtes-vous sûr de vouloir supprimer toutes les soumissions ?')) {
                 localStorage.removeItem(STORAGE_KEY);
                 loadSubmissions();
+            }
+        }
+        
+        // Show import dialog
+        function showImportDialog() {
+            document.getElementById('importDialog').style.display = 'flex';
+            document.getElementById('importData').value = '';
+            document.getElementById('importData').focus();
+        }
+        
+        // Close import dialog
+        function closeImportDialog() {
+            document.getElementById('importDialog').style.display = 'none';
+        }
+        
+        // Import submissions from JSON
+        function importSubmissions() {
+            const importData = document.getElementById('importData').value.trim();
+            
+            if (!importData) {
+                alert('Veuillez coller les données JSON depuis votre email');
+                return;
+            }
+            
+            try {
+                // Parse the JSON data
+                const newSubmission = JSON.parse(importData);
+                
+                // Validate required fields
+                if (!newSubmission.fullName || !newSubmission.email) {
+                    throw new Error('Données incomplètes');
+                }
+                
+                // Add ID and timestamp if not present
+                if (!newSubmission.id) {
+                    newSubmission.id = Date.now().toString();
+                }
+                if (!newSubmission.timestamp) {
+                    newSubmission.timestamp = new Date().toISOString();
+                }
+                
+                // Get existing submissions
+                const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                
+                // Check for duplicates
+                const isDuplicate = submissions.some(sub => 
+                    sub.email === newSubmission.email && 
+                    sub.timestamp === newSubmission.timestamp
+                );
+                
+                if (isDuplicate) {
+                    alert('Cette soumission existe déjà');
+                    return;
+                }
+                
+                // Add new submission
+                submissions.unshift(newSubmission);
+                
+                // Save to localStorage
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+                
+                // Reload the table
+                loadSubmissions();
+                
+                // Close dialog
+                closeImportDialog();
+                
+                alert('Soumission importée avec succès!');
+                
+            } catch (error) {
+                console.error('Import error:', error);
+                alert('Erreur lors de l\'import. Vérifiez le format JSON.');
             }
         }
 

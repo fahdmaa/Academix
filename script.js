@@ -213,7 +213,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Configuration du select multiple pour les matières
     function setupSubjectsSelect() {
-        if (!subjectsSelect) return;
+        if (!subjectsSelect) {
+            console.error('subjectsSelect element not found');
+            return;
+        }
+        console.log('Setting up subjects select...');
 
         // Liste de toutes les matières organisées par catégorie
         const subjectsByCategory = {
@@ -264,17 +268,79 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize custom multiselect
         setupCustomMultiselect(subjectsByCategory);
         
+        // Populate the hidden select with all options
+        const currentLang = document.documentElement.lang || 'fr';
+        subjectsSelect.innerHTML = '';
+        
+        Object.keys(subjectsByCategory).forEach(category => {
+            const categoryData = subjectsByCategory[category];
+            categoryData.subjects.forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject.id;
+                option.textContent = subject[currentLang];
+                subjectsSelect.appendChild(option);
+            });
+        });
+        
         // Keep the hidden select for form submission
         subjectsSelect.multiple = true;
     }
+    
+    // Clear multiselect function for form reset
+    window.clearMultiselect = function() {
+        const multiselectSelected = document.querySelector('.multiselect-selected');
+        const multiselectOptions = document.querySelectorAll('.multiselect-option');
+        const subjectsSelect = document.getElementById('subjects-select');
+        
+        if (multiselectSelected) {
+            multiselectSelected.innerHTML = '';
+        }
+        
+        if (multiselectOptions) {
+            multiselectOptions.forEach(option => {
+                option.classList.remove('selected');
+            });
+        }
+        
+        if (subjectsSelect) {
+            Array.from(subjectsSelect.options).forEach(option => {
+                option.selected = false;
+            });
+        }
+    };
 
     // Setup custom multiselect dropdown
     function setupCustomMultiselect(subjectsByCategory) {
+        console.log('setupCustomMultiselect called with:', subjectsByCategory);
+        
         const multiselectToggle = document.getElementById('multiselect-toggle');
         const multiselectDropdown = document.getElementById('multiselect-dropdown');
         const multiselectOptions = document.getElementById('multiselect-options');
+        
+        console.log('Elements found:', {
+            toggle: !!multiselectToggle,
+            dropdown: !!multiselectDropdown,
+            options: !!multiselectOptions
+        });
+        
+        // Check if elements exist
+        if (!multiselectToggle || !multiselectDropdown || !multiselectOptions) {
+            console.error('Multiselect elements not found:', {
+                toggle: multiselectToggle,
+                dropdown: multiselectDropdown,
+                options: multiselectOptions
+            });
+            return;
+        }
+        
         const multiselectSelected = multiselectToggle.querySelector('.multiselect-selected');
         const searchInput = multiselectDropdown.querySelector('.multiselect-search-input');
+        
+        if (!multiselectSelected || !searchInput) {
+            console.error('Multiselect child elements not found');
+            return;
+        }
+        
         const selectedSubjects = new Set();
 
         // Toggle dropdown
@@ -475,6 +541,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function startTypewriterEffect() {
         const currentLang = document.documentElement.lang;
 
+        // Clean up any existing animations
+        document.querySelectorAll('[id^="typewriter-text"]').forEach(el => {
+            if (el._typewriterAnimation) {
+                clearTimeout(el._typewriterAnimation);
+                el._typewriterAnimation = null;
+            }
+        });
+
         // Configuration des mots pour chaque langue
         const wordsConfig = {
             'fr': {
@@ -495,12 +569,47 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!config || !config.element) return;
 
         const { element, words } = config;
+        
+        // Set minimum width based on longest word to prevent layout shifts
+        const longestWord = words.reduce((a, b) => a.length > b.length ? a : b);
+        const container = element.parentElement;
+        if (container && container.classList.contains('typewriter-container')) {
+            // Create a temporary element to measure text width
+            const measurer = document.createElement('span');
+            measurer.style.cssText = `
+                visibility: hidden;
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+                white-space: nowrap;
+                pointer-events: none;
+            `;
+            
+            // Copy all font-related styles
+            const elementStyles = window.getComputedStyle(element);
+            ['font-family', 'font-size', 'font-weight', 'font-style', 'letter-spacing'].forEach(prop => {
+                measurer.style[prop] = elementStyles[prop];
+            });
+            
+            measurer.textContent = longestWord;
+            document.body.appendChild(measurer);
+            
+            const minWidth = measurer.offsetWidth;
+            container.style.minWidth = `${minWidth + 30}px`; // Add padding for cursor
+            container.style.display = 'inline-block';
+            
+            document.body.removeChild(measurer);
+        }
+        
         let currentWordIndex = 0;
         let currentCharIndex = 0;
         let isDeleting = false;
-        const typingSpeed = 150;
-        const deletingSpeed = 100;
-        const pauseTime = 2000;
+        let animationId;
+        
+        // Faster speeds for better user experience
+        const typingSpeed = 120;
+        const deletingSpeed = 80;
+        const pauseTime = 1500;
 
         function typeWriter() {
             const currentWord = words[currentWordIndex];
@@ -513,9 +622,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (currentCharIndex === 0) {
                     isDeleting = false;
                     currentWordIndex = (currentWordIndex + 1) % words.length;
-                    setTimeout(typeWriter, 500);
+                    animationId = setTimeout(typeWriter, 300);
+                    element._typewriterAnimation = animationId;
                 } else {
-                    setTimeout(typeWriter, deletingSpeed);
+                    animationId = setTimeout(typeWriter, deletingSpeed);
+                    element._typewriterAnimation = animationId;
                 }
             } else {
                 // Ajout des caractères
@@ -524,15 +635,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (currentCharIndex === currentWord.length) {
                     isDeleting = true;
-                    setTimeout(typeWriter, pauseTime);
+                    animationId = setTimeout(typeWriter, pauseTime);
+                    element._typewriterAnimation = animationId;
                 } else {
-                    setTimeout(typeWriter, typingSpeed);
+                    animationId = setTimeout(typeWriter, typingSpeed);
+                    element._typewriterAnimation = animationId;
                 }
             }
         }
 
         // Démarrer l'effet après un petit délai
-        setTimeout(typeWriter, 1000);
+        animationId = setTimeout(typeWriter, 1000);
+        
+        // Store animation reference for cleanup
+        element._typewriterAnimation = animationId;
     }
 
     // Fonction pour initialiser le thème
@@ -898,10 +1014,22 @@ document.addEventListener('DOMContentLoaded', function() {
             hours: formData.get('hours'),
             subjects: selectedSubjects.join(', ') || 'Aucune matière sélectionnée',
             // Add additional fields that might be needed
-            to_email: 'fahd.maatoug9@gmail.com  ',
+            to_email: 'fahd.maatoug9@gmail.com',
             from_name: formData.get('fullName'),
             from_email: formData.get('email'),
-            message: `Nouvelle demande de ${formData.get('fullName')} pour ${formData.get('hours')} heures de cours.`
+            message: `Nouvelle demande de ${formData.get('fullName')} pour ${formData.get('hours')} heures de cours.`,
+            // Add submission data for backup
+            submission_data: JSON.stringify({
+                fullName: formData.get('fullName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                city: formData.get('city'),
+                method: formData.get('method'),
+                hours: formData.get('hours'),
+                subjects: selectedSubjects.join(', '),
+                timestamp: new Date().toISOString(),
+                source: window.location.hostname
+            })
         };
 
         // Store submission locally
@@ -921,13 +1049,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Send email using EmailJS
         if (typeof emailjs !== 'undefined' && typeof EMAILJS_CONFIG !== 'undefined') {
+            console.log('Sending email with params:', templateParams);
+            console.log('Using service:', EMAILJS_CONFIG.SERVICE_ID);
+            console.log('Using template:', EMAILJS_CONFIG.TEMPLATE_ID);
+            
             emailjs.send(
                 EMAILJS_CONFIG.SERVICE_ID,
                 EMAILJS_CONFIG.TEMPLATE_ID,
                 templateParams
             ).then(
                 function(response) {
-                    console.log('SUCCESS!', response.status, response.text);
+                    console.log('EmailJS SUCCESS!', response.status, response.text);
+                    console.log('Full response:', response);
                     showSuccessMessage();
                     appointmentForm.reset();
                     // Clear multiselect
@@ -936,7 +1069,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 },
                 function(error) {
-                    console.error('FAILED...', error);
+                    console.error('EmailJS FAILED...', error);
+                    console.error('Error details:', error.text);
                     showErrorMessage();
                 }
             ).finally(() => {

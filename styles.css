@@ -389,6 +389,11 @@ body[data-theme="light"] .logo-dark {
 .typewriter-container {
     position: relative;
     display: inline-block;
+    min-width: 200px; /* Default minimum width */
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .typewriter-cursor {
@@ -397,11 +402,30 @@ body[data-theme="light"] .logo-dark {
     font-weight: 400;
     margin-left: 2px;
     text-shadow: 0 0 10px var(--primary-glow);
+    display: inline-block;
+    width: 2px;
 }
 
 @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
+}
+
+/* Responsive adjustments for typewriter */
+@media (max-width: 768px) {
+    .typewriter-container {
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .typewriter-container {
+        min-width: 120px;
+    }
+    
+    .typewriter-cursor {
+        margin-left: 1px;
+    }
 }
 
 .hero-description {

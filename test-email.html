@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test EmailJS</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="config.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        button {
+            background: #C7F201;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #A5C901;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test EmailJS Configuration</h1>
+        
+        <div class="info">
+            <strong>Configuration actuelle:</strong>
+            <pre id="config"></pre>
+        </div>
+        
+        <button onclick="testSimpleEmail()">Test 1: Email Simple</button>
+        <button onclick="testWithYourTemplate()">Test 2: Avec Votre Template</button>
+        <button onclick="testDirectTemplate()">Test 3: Template Direct</button>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        // Initialize EmailJS
+        emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+        
+        // Show config
+        document.getElementById('config').textContent = JSON.stringify({
+            SERVICE_ID: EMAILJS_CONFIG.SERVICE_ID,
+            TEMPLATE_ID: EMAILJS_CONFIG.TEMPLATE_ID,
+            PUBLIC_KEY: EMAILJS_CONFIG.PUBLIC_KEY.substring(0, 10) + '...'
+        }, null, 2);
+        
+        function showResult(success, message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'result ' + (success ? 'success' : 'error');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = message;
+        }
+        
+        // Test 1: Simple email
+        function testSimpleEmail() {
+            showResult(true, 'Envoi en cours...');
+            
+            const params = {
+                to_email: 'fahd.maatoug9@gmail.com',
+                from_name: 'Test User',
+                subject: 'Test EmailJS',
+                message: 'Ceci est un test simple.'
+            };
+            
+            console.log('Test 1 - Params:', params);
+            
+            emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, params)
+                .then(function(response) {
+                    console.log('SUCCESS!', response);
+                    showResult(true, 'Email envoyé avec succès! Check console for details.');
+                }, function(error) {
+                    console.error('FAILED...', error);
+                    showResult(false, 'Erreur: ' + JSON.stringify(error));
+                });
+        }
+        
+        // Test 2: With your template structure
+        function testWithYourTemplate() {
+            showResult(true, 'Envoi en cours...');
+            
+            const params = {
+                fullName: 'Test User',
+                email: 'test@example.com',
+                phone: '0612345678',
+                city: 'Casablanca',
+                method: 'online',
+                hours: '10',
+                subjects: 'Finance, Comptabilité',
+                to_email: 'fahd.maatoug9@gmail.com',
+                from_name: 'Test User',
+                from_email: 'test@example.com',
+                message: 'Test de formulaire complet'
+            };
+            
+            console.log('Test 2 - Params:', params);
+            
+            emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, params)
+                .then(function(response) {
+                    console.log('SUCCESS!', response);
+                    showResult(true, 'Email envoyé avec succès! Check console for details.');
+                }, function(error) {
+                    console.error('FAILED...', error);
+                    showResult(false, 'Erreur: ' + JSON.stringify(error));
+                });
+        }
+        
+        // Test 3: Direct template test
+        function testDirectTemplate() {
+            showResult(true, 'Envoi en cours...');
+            
+            // Minimal params to test what the template actually needs
+            const params = {
+                to_email: 'fahd.maatoug9@gmail.com',
+                fullName: 'Direct Test',
+                email: 'direct@test.com'
+            };
+            
+            console.log('Test 3 - Minimal Params:', params);
+            
+            emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, params)
+                .then(function(response) {
+                    console.log('SUCCESS!', response);
+                    showResult(true, 'Email envoyé avec succès! Response: ' + JSON.stringify(response));
+                }, function(error) {
+                    console.error('FAILED...', error);
+                    showResult(false, 'Erreur détaillée: ' + error.text + '<br>Code: ' + error.status);
+                });
+        }
+    </script>
+</body>
+</html>
