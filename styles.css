@@ -75,6 +75,16 @@ body[data-theme="light"] .info-card {
     box-sizing: border-box;
 }
 
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     line-height: 1.6;
@@ -1329,11 +1339,11 @@ html[lang="ar"] .expertise-card:hover .expertise-more::after {
     transform: translateX(-5px) rotate(180deg);
 }
 
-/* Animations */
+/* Enhanced Animations */
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(40px);
     }
     to {
         opacity: 1;
@@ -1344,7 +1354,18 @@ html[lang="ar"] .expertise-card:hover .expertise-more::after {
 @keyframes fadeInRight {
     from {
         opacity: 0;
-        transform: translateX(50px);
+        transform: translateX(60px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-60px);
     }
     to {
         opacity: 1;
@@ -1353,14 +1374,20 @@ html[lang="ar"] .expertise-card:hover .expertise-more::after {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { 
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to { 
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 @keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(10px) scale(0.95);
+        transform: translateY(20px) scale(0.95);
     }
     to {
         opacity: 1;
@@ -1370,10 +1397,13 @@ html[lang="ar"] .expertise-card:hover .expertise-more::after {
 
 @keyframes float {
     0%, 100% {
-        transform: translateY(0);
+        transform: translateY(0) rotate(0deg);
     }
-    50% {
-        transform: translateY(-15px);
+    33% {
+        transform: translateY(-10px) rotate(1deg);
+    }
+    66% {
+        transform: translateY(-5px) rotate(-1deg);
     }
 }
 
@@ -1383,6 +1413,44 @@ html[lang="ar"] .expertise-card:hover .expertise-more::after {
     }
     50% {
         transform: scale(1.05);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(204, 255, 0, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(204, 255, 0, 0.3);
+    }
+}
+
+@keyframes breathe {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+@keyframes slideInScale {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 

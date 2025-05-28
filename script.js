@@ -837,10 +837,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function preloadImages() {
     const images = [
         'images/professor.jpg',
-        'images/logo.svg',
-        'images/student-avatar.jpg',
-        'images/student-avatar-2.jpg',
-        'images/student-avatar-3.jpg'
+        'images/student-avatar.jpg'
     ];
 
     images.forEach(src => {
