@@ -208,40 +208,196 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupSubjectsSelect() {
         if (!subjectsSelect) return;
 
-        // Liste de toutes les matières
-        const allSubjects = [
-            { id: 'math-fin', fr: 'Mathématiques financières', en: 'Financial Mathematics', ar: 'الرياضيات المالية' },
-            { id: 'finance-ent', fr: 'Finance d\'entreprise', en: 'Corporate Finance', ar: 'تمويل الشركات' },
-            { id: 'finance-marche', fr: 'Finance de marché', en: 'Market Finance', ar: 'تمويل السوق' },
-            { id: 'ingenierie-fin', fr: 'Ingénierie financière', en: 'Financial Engineering', ar: 'الهندسة المالية' },
-            { id: 'analyse-fin', fr: 'Analyse financière', en: 'Financial Analysis', ar: 'التحليل المالي' },
-            { id: 'compta-gen', fr: 'Comptabilité générale', en: 'General Accounting', ar: 'المحاسبة العامة' },
-            { id: 'compta-ana', fr: 'Comptabilité analytique', en: 'Cost Accounting', ar: 'محاسبة التكاليف' },
-            { id: 'compta-approf', fr: 'Comptabilité approfondie', en: 'Advanced Accounting', ar: 'المحاسبة المتقدمة' },
-            { id: 'controle-gestion', fr: 'Contrôle de gestion', en: 'Management Control', ar: 'مراقبة الإدارة' },
-            { id: 'evaluation-ent', fr: 'Évaluation d\'entreprises', en: 'Business Valuation', ar: 'تقييم الأعمال' },
-            { id: 'risk-mgmt', fr: 'Risk management', en: 'Risk Management', ar: 'إدارة المخاطر' },
-            { id: 'memoire', fr: 'Mémoire de fin d\'études', en: 'Thesis Support', ar: 'دعم الأطروحة' },
-            { id: 'certification', fr: 'Préparation aux concours', en: 'Exam Preparation', ar: 'التحضير للاختبارات' },
-            { id: 'projets', fr: 'Projets académiques', en: 'Academic Projects', ar: 'المشاريع الأكاديمية' }
-        ];
+        // Liste de toutes les matières organisées par catégorie
+        const subjectsByCategory = {
+            'Finance': {
+                fr: 'Finance',
+                en: 'Finance',
+                ar: 'التمويل',
+                subjects: [
+                    { id: 'math-fin', fr: 'Mathématiques financières', en: 'Financial Mathematics', ar: 'الرياضيات المالية' },
+                    { id: 'finance-ent', fr: 'Finance d\'entreprise', en: 'Corporate Finance', ar: 'تمويل الشركات' },
+                    { id: 'finance-marche', fr: 'Finance de marché', en: 'Market Finance', ar: 'تمويل السوق' },
+                    { id: 'ingenierie-fin', fr: 'Ingénierie financière', en: 'Financial Engineering', ar: 'الهندسة المالية' },
+                    { id: 'analyse-fin', fr: 'Analyse financière', en: 'Financial Analysis', ar: 'التحليل المالي' }
+                ]
+            },
+            'Comptabilité': {
+                fr: 'Comptabilité',
+                en: 'Accounting',
+                ar: 'المحاسبة',
+                subjects: [
+                    { id: 'compta-gen', fr: 'Comptabilité générale', en: 'General Accounting', ar: 'المحاسبة العامة' },
+                    { id: 'compta-ana', fr: 'Comptabilité analytique', en: 'Cost Accounting', ar: 'محاسبة التكاليف' },
+                    { id: 'compta-approf', fr: 'Comptabilité approfondie', en: 'Advanced Accounting', ar: 'المحاسبة المتقدمة' }
+                ]
+            },
+            'Gestion': {
+                fr: 'Contrôle & Gestion',
+                en: 'Control & Management',
+                ar: 'الرقابة والإدارة',
+                subjects: [
+                    { id: 'controle-gestion', fr: 'Contrôle de gestion', en: 'Management Control', ar: 'مراقبة الإدارة' },
+                    { id: 'evaluation-ent', fr: 'Évaluation d\'entreprises', en: 'Business Valuation', ar: 'تقييم الأعمال' },
+                    { id: 'risk-mgmt', fr: 'Risk management', en: 'Risk Management', ar: 'إدارة المخاطر' }
+                ]
+            },
+            'Encadrement': {
+                fr: 'Encadrement',
+                en: 'Guidance',
+                ar: 'التوجيه',
+                subjects: [
+                    { id: 'memoire', fr: 'Mémoire de fin d\'études', en: 'Thesis Support', ar: 'دعم الأطروحة' },
+                    { id: 'certification', fr: 'Préparation aux concours', en: 'Exam Preparation', ar: 'التحضير للاختبارات' },
+                    { id: 'projets', fr: 'Projets académiques', en: 'Academic Projects', ar: 'المشاريع الأكاديمية' }
+                ]
+            }
+        };
 
-        // Langue actuelle
-        const currentLang = document.documentElement.lang || 'fr';
+        // Initialize custom multiselect
+        setupCustomMultiselect(subjectsByCategory);
+        
+        // Keep the hidden select for form submission
+        subjectsSelect.multiple = true;
+    }
 
-        // Vider le select
-        subjectsSelect.innerHTML = '';
+    // Setup custom multiselect dropdown
+    function setupCustomMultiselect(subjectsByCategory) {
+        const multiselectToggle = document.getElementById('multiselect-toggle');
+        const multiselectDropdown = document.getElementById('multiselect-dropdown');
+        const multiselectOptions = document.getElementById('multiselect-options');
+        const multiselectSelected = multiselectToggle.querySelector('.multiselect-selected');
+        const searchInput = multiselectDropdown.querySelector('.multiselect-search-input');
+        const selectedSubjects = new Set();
 
-        // Ajouter les options
-        allSubjects.forEach(subject => {
-            const option = document.createElement('option');
-            option.value = subject.id;
-            option.textContent = subject[currentLang];
-            subjectsSelect.appendChild(option);
+        // Toggle dropdown
+        multiselectToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            multiselectToggle.classList.toggle('active');
+            multiselectDropdown.classList.toggle('show');
+            if (multiselectDropdown.classList.contains('show')) {
+                searchInput.focus();
+            }
         });
 
-        // Permettre la sélection multiple avec CTRL/CMD
-        subjectsSelect.multiple = true;
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!multiselectToggle.contains(e.target) && !multiselectDropdown.contains(e.target)) {
+                multiselectToggle.classList.remove('active');
+                multiselectDropdown.classList.remove('show');
+            }
+        });
+
+        // Render options
+        function renderOptions(searchTerm = '') {
+            const currentLang = document.documentElement.lang || 'fr';
+            multiselectOptions.innerHTML = '';
+
+            Object.keys(subjectsByCategory).forEach(category => {
+                const categoryData = subjectsByCategory[category];
+                const filteredSubjects = categoryData.subjects.filter(subject => 
+                    subject[currentLang].toLowerCase().includes(searchTerm.toLowerCase())
+                );
+
+                if (filteredSubjects.length > 0) {
+                    // Add category header
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.className = 'multiselect-category';
+                    categoryDiv.textContent = categoryData[currentLang];
+                    multiselectOptions.appendChild(categoryDiv);
+
+                    // Add subjects
+                    filteredSubjects.forEach(subject => {
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'multiselect-option';
+                        if (selectedSubjects.has(subject.id)) {
+                            optionDiv.classList.add('selected');
+                        }
+                        optionDiv.textContent = subject[currentLang];
+                        optionDiv.dataset.value = subject.id;
+                        optionDiv.dataset.label = subject[currentLang];
+
+                        optionDiv.addEventListener('click', () => {
+                            toggleSubject(subject.id, subject[currentLang]);
+                        });
+
+                        multiselectOptions.appendChild(optionDiv);
+                    });
+                }
+            });
+        }
+
+        // Toggle subject selection
+        function toggleSubject(id, label) {
+            if (selectedSubjects.has(id)) {
+                selectedSubjects.delete(id);
+            } else {
+                selectedSubjects.add(id);
+            }
+            updateSelectedDisplay();
+            updateHiddenSelect();
+            renderOptions(searchInput.value);
+        }
+
+        // Update selected display
+        function updateSelectedDisplay() {
+            multiselectSelected.innerHTML = '';
+            selectedSubjects.forEach(id => {
+                const optionEl = multiselectOptions.querySelector(`[data-value="${id}"]`);
+                if (optionEl) {
+                    const tag = document.createElement('span');
+                    tag.className = 'multiselect-tag';
+                    tag.innerHTML = `
+                        ${optionEl.dataset.label}
+                        <span class="multiselect-tag-remove" data-value="${id}">×</span>
+                    `;
+                    
+                    tag.querySelector('.multiselect-tag-remove').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        toggleSubject(id, optionEl.dataset.label);
+                    });
+                    
+                    multiselectSelected.appendChild(tag);
+                }
+            });
+        }
+
+        // Update hidden select
+        function updateHiddenSelect() {
+            const options = subjectsSelect.options;
+            for (let i = 0; i < options.length; i++) {
+                options[i].selected = selectedSubjects.has(options[i].value);
+            }
+        }
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            renderOptions(e.target.value);
+        });
+
+        // Update placeholder text based on language
+        function updateSearchPlaceholder() {
+            const currentLang = document.documentElement.lang || 'fr';
+            const placeholders = {
+                fr: 'Rechercher...',
+                en: 'Search...',
+                ar: 'بحث...'
+            };
+            searchInput.placeholder = placeholders[currentLang];
+        }
+
+        // Initial render
+        renderOptions();
+        updateSearchPlaceholder();
+        
+        // Update when language changes
+        const originalChangeLanguage = window.changeLanguage;
+        window.changeLanguage = function(lang) {
+            originalChangeLanguage.call(this, lang);
+            renderOptions(searchInput.value);
+            updateSearchPlaceholder();
+            updateSelectedDisplay();
+        };
     }
 
     // Mettre à jour les options du formulaire en fonction de la langue

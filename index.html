@@ -259,7 +259,9 @@
 
         <div class="services-grid">
             <div class="service-card">
-                <div class="service-icon">📚</div>
+                <div class="service-icon">
+                    <i data-lucide="book-open" class="icon-lg"></i>
+                </div>
                 <h3 class="service-title">
                     <span class="fr">Révision</span>
                     <span class="en">Revision</span>
@@ -273,7 +275,9 @@
             </div>
 
             <div class="service-card">
-                <div class="service-icon">🎯</div>
+                <div class="service-icon">
+                    <i data-lucide="target" class="icon-lg"></i>
+                </div>
                 <h3 class="service-title">
                     <span class="fr">Préparation aux examens</span>
                     <span class="en">Exam Preparation</span>
@@ -287,7 +291,9 @@
             </div>
 
             <div class="service-card">
-                <div class="service-icon">🔍</div>
+                <div class="service-icon">
+                    <i data-lucide="users" class="icon-lg"></i>
+                </div>
                 <h3 class="service-title">
                     <span class="fr">Accompagnement personnel</span>
                     <span class="en">Personal Coaching</span>
@@ -326,7 +332,9 @@
 
         <div class="expertise-grid">
             <div class="expertise-card" data-expertise="finance">
-                <div class="expertise-icon">💹</div>
+                <div class="expertise-icon">
+                    <i data-lucide="trending-up" class="icon-lg"></i>
+                </div>
                 <h3 class="expertise-title">
                     <span class="fr">Finance</span>
                     <span class="en">Finance</span>
@@ -345,7 +353,9 @@
             </div>
 
             <div class="expertise-card" data-expertise="comptabilite">
-                <div class="expertise-icon">📊</div>
+                <div class="expertise-icon">
+                    <i data-lucide="bar-chart-3" class="icon-lg"></i>
+                </div>
                 <h3 class="expertise-title">
                     <span class="fr">Comptabilité</span>
                     <span class="en">Accounting</span>
@@ -364,7 +374,9 @@
             </div>
 
             <div class="expertise-card" data-expertise="gestion">
-                <div class="expertise-icon">🎛️</div>
+                <div class="expertise-icon">
+                    <i data-lucide="sliders" class="icon-lg"></i>
+                </div>
                 <h3 class="expertise-title">
                     <span class="fr">Contrôle & Gestion</span>
                     <span class="en">Control & Management</span>
@@ -383,7 +395,9 @@
             </div>
 
             <div class="expertise-card" data-expertise="encadrement">
-                <div class="expertise-icon">🎓</div>
+                <div class="expertise-icon">
+                    <i data-lucide="graduation-cap" class="icon-lg"></i>
+                </div>
                 <h3 class="expertise-title">
                     <span class="fr">Encadrement</span>
                     <span class="en">Guidance</span>
@@ -675,9 +689,28 @@
                             <span class="en">Subjects of Interest (optional)</span>
                             <span class="ar">المواد ذات الاهتمام (اختياري)</span>
                         </label>
-                        <select id="subjects-select" name="subjects" class="form-control subjects-multiple-select" multiple>
-                            <!-- Options will be populated dynamically via JavaScript -->
-                        </select>
+                        <div class="custom-multiselect">
+                            <div class="multiselect-toggle form-control" id="multiselect-toggle">
+                                <span class="multiselect-placeholder">
+                                    <span class="fr">Sélectionnez une ou plusieurs matières</span>
+                                    <span class="en">Select one or more subjects</span>
+                                    <span class="ar">اختر مادة واحدة أو أكثر</span>
+                                </span>
+                                <span class="multiselect-selected"></span>
+                                <i data-lucide="chevron-down" class="multiselect-arrow"></i>
+                            </div>
+                            <div class="multiselect-dropdown" id="multiselect-dropdown">
+                                <div class="multiselect-search">
+                                    <input type="text" class="multiselect-search-input" placeholder="Rechercher...">
+                                </div>
+                                <div class="multiselect-options" id="multiselect-options">
+                                    <!-- Options will be populated dynamically via JavaScript -->
+                                </div>
+                            </div>
+                            <select id="subjects-select" name="subjects" class="form-control subjects-multiple-select" multiple style="display: none;">
+                                <!-- Options will be populated dynamically via JavaScript -->
+                            </select>
+                        </div>
                     </div>
                 </div>
 
