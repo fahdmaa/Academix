@@ -1154,29 +1154,180 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Send email using EmailJS with better error handling
         function sendEmailWithRetry(retryCount = 0) {
-            const maxRetries = 3;
+            const maxRetries = 2;
             
             if (typeof emailjs !== 'undefined' && typeof EMAILJS_CONFIG !== 'undefined') {
-                console.log('Sending email with params:', templateParams);
-                console.log('Using service:', EMAILJS_CONFIG.SERVICE_ID);
-                console.log('Using template:', EMAILJS_CONFIG.TEMPLATE_ID);
-                console.log('Current domain:', window.location.hostname);
+                console.log('🚀 Sending email with params:', templateParams);
+                console.log('📧 Using service:', EMAILJS_CONFIG.SERVICE_ID);
+                console.log('📋 Using template:', EMAILJS_CONFIG.TEMPLATE_ID);
+                console.log('🌐 Current domain:', window.location.hostname);
+                console.log('🔧 EmailJS ready state:', window.emailJSReady);
+                console.log('📦 EmailJS object:', typeof emailjs, emailjs);
                 
-                // Re-initialize EmailJS for Vercel compatibility
-                try {
-                    emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
-                } catch (initError) {
-                    console.warn('EmailJS re-initialization warning:', initError);
+                // Validate configuration first
+                if (!EMAILJS_CONFIG.SERVICE_ID || !EMAILJS_CONFIG.TEMPLATE_ID || !EMAILJS_CONFIG.PUBLIC_KEY) {
+                    console.error('❌ EmailJS configuration incomplete:', EMAILJS_CONFIG);
+                    showErrorMessage();
+                    submitBtn.innerHTML = submitBtnText;
+                    submitBtn.disabled = false;
+                    return;
                 }
                 
-                emailjs.send(
-                    EMAILJS_CONFIG.SERVICE_ID,
-                    EMAILJS_CONFIG.TEMPLATE_ID,
-                    templateParams
-                ).then(
+                // Test EmailJS availability
+                if (!emailjs.send) {
+                    console.error('❌ EmailJS.send method not available');
+                    showErrorMessage();
+                    submitBtn.innerHTML = submitBtnText;
+                    submitBtn.disabled = false;
+                    return;
+                }
+                
+                // Generate unique submission ID for tracking
+                const submissionId = 'SUB_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+                const timestamp = new Date().toLocaleString('fr-FR', { 
+                    timeZone: 'Europe/Paris',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                // Send with simpler parameters to avoid template issues
+                const simpleParams = {
+                    from_name: templateParams.from_name,
+                    from_email: templateParams.from_email,
+                    message: `🎓 NOUVELLE DEMANDE DE COURS - ${submissionId}
+
+👤 Nom: ${templateParams.from_name}
+📧 Email: ${templateParams.from_email}
+📱 Téléphone: ${templateParams.phone || 'Non fourni'}
+🎯 Niveau: ${templateParams.level || 'Non spécifié'}
+📚 Matières: ${templateParams.subjects || 'Non spécifiées'}
+⏰ Préférences: ${templateParams.preferences || 'Aucune'}
+💬 Commentaires: ${templateParams.message || 'Aucun'}
+
+🌐 Envoyé depuis: ${window.location.hostname}
+📅 Date: ${timestamp}
+🔍 ID: ${submissionId}
+
+---
+OUIIPROF - Cours Particuliers
+`,
+                    to_name: 'OUIIPROF Admin',
+                    to_email: 'fahd.maatoug@outlook.fr',
+                    reply_to: templateParams.from_email,
+                    submission_id: submissionId
+                };
+                
+                console.log('📤 Sending simplified email params:', simpleParams);
+                console.log('🌍 Environment check:', {
+                    isVercel: window.location.hostname.includes('vercel.app'),
+                    isLocalhost: window.location.hostname === 'localhost',
+                    hostname: window.location.hostname,
+                    protocol: window.location.protocol
+                });
+                
+                // For Vercel, use direct API call first as it's more reliable
+                const isVercel = window.location.hostname.includes('vercel.app');
+                
+                let emailJSPromise;
+                
+                if (isVercel) {
+                    console.log('🚀 Vercel detected, using direct API call first');
+                    // Use direct API call for Vercel
+                    emailJSPromise = fetch('https://api.emailjs.com/api/v1.0/email/send', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            service_id: EMAILJS_CONFIG.SERVICE_ID,
+                            template_id: EMAILJS_CONFIG.TEMPLATE_ID,
+                            user_id: EMAILJS_CONFIG.PUBLIC_KEY,
+                            template_params: simpleParams
+                        })
+                    }).then(response => {
+                        console.log('📊 Direct API Response status:', response.status);
+                        console.log('📊 Direct API Response headers:', response.headers);
+                        if (!response.ok) {
+                            return response.text().then(text => {
+                                console.error('❌ API Error Response:', text);
+                                throw new Error(`HTTP ${response.status}: ${response.statusText} - ${text}`);
+                            });
+                        }
+                        return response.text().then(text => {
+                            console.log('✅ Direct API Success Response:', text);
+                            return { status: response.status, text: 'OK (Direct API)', response: text };
+                        });
+                    }).catch(error => {
+                        console.warn('🔄 Direct API failed, trying EmailJS library...', error);
+                        // Fallback to EmailJS library
+                        return emailjs.send(
+                            EMAILJS_CONFIG.SERVICE_ID,
+                            EMAILJS_CONFIG.TEMPLATE_ID,
+                            simpleParams,
+                            EMAILJS_CONFIG.PUBLIC_KEY
+                        );
+                    });
+                } else {
+                    console.log('🏠 Localhost detected, using EmailJS library');
+                    // For localhost, use EmailJS library first
+                    emailJSPromise = emailjs.send(
+                        EMAILJS_CONFIG.SERVICE_ID,
+                        EMAILJS_CONFIG.TEMPLATE_ID,
+                        simpleParams,
+                        EMAILJS_CONFIG.PUBLIC_KEY
+                    ).catch(error => {
+                        console.warn('🔄 EmailJS library failed, trying direct API call...', error);
+                        
+                        // Fallback to direct EmailJS REST API call
+                        return fetch('https://api.emailjs.com/api/v1.0/email/send', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                service_id: EMAILJS_CONFIG.SERVICE_ID,
+                                template_id: EMAILJS_CONFIG.TEMPLATE_ID,
+                                user_id: EMAILJS_CONFIG.PUBLIC_KEY,
+                                template_params: simpleParams
+                            })
+                        }).then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                            }
+                            return { status: response.status, text: 'OK (Direct API)' };
+                        });
+                    });
+                }
+                
+                emailJSPromise.then(
                     function(response) {
-                        console.log('EmailJS SUCCESS!', response.status, response.text);
-                        console.log('Full response:', response);
+                        console.log('✅ EmailJS SUCCESS!', response.status, response.text);
+                        console.log('🎯 Full response:', response);
+                        console.log('📧 Email sent with ID:', submissionId);
+                        console.log('🕒 Timestamp:', timestamp);
+                        console.log('🌐 From domain:', window.location.hostname);
+                        console.log('📬 To email:', 'fahd.maatoug@outlook.fr');
+                        
+                        // Store submission locally as backup
+                        try {
+                            const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                            submissions.unshift({
+                                ...templateParams,
+                                submissionId,
+                                timestamp,
+                                domain: window.location.hostname,
+                                emailSent: true,
+                                emailResponse: response
+                            });
+                            localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions.slice(0, MAX_STORED_SUBMISSIONS)));
+                            console.log('💾 Submission stored locally with email confirmation');
+                        } catch (storageError) {
+                            console.warn('⚠️ Failed to store submission locally:', storageError);
+                        }
+                        
                         showSuccessMessage();
                         appointmentForm.reset();
                         // Clear subjects input
@@ -1187,17 +1338,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         submitBtn.disabled = false;
                     },
                     function(error) {
-                        console.error('EmailJS FAILED...', error);
-                        console.error('Error details:', error.text);
-                        console.error('Retry count:', retryCount);
+                        console.error('❌ EmailJS FAILED...', error);
+                        console.error('📝 Error status:', error.status);
+                        console.error('📝 Error text:', error.text || error.message);
+                        console.error('🔄 Retry count:', retryCount);
+                        console.error('🔍 Full error object:', JSON.stringify(error));
+                        console.error('🌐 Current URL:', window.location.href);
+                        console.error('📧 Email config:', EMAILJS_CONFIG);
                         
-                        if (retryCount < maxRetries) {
-                            console.log('Retrying email send...');
+                        if (retryCount < maxRetries && (error.status === 429 || error.status >= 500)) {
+                            console.log(`🔄 Retrying email send in 3 seconds... (attempt ${retryCount + 1}/${maxRetries})`);
                             setTimeout(() => {
                                 sendEmailWithRetry(retryCount + 1);
-                            }, 2000);
+                            }, 3000);
                         } else {
-                            console.error('Max retries reached, showing error');
+                            console.error('❌ Max retries reached or permanent error, showing error message');
                             showErrorMessage();
                             submitBtn.innerHTML = submitBtnText;
                             submitBtn.disabled = false;
