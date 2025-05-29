@@ -10,6 +10,13 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        // Initialize EmailJS immediately when loaded
+        (function(){
+            emailjs.init("XDDbbFjUrpZV-gFWP");
+            console.log("EmailJS initialized in HTML");
+        })();
+    </script>
 </head>
 <body>
 <!-- Header Navigation -->

@@ -1,3 +1,13 @@
+// Define constants inline to avoid config loading issues
+const EMAILJS_CONFIG = window.EMAILJS_CONFIG || {
+    SERVICE_ID: 'service_s1m3yzm',
+    TEMPLATE_ID: 'template_ng68h4w',
+    PUBLIC_KEY: 'XDDbbFjUrpZV-gFWP'
+};
+
+const STORAGE_KEY = window.STORAGE_KEY || 'ouiiprof_submissions';
+const MAX_STORED_SUBMISSIONS = window.MAX_STORED_SUBMISSIONS || 100;
+
 // Initialize EmailJS with better error handling and fallback loading
 (function() {
     let initAttempts = 0;
@@ -22,8 +32,13 @@
     function initEmailJS() {
         initAttempts++;
         console.log('EmailJS init attempt:', initAttempts);
+        console.log('Config check:', {
+            hasConfig: typeof EMAILJS_CONFIG !== 'undefined',
+            config: EMAILJS_CONFIG,
+            hasEmailJS: typeof emailjs !== 'undefined'
+        });
         
-        if (typeof emailjs !== 'undefined' && typeof EMAILJS_CONFIG !== 'undefined') {
+        if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG && EMAILJS_CONFIG.PUBLIC_KEY) {
             try {
                 emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
                 console.log('EmailJS initialized successfully on attempt:', initAttempts);
@@ -1156,7 +1171,16 @@ document.addEventListener('DOMContentLoaded', function() {
         function sendEmailWithRetry(retryCount = 0) {
             const maxRetries = 2;
             
-            if (typeof emailjs !== 'undefined' && typeof EMAILJS_CONFIG !== 'undefined') {
+            // Ensure config is available
+            if (!EMAILJS_CONFIG || !EMAILJS_CONFIG.PUBLIC_KEY) {
+                console.error('❌ EmailJS configuration not available');
+                showErrorMessage();
+                submitBtn.innerHTML = submitBtnText;
+                submitBtn.disabled = false;
+                return;
+            }
+            
+            if (typeof emailjs !== 'undefined') {
                 console.log('🚀 Sending email with params:', templateParams);
                 console.log('📧 Using service:', EMAILJS_CONFIG.SERVICE_ID);
                 console.log('📋 Using template:', EMAILJS_CONFIG.TEMPLATE_ID);

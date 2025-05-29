@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmailJS Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <h1>EmailJS Configuration Test</h1>
+    <p>Check the console for detailed debugging information.</p>
+    <button id="testBtn">Test Email Send</button>
+    <div id="result"></div>
+
+    <script>
+        // Configuration
+        const EMAILJS_CONFIG = {
+            SERVICE_ID: 'service_s1m3yzm',
+            TEMPLATE_ID: 'template_ng68h4w',
+            PUBLIC_KEY: 'XDDbbFjUrpZV-gFWP'
+        };
+
+        // Wait for EmailJS to load
+        window.addEventListener('load', function() {
+            console.log('Page loaded');
+            console.log('EmailJS available:', typeof emailjs !== 'undefined');
+            
+            if (typeof emailjs !== 'undefined') {
+                try {
+                    emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+                    console.log('EmailJS initialized successfully');
+                } catch (error) {
+                    console.error('EmailJS initialization error:', error);
+                }
+            }
+        });
+
+        // Test button
+        document.getElementById('testBtn').addEventListener('click', function() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Sending test email...';
+            
+            const testParams = {
+                from_name: 'Test User',
+                from_email: 'test@example.com',
+                to_name: 'OUIIPROF Admin',
+                to_email: 'fahd.maatoug@outlook.fr',
+                message: 'This is a test email from ' + window.location.hostname + ' at ' + new Date().toLocaleString()
+            };
+            
+            console.log('Sending with params:', testParams);
+            
+            // Try library first
+            if (typeof emailjs !== 'undefined') {
+                emailjs.send(
+                    EMAILJS_CONFIG.SERVICE_ID,
+                    EMAILJS_CONFIG.TEMPLATE_ID,
+                    testParams,
+                    EMAILJS_CONFIG.PUBLIC_KEY
+                ).then(
+                    function(response) {
+                        console.log('SUCCESS!', response);
+                        resultDiv.innerHTML = '<p style="color: green;">Success! Check console for details.</p>';
+                    },
+                    function(error) {
+                        console.error('FAILED...', error);
+                        resultDiv.innerHTML = '<p style="color: red;">Failed! Check console for details.</p>';
+                        
+                        // Try direct API
+                        console.log('Trying direct API...');
+                        fetch('https://api.emailjs.com/api/v1.0/email/send', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                service_id: EMAILJS_CONFIG.SERVICE_ID,
+                                template_id: EMAILJS_CONFIG.TEMPLATE_ID,
+                                user_id: EMAILJS_CONFIG.PUBLIC_KEY,
+                                template_params: testParams
+                            })
+                        }).then(response => {
+                            console.log('Direct API response:', response);
+                            return response.text();
+                        }).then(text => {
+                            console.log('Direct API result:', text);
+                            resultDiv.innerHTML += '<p>Direct API result: ' + text + '</p>';
+                        }).catch(error => {
+                            console.error('Direct API error:', error);
+                            resultDiv.innerHTML += '<p style="color: red;">Direct API also failed!</p>';
+                        });
+                    }
+                );
+            } else {
+                resultDiv.innerHTML = '<p style="color: red;">EmailJS not loaded!</p>';
+            }
+        });
+    </script>
+</body>
+</html>
