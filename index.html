@@ -6,8 +6,8 @@
     <title>OOUI PROF - Cours Particuliers de Finance</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Modern Icons from Lucide -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -139,7 +139,7 @@
             <div class="achievements-grid">
                 <div class="achievement-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="achievement-icon">
-                        <i data-lucide="trending-up" class="achievement-icon-svg"></i>
+                        <i class="fas fa-chart-line achievement-icon-svg"></i>
                     </div>
                     <div class="achievement-content">
                         <div class="achievement-stats">
@@ -161,7 +161,7 @@
 
                 <div class="achievement-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="achievement-icon">
-                        <i data-lucide="users" class="achievement-icon-svg"></i>
+                        <i class="fas fa-users achievement-icon-svg"></i>
                     </div>
                     <div class="achievement-content">
                         <div class="achievement-stats">
@@ -183,7 +183,7 @@
 
                 <div class="achievement-card" data-aos="fade-up" data-aos-delay="300">
                     <div class="achievement-icon">
-                        <i data-lucide="award" class="achievement-icon-svg"></i>
+                        <i class="fas fa-trophy achievement-icon-svg"></i>
                     </div>
                     <div class="achievement-content">
                         <div class="achievement-stats">
@@ -209,7 +209,7 @@
 
                 <div class="achievement-card" data-aos="fade-up" data-aos-delay="400">
                     <div class="achievement-icon">
-                        <i data-lucide="star" class="achievement-icon-svg"></i>
+                        <i class="fas fa-star achievement-icon-svg"></i>
                     </div>
                     <div class="achievement-content">
                         <div class="achievement-stats">
@@ -257,7 +257,7 @@
         <div class="services-grid">
             <div class="service-card">
                 <div class="service-icon">
-                    <i data-lucide="book-open" class="icon-lg"></i>
+                    <i class="fas fa-book-open icon-lg"></i>
                 </div>
                 <h3 class="service-title">
                     <span class="fr">Révision</span>
@@ -273,7 +273,7 @@
 
             <div class="service-card">
                 <div class="service-icon">
-                    <i data-lucide="target" class="icon-lg"></i>
+                    <i class="fas fa-bullseye icon-lg"></i>
                 </div>
                 <h3 class="service-title">
                     <span class="fr">Préparation aux examens</span>
@@ -289,7 +289,7 @@
 
             <div class="service-card">
                 <div class="service-icon">
-                    <i data-lucide="users" class="icon-lg"></i>
+                    <i class="fas fa-user-friends icon-lg"></i>
                 </div>
                 <h3 class="service-title">
                     <span class="fr">Accompagnement personnel</span>
@@ -330,7 +330,7 @@
         <div class="expertise-grid">
             <div class="expertise-card" data-expertise="finance">
                 <div class="expertise-icon">
-                    <i data-lucide="trending-up" class="icon-lg"></i>
+                    <i class="fas fa-chart-line icon-lg"></i>
                 </div>
                 <h3 class="expertise-title">
                     <span class="fr">Finance</span>
@@ -351,7 +351,7 @@
 
             <div class="expertise-card" data-expertise="comptabilite">
                 <div class="expertise-icon">
-                    <i data-lucide="bar-chart-3" class="icon-lg"></i>
+                    <i class="fas fa-chart-bar icon-lg"></i>
                 </div>
                 <h3 class="expertise-title">
                     <span class="fr">Comptabilité</span>
@@ -372,7 +372,7 @@
 
             <div class="expertise-card" data-expertise="gestion">
                 <div class="expertise-icon">
-                    <i data-lucide="sliders" class="icon-lg"></i>
+                    <i class="fas fa-sliders-h icon-lg"></i>
                 </div>
                 <h3 class="expertise-title">
                     <span class="fr">Contrôle & Gestion</span>
@@ -393,7 +393,7 @@
 
             <div class="expertise-card" data-expertise="encadrement">
                 <div class="expertise-icon">
-                    <i data-lucide="graduation-cap" class="icon-lg"></i>
+                    <i class="fas fa-graduation-cap icon-lg"></i>
                 </div>
                 <h3 class="expertise-title">
                     <span class="fr">Encadrement</span>
@@ -635,21 +635,9 @@
                             <span class="ar">الطريقة المفضلة *</span>
                         </label>
                         <select id="method" name="method" class="form-control" required>
-                            <option value="" disabled selected class="placeholder-option">
-                                <span class="fr">Choisissez une option</span>
-                                <span class="en">Choose an option</span>
-                                <span class="ar">اختر خيارًا</span>
-                            </option>
-                            <option value="online" class="option-item">
-                                <span class="fr-option">En ligne</span>
-                                <span class="en-option">Online</span>
-                                <span class="ar-option">عبر الإنترنت</span>
-                            </option>
-                            <option value="presential" class="option-item">
-                                <span class="fr-option">Présentiel</span>
-                                <span class="en-option">In-person</span>
-                                <span class="ar-option">شخصي</span>
-                            </option>
+                            <option value="" disabled selected>Choisissez une option</option>
+                            <option value="online">En ligne</option>
+                            <option value="presential">Présentiel</option>
                         </select>
                     </div>
 
@@ -773,15 +761,15 @@
 <div class="floating-controls">
     <!-- Bouton de thème -->
     <button id="theme-toggle" class="control-btn theme-btn">
-        <i data-lucide="moon" class="mode-icon dark"></i>
-        <i data-lucide="sun" class="mode-icon light"></i>
+        <i class="fas fa-moon mode-icon dark"></i>
+        <i class="fas fa-sun mode-icon light"></i>
     </button>
 
     <!-- Bouton de langue -->
     <div class="language-control">
         <button id="language-toggle" class="control-btn language-btn">
             <span class="current-lang">FR</span>
-            <i data-lucide="globe" class="lang-icon"></i>
+            <i class="fas fa-globe lang-icon"></i>
         </button>
         <div class="language-dropdown" id="language-dropdown">
             <button class="lang-option" data-lang="fr">
@@ -800,7 +788,6 @@
     </div>
 </div>
 
-<script src="config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

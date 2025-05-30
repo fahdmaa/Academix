@@ -68,6 +68,20 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('EmailJS available:', typeof emailjs !== 'undefined');
     console.log('Config available:', typeof EMAILJS_CONFIG !== 'undefined');
     console.log('Current URL:', window.location.href);
+    
+    // Check Font Awesome icons
+    console.log('✅ Font Awesome icons loaded via CSS');
+    const fontAwesomeIcons = document.querySelectorAll('.fas, .far, .fab');
+    console.log(`📊 Font Awesome icons found: ${fontAwesomeIcons.length}`);
+    
+    // Verify Font Awesome CSS is loaded
+    const fontAwesomeStylesheet = document.querySelector('link[href*="font-awesome"]');
+    if (fontAwesomeStylesheet) {
+        console.log('✅ Font Awesome stylesheet detected');
+    } else {
+        console.warn('⚠️ Font Awesome stylesheet not found');
+    }
+    
     // Éléments DOM
     const header = document.getElementById('header');
     const burgerMenu = document.getElementById('burger-menu');
@@ -90,6 +104,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const languageToggle = document.getElementById('language-toggle');
     const languageDropdown = document.getElementById('language-dropdown');
     const languageOptions = document.querySelectorAll('.lang-option');
+    
+    // Debug button selection
+    console.log('🔍 Button selection check:');
+    console.log('Theme toggle:', themeToggle);
+    console.log('Language toggle:', languageToggle);
+    console.log('Language dropdown:', languageDropdown);
+    console.log('Language options:', languageOptions.length);
 
     // Variables pour les animations
     // typewriterInterval removed as it's unused
@@ -97,20 +118,96 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialisation du thème et de la langue en premier
     initializeTheme();
     initializeLanguage();
+    
+    // Ensure buttons are properly configured for clicking
+    setTimeout(() => {
+        // Force recalculation of computed styles
+        if (false && themeToggle) { // DISABLED - using emergency fix
+            themeToggle.style.pointerEvents = 'all';
+            themeToggle.style.zIndex = '10001';
+            console.log('🔧 Theme toggle configured');
+        }
+        
+        if (false && languageToggle) { // DISABLED - using emergency fix
+            languageToggle.style.pointerEvents = 'all';
+            languageToggle.style.zIndex = '10001';
+            console.log('🔧 Language toggle configured');
+        }
+    }, 100);
 
-    // Initialiser les icônes Lucide
-    initializeLucideIcons();
+    // Icons are loaded via CSS (Font Awesome)
+    
+    // Setup global event delegation for floating controls
+    document.addEventListener('click', function(e) {
+        // Theme toggle
+        if (e.target.closest('#theme-toggle')) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🎨 Theme toggle clicked via delegation!');
+            toggleTheme();
+            return;
+        }
+        
+        // Language toggle
+        if (e.target.closest('#language-toggle')) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🌐 Language toggle clicked via delegation!');
+            toggleLanguageDropdown();
+            return;
+        }
+    });
 
+    // EMERGENCY BUTTON FIX - Direct onclick setup
+    setTimeout(() => {
+        console.log('🚨 Emergency button setup starting...');
+        
+        // Force theme button to work
+        const themeBtn = document.getElementById('theme-toggle');
+        if (themeBtn) {
+            themeBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🎨 THEME BUTTON CLICKED!');
+                const current = document.body.getAttribute('data-theme') || 'light';
+                const newTheme = current === 'dark' ? 'light' : 'dark';
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                console.log('✅ Theme switched to:', newTheme);
+            };
+            console.log('✅ Theme button onclick set');
+        } else {
+            console.error('❌ Theme button not found!');
+        }
+        
+        // Force language button to work
+        const langBtn = document.getElementById('language-toggle');
+        if (langBtn) {
+            langBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🌐 LANGUAGE BUTTON CLICKED!');
+                const dropdown = document.getElementById('language-dropdown');
+                if (dropdown) {
+                    dropdown.classList.toggle('show');
+                    console.log('✅ Dropdown toggled');
+                } else {
+                    console.error('❌ Dropdown not found!');
+                }
+            };
+            console.log('✅ Language button onclick set');
+        } else {
+            console.error('❌ Language button not found!');
+        }
+    }, 1000);
+    
     // Attendre que la langue soit initialisée avant de configurer le formulaire
     setTimeout(() => {
         // Mettre à jour les placeholders du formulaire
         updateFormLanguage();
     }, 200);
 
-    // Configurer les animations des achievements
-    setupAchievements();
-
-    // Configurer les animations de scroll
+    // Configurer les animations de scroll (includes achievements)
     setupScrollAnimations();
 
     // Démarrer l'effet typewriter
@@ -155,18 +252,26 @@ document.addEventListener('DOMContentLoaded', function() {
     animateStatNumbers();
 
     // Gestion du thème
-    if (themeToggle) {
+    if (false && themeToggle) { // DISABLED - using emergency fix
+        console.log('✅ Theme toggle button found, adding event listener');
         themeToggle.addEventListener('click', function() {
+            console.log('🎨 Theme toggle clicked');
             toggleTheme();
         });
+    } else {
+        console.error('❌ Theme toggle button not found');
     }
 
     // Gestion de la langue
-    if (languageToggle) {
+    if (false && languageToggle) { // DISABLED - using emergency fix
+        console.log('✅ Language toggle button found, adding event listener');
         languageToggle.addEventListener('click', function(e) {
+            console.log('🌐 Language toggle clicked');
             e.stopPropagation();
             toggleLanguageDropdown();
         });
+    } else {
+        console.error('❌ Language toggle button not found');
     }
 
     // Sélection de la langue
@@ -193,22 +298,51 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Configuration des animations d'achievements
-    function setupAchievements() {
-        // Observer les cartes d'achievements pour démarrer l'animation quand elles sont visibles
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !entry.target.hasAttribute('data-animated')) {
-                    animateNumber(entry.target);
-                    entry.target.setAttribute('data-animated', 'true');
+    // Achievement animations are now handled in setupScrollAnimations
+
+    // Gestion des clics sur les cartes d'expertise
+    if (expertiseCards.length > 0 && subjectsDetailsContainer) {
+        expertiseCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const expertise = this.getAttribute('data-expertise');
+                const detailsToShow = document.querySelector(`.subjects-details[data-expertise="${expertise}"]`);
+                
+                if (detailsToShow) {
+                    subjectsDetailsContainer.style.display = 'flex';
+                    // Hide all details first
+                    subjectsDetails.forEach(detail => {
+                        detail.style.display = 'none';
+                    });
+                    // Show the selected one
+                    detailsToShow.style.display = 'block';
                 }
             });
-        }, {
-            threshold: 0.5
         });
-
-        achievementCards.forEach(card => {
-            observer.observe(card);
+    }
+    
+    // Fermer les détails
+    if (closeDetailsButtons.length > 0) {
+        closeDetailsButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (subjectsDetailsContainer) {
+                    subjectsDetailsContainer.style.display = 'none';
+                }
+                subjectsDetails.forEach(detail => {
+                    detail.style.display = 'none';
+                });
+            });
+        });
+    }
+    
+    // Fermer en cliquant en dehors
+    if (subjectsDetailsContainer) {
+        subjectsDetailsContainer.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+                subjectsDetails.forEach(detail => {
+                    detail.style.display = 'none';
+                });
+            }
         });
     }
 
@@ -219,6 +353,12 @@ document.addEventListener('DOMContentLoaded', function() {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('revealed');
+                    
+                    // Si c'est une carte achievement, animer le nombre
+                    if (entry.target.classList.contains('achievement-card') && !entry.target.hasAttribute('data-animated')) {
+                        entry.target.setAttribute('data-animated', 'true');
+                        animateNumber(entry.target);
+                    }
                 }
             });
         }, {
@@ -230,6 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const elementsToAnimate = [
             { selector: '.section-header', animation: 'scroll-reveal' },
             { selector: '.expertise-card', animation: 'scroll-reveal-scale' },
+            { selector: '.achievement-card', animation: 'scroll-reveal-scale' },
             { selector: '.form-section', animation: 'scroll-reveal' },
             { selector: '.footer', animation: 'scroll-reveal' }
         ];
@@ -246,10 +387,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Animer les nombres dans une carte d'achievement
     function animateNumber(card) {
+        console.log('🔢 Animating achievement number for card:', card);
         const numberElement = card.querySelector('.achievement-number');
-        if (!numberElement) return;
+        if (!numberElement) {
+            console.warn('⚠️ No .achievement-number element found in card');
+            return;
+        }
 
-        const target = parseInt(numberElement.getAttribute('data-target'));
+        // Try both data-target and data-value attributes
+        const target = parseInt(numberElement.getAttribute('data-target') || numberElement.getAttribute('data-value'));
+        console.log(`🎯 Target number: ${target}`);
+        
+        if (isNaN(target)) {
+            console.error('❌ Invalid data-target attribute:', numberElement.getAttribute('data-target'));
+            return;
+        }
+
         const duration = 2000; // 2 secondes
         const increment = target / (duration / 16); // 60fps
         let current = 0;
@@ -261,6 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (current >= target) {
                 current = target;
                 clearInterval(timer);
+                console.log(`✅ Animation completed for target: ${target}`);
             }
             numberElement.textContent = Math.floor(current);
         }, 16);
@@ -637,12 +791,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Fonction pour initialiser les icônes Lucide
-    function initializeLucideIcons() {
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
+    // Fonction pour initialiser le thème
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
     }
+
+    // Fonction pour initialiser la langue
+    function initializeLanguage() {
+        const savedLanguage = localStorage.getItem('language') || 'fr';
+        console.log('Initializing language:', savedLanguage);
+        
+        // Set the language immediately
+        document.documentElement.lang = savedLanguage;
+        document.documentElement.setAttribute('lang', savedLanguage);
+        
+        // Update language display immediately without animation
+        updateLanguageDisplay(savedLanguage);
+        updateLanguageUI(savedLanguage);
+        updateLanguageButton(savedLanguage);
+        updateActiveLanguageOption(savedLanguage);
+        
+        // Don't use animation on initial load
+        changeLanguageWithAnimation(savedLanguage, false);
+    }
+
+    // Font Awesome icons don't need initialization - they work via CSS
 
     // Fonction pour l'effet typewriter
     function startTypewriterEffect() {
@@ -762,25 +936,17 @@ document.addEventListener('DOMContentLoaded', function() {
     function initializeTheme() {
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
-
-        // Réinitialiser les icônes après changement de thème
-        setTimeout(() => {
-            initializeLucideIcons();
-        }, 100);
     }
 
     // Fonction pour basculer le thème
-    function toggleTheme() {
+    window.toggleTheme = function() {
         const currentTheme = document.body.getAttribute('data-theme') || 'dark';
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
         document.body.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-
-        // Réinitialiser les icônes après changement de thème
-        setTimeout(() => {
-            initializeLucideIcons();
-        }, 100);
+        
+        console.log(`🎨 Theme switched to: ${newTheme}`);
     }
 
     // Fonction pour initialiser la langue
@@ -803,10 +969,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fonction pour basculer le menu déroulant de langue
-    function toggleLanguageDropdown() {
-        if (!languageDropdown) return;
+    window.toggleLanguageDropdown = function() {
+        const dropdown = document.getElementById('language-dropdown');
+        if (!dropdown) {
+            console.error('❌ Language dropdown not found');
+            return;
+        }
 
-        languageDropdown.classList.toggle('show');
+        dropdown.classList.toggle('show');
+        console.log('🌐 Language dropdown toggled');
     }
 
     // Fonction pour changer la langue
@@ -883,8 +1054,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Update select options based on language
+    function updateSelectOptions(lang) {
+        const methodSelect = document.getElementById('method');
+        if (methodSelect) {
+            const options = {
+                fr: {
+                    placeholder: 'Choisissez une option',
+                    online: 'En ligne',
+                    presential: 'Présentiel'
+                },
+                en: {
+                    placeholder: 'Choose an option',
+                    online: 'Online',
+                    presential: 'In-person'
+                },
+                ar: {
+                    placeholder: 'اختر خيارًا',
+                    online: 'عبر الإنترنت',
+                    presential: 'شخصي'
+                }
+            };
+            
+            // Update placeholder option
+            if (methodSelect.options[0]) {
+                methodSelect.options[0].text = options[lang].placeholder;
+            }
+            // Update online option
+            if (methodSelect.options[1]) {
+                methodSelect.options[1].text = options[lang].online;
+            }
+            // Update presential option
+            if (methodSelect.options[2]) {
+                methodSelect.options[2].text = options[lang].presential;
+            }
+        }
+    }
+
     // Fonction pour mettre à jour l'interface pour la langue
     function updateLanguageUI(lang) {
+        updateSelectOptions(lang);
         if (lang === 'ar') {
             document.documentElement.dir = 'rtl';
         } else {
@@ -1066,6 +1275,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function validateForm() {
         const requiredFields = ['fullName', 'city', 'method', 'hours', 'email', 'phone'];
         let isValid = true;
+        const currentLang = document.documentElement.lang || 'fr';
 
         requiredFields.forEach(field => {
             const input = document.getElementById(field);
@@ -1083,11 +1293,54 @@ document.addEventListener('DOMContentLoaded', function() {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(emailInput.value)) {
                 markAsInvalid(emailInput);
+                showFieldError(emailInput, {
+                    fr: "Adresse e-mail invalide",
+                    en: "Invalid email address",
+                    ar: "عنوان بريد إلكتروني غير صالح"
+                }[currentLang]);
                 isValid = false;
+            } else {
+                hideFieldError(emailInput);
+            }
+        }
+
+        // Validation du nombre d'heures
+        const hoursInput = document.getElementById('hours');
+        if (hoursInput && hoursInput.value) {
+            const hoursValue = parseFloat(hoursInput.value);
+            if (isNaN(hoursValue) || hoursValue < 1 || hoursValue > 100) {
+                markAsInvalid(hoursInput);
+                showFieldError(hoursInput, {
+                    fr: "Le nombre d'heures doit être entre 1 et 100",
+                    en: "Hours must be between 1 and 100",
+                    ar: "يجب أن تكون الساعات بين 1 و 100"
+                }[currentLang]);
+                isValid = false;
+            } else {
+                hideFieldError(hoursInput);
             }
         }
 
         return isValid;
+    }
+    
+    // Show field error message
+    function showFieldError(input, message) {
+        hideFieldError(input);
+        const errorEl = document.createElement('span');
+        errorEl.className = 'field-error-message';
+        errorEl.textContent = message;
+        errorEl.style.color = '#ff4d4d';
+        errorEl.style.fontSize = '12px';
+        errorEl.style.marginTop = '5px';
+        errorEl.style.display = 'block';
+        input.parentNode.appendChild(errorEl);
+    }
+    
+    // Hide field error message
+    function hideFieldError(input) {
+        const error = input.parentNode.querySelector('.field-error-message');
+        if (error) error.remove();
     }
 
     // Marquer un champ comme invalide
@@ -1112,6 +1365,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function markAsValid(input) {
         input.style.borderColor = '';
         input.style.boxShadow = '';
+        hideFieldError(input);
     }
 
     // Soumettre le formulaire
@@ -1573,3 +1827,158 @@ function preloadImages() {
 
 // Déclencher le préchargement
 preloadImages();
+
+// Fix all buttons functionality
+function fixAllButtons() {
+    console.log('🔧 Fixing all buttons...');
+    
+    // Theme toggle button
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.style.cursor = 'pointer';
+        themeToggle.style.pointerEvents = 'auto';
+        themeToggle.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleTheme();
+        };
+        console.log('✅ Theme button fixed');
+    }
+    
+    // Language toggle button
+    const langToggle = document.getElementById('language-toggle');
+    if (langToggle) {
+        langToggle.style.cursor = 'pointer';
+        langToggle.style.pointerEvents = 'auto';
+        langToggle.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleLanguageDropdown();
+        };
+        console.log('✅ Language button fixed');
+    }
+    
+    // Language option buttons
+    const langOptions = document.querySelectorAll('.lang-option');
+    langOptions.forEach((option, index) => {
+        option.style.cursor = 'pointer';
+        option.style.pointerEvents = 'auto';
+        option.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const lang = this.getAttribute('data-lang');
+            changeLanguage(lang);
+            document.getElementById('language-dropdown').classList.remove('show');
+        };
+    });
+    if (langOptions.length > 0) {
+        console.log('✅ Language options fixed:', langOptions.length);
+    }
+    
+    // CTA buttons
+    const ctaButtons = document.querySelectorAll('.cta-button, .cta-btn, .book-btn, a[href="#appointment"]');
+    ctaButtons.forEach(btn => {
+        btn.style.cursor = 'pointer';
+        btn.onclick = function(e) {
+            e.preventDefault();
+            const appointmentSection = document.getElementById('appointment');
+            if (appointmentSection) {
+                appointmentSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+    });
+    if (ctaButtons.length > 0) {
+        console.log('✅ CTA buttons fixed:', ctaButtons.length);
+    }
+    
+    // Navigation links
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.style.cursor = 'pointer';
+        const href = link.getAttribute('href');
+        if (href && href.startsWith('#')) {
+            link.onclick = function(e) {
+                e.preventDefault();
+                const targetId = href.substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+        }
+    });
+    if (navLinks.length > 0) {
+        console.log('✅ Nav links fixed:', navLinks.length);
+    }
+    
+    // Expertise cards
+    const expertiseCards = document.querySelectorAll('.expertise-card');
+    expertiseCards.forEach(card => {
+        card.style.cursor = 'pointer';
+        card.onclick = function() {
+            const expertise = this.getAttribute('data-expertise');
+            if (expertise) {
+                showExpertiseDetails(expertise);
+            }
+        };
+    });
+    if (expertiseCards.length > 0) {
+        console.log('✅ Expertise cards fixed:', expertiseCards.length);
+    }
+    
+    // Close buttons for expertise details
+    const closeButtons = document.querySelectorAll('.close-details');
+    closeButtons.forEach(btn => {
+        btn.style.cursor = 'pointer';
+        btn.onclick = function() {
+            closeExpertiseDetails();
+        };
+    });
+    if (closeButtons.length > 0) {
+        console.log('✅ Close buttons fixed:', closeButtons.length);
+    }
+    
+    // Burger menu
+    const burgerMenu = document.getElementById('burger-menu');
+    if (burgerMenu) {
+        burgerMenu.style.cursor = 'pointer';
+        burgerMenu.onclick = function() {
+            const navLinks = document.getElementById('nav-links');
+            if (navLinks) {
+                navLinks.classList.toggle('active');
+            }
+            this.classList.toggle('active');
+        };
+        console.log('✅ Burger menu fixed');
+    }
+    
+    // Fix achievement numbers
+    document.querySelectorAll('.achievement-number').forEach(el => {
+        const target = parseInt(el.getAttribute('data-target'));
+        if (!isNaN(target) && el.textContent === '0') {
+            el.textContent = target;
+        }
+    });
+    
+    // Fix hero stat numbers
+    document.querySelectorAll('.stat-number[data-value]').forEach(el => {
+        const target = parseInt(el.getAttribute('data-value'));
+        if (!isNaN(target)) {
+            const hasPlus = el.textContent.includes('+') || el.textContent === '0+';
+            el.textContent = target + (hasPlus ? '+' : '');
+        }
+    });
+    
+    console.log('✨ All buttons fixed!');
+}
+
+// Run button fixes when DOM is ready and after a delay
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fixAllButtons);
+} else {
+    fixAllButtons();
+}
+
+// Also run after a delay to catch any dynamically added elements
+setTimeout(fixAllButtons, 1000);
+setTimeout(fixAllButtons, 3000);
