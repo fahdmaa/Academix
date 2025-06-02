@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - OOUI PROF</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        .info { color: blue; }
+        pre {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>OOUI PROF - Debug Page</h1>
+    
+    <div class="debug-section">
+        <h2>1. External Resources Check</h2>
+        <div id="resources-check"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>2. EmailJS Configuration</h2>
+        <div id="emailjs-check"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>3. DOM Elements Check</h2>
+        <div id="dom-check"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>4. JavaScript Errors</h2>
+        <div id="js-errors"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>5. Network Requests</h2>
+        <div id="network-check"></div>
+    </div>
+
+    <script>
+        // Check external resources
+        function checkResources() {
+            const checks = [
+                {
+                    name: 'Font Awesome CSS',
+                    url: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+                    type: 'css'
+                },
+                {
+                    name: 'Google Fonts',
+                    url: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap',
+                    type: 'css'
+                },
+                {
+                    name: 'EmailJS SDK',
+                    url: 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js',
+                    type: 'script'
+                },
+                {
+                    name: 'Local CSS',
+                    url: 'styles.css',
+                    type: 'css'
+                },
+                {
+                    name: 'Local JS',
+                    url: 'script.js',
+                    type: 'script'
+                }
+            ];
+            
+            const resourcesDiv = document.getElementById('resources-check');
+            let html = '<ul>';
+            
+            checks.forEach(check => {
+                const element = document.querySelector(
+                    check.type === 'css' 
+                        ? `link[href*="${check.url.split('/').pop()}"]`
+                        : `script[src*="${check.url.split('/').pop()}"]`
+                );
+                
+                if (element) {
+                    html += `<li class="success">✅ ${check.name} - Loaded</li>`;
+                } else {
+                    html += `<li class="error">❌ ${check.name} - Not found</li>`;
+                }
+            });
+            
+            html += '</ul>';
+            resourcesDiv.innerHTML = html;
+        }
+        
+        // Check EmailJS
+        function checkEmailJS() {
+            const emailjsDiv = document.getElementById('emailjs-check');
+            let html = '<ul>';
+            
+            html += `<li class="${typeof emailjs !== 'undefined' ? 'success' : 'error'}">
+                ${typeof emailjs !== 'undefined' ? '✅' : '❌'} EmailJS Library: ${typeof emailjs !== 'undefined' ? 'Loaded' : 'Not loaded'}
+            </li>`;
+            
+            if (typeof emailjs !== 'undefined') {
+                html += `<li class="info">ℹ️ EmailJS version: ${emailjs.version || 'Unknown'}</li>`;
+            }
+            
+            html += '</ul>';
+            emailjsDiv.innerHTML = html;
+        }
+        
+        // Check DOM elements
+        function checkDOM() {
+            const domDiv = document.getElementById('dom-check');
+            const elements = [
+                { id: 'header', name: 'Header' },
+                { id: 'burger-menu', name: 'Burger Menu' },
+                { id: 'nav-links', name: 'Navigation Links' },
+                { id: 'appointment-form', name: 'Appointment Form' },
+                { selector: '.expertise-card', name: 'Expertise Cards' },
+                { selector: '.achievement-card', name: 'Achievement Cards' }
+            ];
+            
+            let html = '<ul>';
+            
+            elements.forEach(el => {
+                const found = el.id 
+                    ? document.getElementById(el.id) 
+                    : document.querySelectorAll(el.selector);
+                const count = el.id ? (found ? 1 : 0) : found.length;
+                
+                html += `<li class="${count > 0 ? 'success' : 'error'}">
+                    ${count > 0 ? '✅' : '❌'} ${el.name}: ${count} found
+                </li>`;
+            });
+            
+            html += '</ul>';
+            domDiv.innerHTML = html;
+        }
+        
+        // Capture JavaScript errors
+        window.addEventListener('error', function(e) {
+            const errorsDiv = document.getElementById('js-errors');
+            const error = `<div class="error">
+                <strong>Error:</strong> ${e.message}<br>
+                <strong>File:</strong> ${e.filename}<br>
+                <strong>Line:</strong> ${e.lineno}:${e.colno}<br>
+                <pre>${e.error ? e.error.stack : 'No stack trace'}</pre>
+            </div>`;
+            errorsDiv.innerHTML += error;
+        });
+        
+        // Check network requests
+        function checkNetwork() {
+            const networkDiv = document.getElementById('network-check');
+            
+            // Test image loading
+            const images = [
+                'images/logo-dark.svg',
+                'images/logo-light.svg',
+                'images/professor.jpg',
+                'images/student-avatar.jpg'
+            ];
+            
+            let html = '<h3>Image Files:</h3><ul>';
+            
+            images.forEach(src => {
+                const img = new Image();
+                img.onload = function() {
+                    const li = document.createElement('li');
+                    li.className = 'success';
+                    li.textContent = `✅ ${src} - Loaded`;
+                    networkDiv.querySelector('ul').appendChild(li);
+                };
+                img.onerror = function() {
+                    const li = document.createElement('li');
+                    li.className = 'error';
+                    li.textContent = `❌ ${src} - Failed to load`;
+                    networkDiv.querySelector('ul').appendChild(li);
+                };
+                img.src = src;
+            });
+            
+            html += '</ul>';
+            networkDiv.innerHTML = html;
+        }
+        
+        // Run all checks when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            checkResources();
+            setTimeout(checkEmailJS, 1000); // Give EmailJS time to load
+            checkDOM();
+            checkNetwork();
+            
+            // Also check if we're on the index.html page
+            const jsErrorsDiv = document.getElementById('js-errors');
+            jsErrorsDiv.innerHTML = '<p class="info">Monitoring for JavaScript errors...</p>';
+        });
+    </script>
+</body>
+</html>

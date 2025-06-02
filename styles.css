@@ -582,7 +582,7 @@ body[data-theme="light"] .logo-dark {
 
 .achievement-icon-svg {
     font-size: 32px;
-    color: var(--dark);
+    color: var(--white);
 }
 
 /* Large icons for services and expertise sections */

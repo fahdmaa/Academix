@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Form Submission - OOUI PROF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .output {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Form Submission</h1>
+        <p>This page tests the form submission without EmailJS to diagnose issues.</p>
+        
+        <form id="test-form">
+            <div class="form-group">
+                <label for="fullName">Nom complet *</label>
+                <input type="text" id="fullName" name="fullName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="city">Ville *</label>
+                <input type="text" id="city" name="city" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="method">Méthode souhaitée *</label>
+                <select id="method" name="method" required>
+                    <option value="">Choisissez une option</option>
+                    <option value="online">En ligne</option>
+                    <option value="presential">Présentiel</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="hours">Nombre d'heures *</label>
+                <input type="number" id="hours" name="hours" min="1" max="100" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Téléphone *</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="subjects">Matières (optionnel)</label>
+                <input type="text" id="subjects" name="subjects" placeholder="Ex: Finance, Comptabilité">
+            </div>
+            
+            <button type="submit">Tester l'envoi</button>
+        </form>
+        
+        <div id="output" class="output" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById('test-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Show the data that would be sent
+            const output = document.getElementById('output');
+            output.style.display = 'block';
+            output.innerHTML = `<span class="success">✅ Form submitted successfully!</span>\n\n` +
+                `<strong>Data collected:</strong>\n` +
+                JSON.stringify(data, null, 2) + `\n\n` +
+                `<strong>EmailJS Configuration:</strong>\n` +
+                `SERVICE_ID: ${window.EMAILJS_CONFIG ? window.EMAILJS_CONFIG.SERVICE_ID : 'NOT FOUND'}\n` +
+                `TEMPLATE_ID: ${window.EMAILJS_CONFIG ? window.EMAILJS_CONFIG.TEMPLATE_ID : 'NOT FOUND'}\n` +
+                `PUBLIC_KEY: ${window.EMAILJS_CONFIG ? window.EMAILJS_CONFIG.PUBLIC_KEY : 'NOT FOUND'}\n\n` +
+                `<strong>EmailJS Library:</strong> ${typeof emailjs !== 'undefined' ? 'Loaded' : 'Not loaded'}\n\n` +
+                `<strong>What would happen next:</strong>\n` +
+                `1. Data would be sent to EmailJS\n` +
+                `2. EmailJS would send an email to: fahd.maatoug@outlook.fr\n` +
+                `3. A success message would be shown\n` +
+                `4. The form would be reset\n\n` +
+                `<strong>Stored in localStorage:</strong>\n`;
+            
+            // Store in localStorage like the real form
+            try {
+                const submissions = JSON.parse(localStorage.getItem('ouiiprof_submissions') || '[]');
+                submissions.unshift({
+                    ...data,
+                    timestamp: new Date().toISOString(),
+                    test: true
+                });
+                localStorage.setItem('ouiiprof_submissions', JSON.stringify(submissions.slice(0, 100)));
+                
+                output.innerHTML += `✅ Data stored successfully\n`;
+                output.innerHTML += `Total submissions in storage: ${submissions.length}`;
+            } catch (error) {
+                output.innerHTML += `<span class="error">❌ Storage error: ${error.message}</span>`;
+            }
+        });
+    </script>
+</body>
+</html>

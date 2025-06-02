@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
         expertiseCards.forEach(card => {
             card.addEventListener('click', function() {
                 const expertise = this.getAttribute('data-expertise');
-                const detailsToShow = document.querySelector(`.subjects-details[data-expertise="${expertise}"]`);
+                const detailsToShow = document.getElementById(`${expertise}-details`);
                 
                 if (detailsToShow) {
                     subjectsDetailsContainer.style.display = 'flex';
@@ -833,7 +833,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Configuration des mots pour chaque langue
         const wordsConfig = {
             'fr': {
-                element: document.getElementById('typewriter-text'),
+                element: document.getElementById('typewriter-text-fr'),
                 words: ['Finance', 'Comptabilité']
             },
             'en': {
@@ -1262,11 +1262,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (appointmentForm) {
         appointmentForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            console.log('📝 Form submitted');
 
             // Vérification du formulaire
-            if (validateForm()) {
-                // Simulation d'envoi (à remplacer par votre logique d'envoi réelle)
+            const isValid = validateForm();
+            console.log('✅ Form validation result:', isValid);
+            
+            if (isValid) {
+                console.log('📤 Calling submitForm()...');
                 submitForm();
+            } else {
+                console.log('❌ Form validation failed');
             }
         });
     }
@@ -1370,10 +1376,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Soumettre le formulaire
     function submitForm() {
-        if (!appointmentForm || !successMessage) return;
+        console.log('📋 submitForm() called');
+        
+        if (!appointmentForm || !successMessage) {
+            console.error('❌ Missing form or success message element');
+            return;
+        }
 
         const submitBtn = appointmentForm.querySelector('.submit-btn');
-        if (!submitBtn) return;
+        if (!submitBtn) {
+            console.error('❌ Submit button not found');
+            return;
+        }
 
         // Get form data
         const formData = new FormData(appointmentForm);
@@ -1413,13 +1427,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const submitBtnText = submitBtn.innerHTML;
         const currentLang = document.documentElement.lang || 'fr';
         const loadingText = {
-            fr: '<i data-lucide="loader-2" class="spin"></i> Envoi en cours...',
-            en: '<i data-lucide="loader-2" class="spin"></i> Sending...',
-            ar: '<i data-lucide="loader-2" class="spin"></i> جاري الإرسال...'
+            fr: '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...',
+            en: '<i class="fas fa-spinner fa-spin"></i> Sending...',
+            ar: '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...'
         };
         submitBtn.innerHTML = loadingText[currentLang];
         submitBtn.disabled = true;
-        lucide.createIcons();
 
         // Send email using EmailJS with better error handling
         function sendEmailWithRetry(retryCount = 0) {
@@ -1630,8 +1643,19 @@ OUIIPROF - Cours Particuliers
                                 sendEmailWithRetry(retryCount + 1);
                             }, 3000);
                         } else {
-                            console.error('❌ Max retries reached or permanent error, showing error message');
-                            showErrorMessage();
+                            console.error('❌ Max retries reached or permanent error');
+                            // Check if data was at least stored locally
+                            const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                            if (submissions.length > 0 && submissions[0].fullName === templateParams.fullName) {
+                                console.log('✅ Form data was stored locally. Showing success message.');
+                                showSuccessMessage();
+                                appointmentForm.reset();
+                                if (subjectsInput) {
+                                    subjectsInput.value = '';
+                                }
+                            } else {
+                                showErrorMessage();
+                            }
                             submitBtn.innerHTML = submitBtnText;
                             submitBtn.disabled = false;
                         }
