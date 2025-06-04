@@ -10,7 +10,10 @@
       "Bash(rm:*)",
       "Bash(npx prettier:*)",
       "Bash(cp:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(/usr/local/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"toggleLanguageDropdown|updateLanguageButton\" script.js)",
+      "Bash(/usr/local/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"toggleLanguageDropdown\" script.js)",
+      "Bash(/usr/local/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n -A 8 \"function resetDropdownState\" script.js)"
     ],
     "deny": []
   }

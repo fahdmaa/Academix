@@ -8,6 +8,21 @@ const EMAILJS_CONFIG = window.EMAILJS_CONFIG || {
 const STORAGE_KEY = window.STORAGE_KEY || 'ouiiprof_submissions';
 const MAX_STORED_SUBMISSIONS = window.MAX_STORED_SUBMISSIONS || 100;
 
+// DOM Element References (will be initialized when DOM is ready)
+let subjectsSelect = null;
+let subjectsInput = null;
+
+// Security functions
+function sanitizeInput(input) {
+    if (typeof input !== 'string') return '';
+    return input
+        .replace(/[<>]/g, '') // Remove angle brackets
+        .replace(/javascript:/gi, '') // Remove javascript: protocol
+        .replace(/on\w+=/gi, '') // Remove event handlers
+        .trim()
+        .substring(0, 1000); // Limit length
+}
+
 // Initialize EmailJS with better error handling and fallback loading
 (function() {
     let initAttempts = 0;
@@ -94,7 +109,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const subjectCards = document.querySelectorAll('.subject-card');
     const appointmentForm = document.getElementById('appointment-form');
     const successMessage = document.getElementById('success-message');
-    const subjectsInput = document.getElementById('subjects');
+    const localSubjectsInput = document.getElementById('subjects');
+    const localSubjectsSelect = document.getElementById('subjects-select');
+    
+    // Initialize global variables
+    subjectsInput = localSubjectsInput;
+    subjectsSelect = localSubjectsSelect;
 
     // Elements des achievements
     const achievementCards = document.querySelectorAll('.achievement-card');
@@ -122,13 +142,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Ensure buttons are properly configured for clicking
     setTimeout(() => {
         // Force recalculation of computed styles
-        if (false && themeToggle) { // DISABLED - using emergency fix
+        if (themeToggle) {
             themeToggle.style.pointerEvents = 'all';
             themeToggle.style.zIndex = '10001';
             console.log('🔧 Theme toggle configured');
         }
         
-        if (false && languageToggle) { // DISABLED - using emergency fix
+        if (languageToggle) {
             languageToggle.style.pointerEvents = 'all';
             languageToggle.style.zIndex = '10001';
             console.log('🔧 Language toggle configured');
@@ -148,14 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Language toggle
-        if (e.target.closest('#language-toggle')) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('🌐 Language toggle clicked via delegation!');
-            toggleLanguageDropdown();
-            return;
-        }
+        // Language toggle - handled by direct addEventListener below
     });
 
     // EMERGENCY BUTTON FIX - Direct onclick setup
@@ -180,25 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('❌ Theme button not found!');
         }
         
-        // Force language button to work
-        const langBtn = document.getElementById('language-toggle');
-        if (langBtn) {
-            langBtn.onclick = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('🌐 LANGUAGE BUTTON CLICKED!');
-                const dropdown = document.getElementById('language-dropdown');
-                if (dropdown) {
-                    dropdown.classList.toggle('show');
-                    console.log('✅ Dropdown toggled');
-                } else {
-                    console.error('❌ Dropdown not found!');
-                }
-            };
-            console.log('✅ Language button onclick set');
-        } else {
-            console.error('❌ Language button not found!');
-        }
+        // Language button - remove duplicate handler, use main addEventListener
     }, 1000);
     
     // Attendre que la langue soit initialisée avant de configurer le formulaire
@@ -218,13 +213,20 @@ document.addEventListener('DOMContentLoaded', function() {
         burgerMenu.addEventListener('click', function() {
             this.classList.toggle('active');
             navLinks.classList.toggle('active');
+            
+            // Update aria-expanded
+            const isExpanded = navLinks.classList.contains('active');
+            this.setAttribute('aria-expanded', isExpanded);
         });
     }
 
     // Fermer le menu après un clic sur un lien
     navLinksItems.forEach(link => {
         link.addEventListener('click', function() {
-            if (burgerMenu) burgerMenu.classList.remove('active');
+            if (burgerMenu) {
+                burgerMenu.classList.remove('active');
+                burgerMenu.setAttribute('aria-expanded', 'false');
+            }
             if (navLinks) navLinks.classList.remove('active');
         });
     });
@@ -233,6 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         if (navLinks && burgerMenu && !navLinks.contains(e.target) && !burgerMenu.contains(e.target)) {
             burgerMenu.classList.remove('active');
+            burgerMenu.setAttribute('aria-expanded', 'false');
             navLinks.classList.remove('active');
         }
     });
@@ -252,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
     animateStatNumbers();
 
     // Gestion du thème
-    if (false && themeToggle) { // DISABLED - using emergency fix
+    if (themeToggle) {
         console.log('✅ Theme toggle button found, adding event listener');
         themeToggle.addEventListener('click', function() {
             console.log('🎨 Theme toggle clicked');
@@ -262,33 +265,102 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('❌ Theme toggle button not found');
     }
 
-    // Gestion de la langue
-    if (false && languageToggle) { // DISABLED - using emergency fix
-        console.log('✅ Language toggle button found, adding event listener');
+    // Gestion de la langue - COMPREHENSIVE DEBUG
+    console.log('🔍 Language elements check:');
+    console.log('  - languageToggle:', languageToggle);
+    console.log('  - languageDropdown:', languageDropdown);
+    console.log('  - languageOptions:', languageOptions.length);
+    
+    if (languageToggle) {
+        console.log('✅ Language toggle button found');
+        console.log('🔍 Button details:', {
+            id: languageToggle.id,
+            className: languageToggle.className,
+            tagName: languageToggle.tagName,
+            innerHTML: languageToggle.innerHTML,
+            disabled: languageToggle.disabled,
+            style: languageToggle.style.cssText
+        });
+        
+        // Add click event with maximum debugging
         languageToggle.addEventListener('click', function(e) {
-            console.log('🌐 Language toggle clicked');
+            console.log('🌐🌐🌐 LANGUAGE BUTTON CLICKED! 🌐🌐🌐');
+            console.log('🔍 Event details:', {
+                type: e.type,
+                target: e.target,
+                currentTarget: e.currentTarget,
+                bubbles: e.bubbles,
+                defaultPrevented: e.defaultPrevented,
+                timeStamp: e.timeStamp
+            });
+            
+            // Check if button is still functional
+            console.log('🔍 Button state check:', {
+                disabled: this.disabled,
+                pointerEvents: getComputedStyle(this).pointerEvents,
+                visibility: getComputedStyle(this).visibility
+            });
+            
+            e.preventDefault();
             e.stopPropagation();
+            
+            console.log('🔍 About to call toggleLanguageDropdown...');
             toggleLanguageDropdown();
         });
+        
+        // Mark that event listeners have been added
+        languageToggle._hasEventListeners = true;
+        
+        // Also try mousedown as backup
+        languageToggle.addEventListener('mousedown', function(e) {
+            console.log('🖱️ Language button mousedown fired');
+        });
+        
+        console.log('✅ Language event listeners added');
     } else {
         console.error('❌ Language toggle button not found');
+        // Try to find it manually
+        const manualFind = document.getElementById('language-toggle');
+        console.log('🔍 Manual search result:', manualFind);
     }
 
     // Sélection de la langue
     if (languageOptions && languageOptions.length > 0) {
-        languageOptions.forEach(option => {
+        console.log(`✅ Found ${languageOptions.length} language options`);
+        languageOptions.forEach((option, index) => {
+            console.log(`🔍 Language option ${index}:`, {
+                lang: option.getAttribute('data-lang'),
+                text: option.textContent.trim(),
+                element: option
+            });
+            
             option.addEventListener('click', function(e) {
+                console.log(`🌐 Language option clicked: ${this.getAttribute('data-lang')}`);
                 e.stopPropagation();
                 const lang = this.getAttribute('data-lang');
                 if (lang) {
+                    console.log(`🔄 Changing to language: ${lang}`);
                     changeLanguage(lang);
                     updateFormLanguage(); // Mettre à jour les options du formulaire
                 }
                 if (languageDropdown) {
+                    // Immediately close dropdown
                     languageDropdown.classList.remove('show');
+                    languageDropdown.style.opacity = '0';
+                    languageDropdown.style.visibility = 'hidden';
+                    languageDropdown.style.pointerEvents = 'none';
+                    console.log('🔒 Dropdown closed');
+                    
+                    // CRITICAL FIX: Reset dropdown state AND re-verify button functionality
+                    setTimeout(() => {
+                        resetDropdownState();
+                        ensureLanguageButtonWorks();
+                    }, 100); // Reduced from 500ms to 100ms for faster recovery
                 }
             });
         });
+    } else {
+        console.error('❌ No language options found');
     }
 
     // Fermer le menu de langue en cliquant en dehors
@@ -932,52 +1004,118 @@ document.addEventListener('DOMContentLoaded', function() {
         element._typewriterAnimation = animationId;
     }
 
-    // Fonction pour initialiser le thème
-    function initializeTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.body.setAttribute('data-theme', savedTheme);
-    }
-
-    // Fonction pour basculer le thème
-    window.toggleTheme = function() {
-        const currentTheme = document.body.getAttribute('data-theme') || 'dark';
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-        document.body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        
-        console.log(`🎨 Theme switched to: ${newTheme}`);
-    }
-
-    // Fonction pour initialiser la langue
-    function initializeLanguage() {
-        const savedLanguage = localStorage.getItem('language') || 'fr';
-        console.log('Initializing language:', savedLanguage);
-        
-        // Set the language immediately
-        document.documentElement.lang = savedLanguage;
-        document.documentElement.setAttribute('lang', savedLanguage);
-        
-        // Update language display immediately without animation
-        updateLanguageDisplay(savedLanguage);
-        updateLanguageUI(savedLanguage);
-        updateLanguageButton(savedLanguage);
-        updateActiveLanguageOption(savedLanguage);
-        
-        // Don't use animation on initial load
-        changeLanguageWithAnimation(savedLanguage, false);
-    }
 
     // Fonction pour basculer le menu déroulant de langue
+    // Function to reset dropdown state completely
+    function resetDropdownState() {
+        const dropdown = document.getElementById('language-dropdown');
+        if (dropdown) {
+            // Clear all classes and inline styles
+            dropdown.className = 'language-dropdown';
+            dropdown.style.cssText = '';
+            console.log('🔄 Dropdown state reset');
+        }
+    }
+    
+    // NEW FUNCTION: Ensure language button remains functional after language changes
+    function ensureLanguageButtonWorks() {
+        const button = document.getElementById('language-toggle');
+        if (!button) {
+            console.error('❌ Language button not found during recovery check');
+            return;
+        }
+        
+        // Verify button is still clickable
+        const computedStyle = getComputedStyle(button);
+        if (computedStyle.pointerEvents === 'none' || button.disabled) {
+            console.log('🔧 Fixing disabled language button...');
+            button.style.pointerEvents = 'auto';
+            button.style.cursor = 'pointer';
+            button.disabled = false;
+        }
+        
+        // Check if event listeners are still attached
+        if (!button._hasEventListeners) {
+            console.log('🔧 Re-attaching language button event listeners...');
+            
+            button.addEventListener('click', function(e) {
+                console.log('🖱️ Language button clicked (recovery handler)');
+                e.preventDefault();
+                e.stopPropagation();
+                toggleLanguageDropdown();
+            });
+            
+            button._hasEventListeners = true;
+        }
+        
+        console.log('✅ Language button functionality verified/restored');
+    }
+    
     window.toggleLanguageDropdown = function() {
+        console.log('🌐 toggleLanguageDropdown function called!');
+        
         const dropdown = document.getElementById('language-dropdown');
         if (!dropdown) {
             console.error('❌ Language dropdown not found');
             return;
         }
+        
+        console.log('✅ Dropdown element found:', dropdown);
 
+        // Check current state
+        const currentStyle = getComputedStyle(dropdown);
+        const currentOpacity = currentStyle.opacity;
+        const currentVisibility = currentStyle.visibility;
+        const hasShowClass = dropdown.classList.contains('show');
+        
+        console.log('🔍 Current state:', {
+            opacity: currentOpacity,
+            visibility: currentVisibility,
+            classes: dropdown.className,
+            hasShowClass: hasShowClass
+        });
+
+        // SAFETY: If dropdown is in an inconsistent state, reset it first
+        if ((hasShowClass && currentOpacity === '0') || (!hasShowClass && currentOpacity === '1')) {
+            console.log('⚠️ Inconsistent state detected, resetting...');
+            resetDropdownState();
+        }
+
+        // Toggle using CSS class
         dropdown.classList.toggle('show');
-        console.log('🌐 Language dropdown toggled');
+        const newHasShow = dropdown.classList.contains('show');
+        
+        console.log('🔄 After toggle:', {
+            hasShowClass: newHasShow,
+            classes: dropdown.className
+        });
+        
+        // BACKUP METHOD: Force with inline styles if CSS isn't working
+        if (newHasShow) {
+            dropdown.style.opacity = '1';
+            dropdown.style.visibility = 'visible';
+            dropdown.style.transform = 'translateY(0)';
+            dropdown.style.pointerEvents = 'auto';
+            console.log('🚨 FORCED VISIBLE with inline styles');
+        } else {
+            dropdown.style.opacity = '0';
+            dropdown.style.visibility = 'hidden';
+            dropdown.style.transform = 'translateY(-10px)';
+            dropdown.style.pointerEvents = 'none';
+            console.log('🚨 FORCED HIDDEN with inline styles');
+        }
+        
+        // Check final computed style
+        setTimeout(() => {
+            const finalStyle = getComputedStyle(dropdown);
+            console.log('🎯 Final computed style:', {
+                opacity: finalStyle.opacity,
+                visibility: finalStyle.visibility,
+                transform: finalStyle.transform,
+                zIndex: finalStyle.zIndex,
+                position: finalStyle.position
+            });
+        }, 100);
     }
 
     // Fonction pour changer la langue
@@ -1109,6 +1247,24 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentLang) {
             currentLang.textContent = lang.toUpperCase();
         }
+        
+        // DEBUG: Check if button is still functional after language change
+        console.log('🔍 Language button after update:', {
+            hasEventListeners: languageToggle._hasEventListeners,
+            disabled: languageToggle.disabled,
+            style: languageToggle.style.cssText,
+            pointerEvents: getComputedStyle(languageToggle).pointerEvents
+        });
+        
+        // SAFETY: Ensure button is still clickable
+        languageToggle.style.pointerEvents = 'auto';
+        languageToggle.style.cursor = 'pointer';
+        languageToggle.disabled = false;
+        
+        // CRITICAL FIX: Ensure button remains functional after any language change
+        setTimeout(() => {
+            ensureLanguageButtonWorks();
+        }, 50);
     }
 
     // Marquer l'option active dans le menu déroulant
@@ -1394,18 +1550,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const subjects = formData.get('subjects') || '';
         
         const templateParams = {
-            fullName: formData.get('fullName'),
-            email: formData.get('email'),
-            phone: formData.get('phone'),
-            city: formData.get('city'),
-            method: formData.get('method'),
-            hours: formData.get('hours'),
-            subjects: subjects || 'Non spécifiées',
+            fullName: sanitizeInput(formData.get('fullName')),
+            email: sanitizeInput(formData.get('email')),
+            phone: sanitizeInput(formData.get('phone')),
+            city: sanitizeInput(formData.get('city')),
+            method: sanitizeInput(formData.get('method')),
+            hours: sanitizeInput(formData.get('hours')),
+            subjects: sanitizeInput(subjects) || 'Non spécifiées',
             // Add additional fields that might be needed
             to_email: 'fahd.maatoug@outlook.fr',
-            from_name: formData.get('fullName'),
-            from_email: formData.get('email'),
-            message: `Nouvelle demande de ${formData.get('fullName')} pour ${formData.get('hours')} heures de cours.`,
+            from_name: sanitizeInput(formData.get('fullName')),
+            from_email: sanitizeInput(formData.get('email')),
+            message: `Nouvelle demande de ${sanitizeInput(formData.get('fullName'))} pour ${sanitizeInput(formData.get('hours'))} heures de cours.`,
             // Add submission data for backup
             submission_data: JSON.stringify({
                 fullName: formData.get('fullName'),
@@ -1834,6 +1990,84 @@ OUIIPROF - Cours Particuliers
         }
     `;
     document.head.appendChild(style);
+    
+    // Fix achievement numbers immediately if animation doesn't work
+    setTimeout(() => {
+        document.querySelectorAll('.achievement-number').forEach(el => {
+            const target = parseInt(el.getAttribute('data-target'));
+            if (!isNaN(target) && (el.textContent === '0' || el.textContent.trim() === '')) {
+                el.textContent = target;
+                console.log(`Fixed achievement number: ${target}`);
+            }
+        });
+        
+        // Fix hero stat numbers
+        document.querySelectorAll('.stat-number[data-value]').forEach(el => {
+            const target = parseInt(el.getAttribute('data-value'));
+            if (!isNaN(target)) {
+                const hasPlus = el.textContent.includes('+') || el.textContent === '0+';
+                el.textContent = target + (hasPlus ? '+' : '');
+                console.log(`Fixed stat number: ${target}${hasPlus ? '+' : ''}`);
+            }
+        });
+    }, 1000);
+    
+    // EMERGENCY TEST: Try to call toggleLanguageDropdown manually after 3 seconds
+    setTimeout(() => {
+        console.log('🧪 TESTING: Manual call to toggleLanguageDropdown...');
+        if (typeof toggleLanguageDropdown === 'function') {
+            toggleLanguageDropdown();
+        } else {
+            console.error('❌ toggleLanguageDropdown function not available');
+        }
+    }, 3000);
+    
+    // EMERGENCY BACKUP: Create a test function accessible from console
+    window.testLanguageDropdown = function() {
+        console.log('🧪 Test function called');
+        const dropdown = document.getElementById('language-dropdown');
+        if (dropdown) {
+            const isVisible = dropdown.style.opacity === '1' || dropdown.classList.contains('show');
+            if (isVisible) {
+                dropdown.style.opacity = '0';
+                dropdown.style.visibility = 'hidden';
+                dropdown.classList.remove('show');
+                console.log('🔒 Manually hidden dropdown');
+            } else {
+                dropdown.style.opacity = '1';
+                dropdown.style.visibility = 'visible';
+                dropdown.style.transform = 'translateY(0)';
+                dropdown.classList.add('show');
+                console.log('🔓 Manually shown dropdown');
+            }
+        }
+    };
+    
+    // ALTERNATIVE EVENT METHOD: Try body delegation as absolute backup
+    document.body.addEventListener('click', function(e) {
+        if (e.target && e.target.closest('#language-toggle')) {
+            console.log('🌐 BODY DELEGATION: Language button clicked!');
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Direct toggle without function call
+            const dropdown = document.getElementById('language-dropdown');
+            if (dropdown) {
+                const isVisible = dropdown.classList.contains('show');
+                if (isVisible) {
+                    dropdown.classList.remove('show');
+                    dropdown.style.opacity = '0';
+                    dropdown.style.visibility = 'hidden';
+                } else {
+                    dropdown.classList.add('show');
+                    dropdown.style.opacity = '1';
+                    dropdown.style.visibility = 'visible';
+                    dropdown.style.transform = 'translateY(0)';
+                }
+                console.log(`🔄 Dropdown ${isVisible ? 'hidden' : 'shown'} via body delegation`);
+            }
+        }
+    });
 });
 
 // Fonction pour précharger les images
@@ -1852,22 +2086,6 @@ function preloadImages() {
 // Déclencher le préchargement
 preloadImages();
 
-// Fix all buttons functionality
-function fixAllButtons() {
-    console.log('🔧 Fixing all buttons...');
-    
-    // Theme toggle button
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        themeToggle.style.cursor = 'pointer';
-        themeToggle.style.pointerEvents = 'auto';
-        themeToggle.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleTheme();
-        };
-        console.log('✅ Theme button fixed');
-    }
     
     // Language toggle button
     const langToggle = document.getElementById('language-toggle');
@@ -1976,33 +2194,344 @@ function fixAllButtons() {
         console.log('✅ Burger menu fixed');
     }
     
-    // Fix achievement numbers
-    document.querySelectorAll('.achievement-number').forEach(el => {
-        const target = parseInt(el.getAttribute('data-target'));
-        if (!isNaN(target) && el.textContent === '0') {
-            el.textContent = target;
+    
+
+
+// ========================================
+// Mobile Enhancements
+// ========================================
+
+(function() {
+    'use strict';
+    
+    // Detect mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isSmallScreen = window.innerWidth <= 768;
+    
+    if (isMobile || isSmallScreen) {
+        console.log('📱 Mobile device detected, applying enhancements');
+        
+        // Add mobile class to body
+        document.body.classList.add('mobile-device');
+        
+        // Enhanced mobile navigation
+        setupMobileNavigation();
+        
+        // Touch interactions
+        setupTouchInteractions();
+        
+        // Scroll optimizations
+        setupScrollOptimizations();
+        
+        // Form enhancements
+        setupMobileFormEnhancements();
+        
+        // Performance optimizations
+        setupPerformanceOptimizations();
+        
+        // Prevent zoom on input focus (iOS)
+        preventInputZoom();
+        
+        // Setup swipe gestures
+        setupSwipeGestures();
+        
+        // Apply small viewport fixes
+        if (window.innerWidth <= 480) {
+            applySmallViewportFixes();
         }
+        
+        console.log('✅ Mobile enhancements applied');
+    }
+    
+    function setupMobileNavigation() {
+        const burgerMenu = document.getElementById('burger-menu');
+        const navLinks = document.getElementById('nav-links');
+        const navLinksItems = document.querySelectorAll('.nav-links a');
+        
+        if (burgerMenu && navLinks) {
+            // Remove any existing click handlers
+            const newBurger = burgerMenu.cloneNode(true);
+            burgerMenu.parentNode.replaceChild(newBurger, burgerMenu);
+            
+            // Toggle mobile menu
+            newBurger.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                newBurger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                
+                // Update aria-expanded
+                const isExpanded = navLinks.classList.contains('active');
+                newBurger.setAttribute('aria-expanded', isExpanded);
+                
+                // Prevent body scroll when menu is open
+                if (isExpanded) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Close menu when clicking on links
+            navLinksItems.forEach(link => {
+                link.addEventListener('click', () => {
+                    newBurger.classList.remove('active');
+                    navLinks.classList.remove('active');
+                    newBurger.setAttribute('aria-expanded', 'false');
+                    document.body.style.overflow = '';
+                });
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!newBurger.contains(e.target) && !navLinks.contains(e.target)) {
+                    newBurger.classList.remove('active');
+                    navLinks.classList.remove('active');
+                    newBurger.setAttribute('aria-expanded', 'false');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+    }
+    
+    function setupTouchInteractions() {
+        // Add touch feedback to interactive elements
+        const interactiveElements = document.querySelectorAll(
+            '.cta-button, .submit-btn, .control-btn, .expertise-card, .service-card, .subject-card, .nav-link'
+        );
+        
+        interactiveElements.forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+                this.style.transition = 'transform 0.1s ease';
+            });
+            
+            element.addEventListener('touchend', function() {
+                this.style.transform = '';
+                this.style.transition = '';
+            });
+            
+            element.addEventListener('touchcancel', function() {
+                this.style.transform = '';
+                this.style.transition = '';
+            });
+        });
+    }
+    
+    function setupScrollOptimizations() {
+        let ticking = false;
+        
+        function updateScrollPosition() {
+            const scrolled = window.pageYOffset;
+            const header = document.getElementById('header');
+            
+            if (header) {
+                // Don't override the background color, just update shadow
+                if (scrolled > 50) {
+                    header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.15)';
+                } else {
+                    header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                }
+                // Remove any background style to let CSS handle it
+                header.style.removeProperty('background');
+            }
+            
+            ticking = false;
+        }
+        
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(updateScrollPosition);
+                ticking = true;
+            }
+        }
+        
+        window.addEventListener('scroll', requestTick, { passive: true });
+    }
+    
+    function setupMobileFormEnhancements() {
+        const form = document.getElementById('appointment-form');
+        const inputs = document.querySelectorAll('.form-control');
+        
+        if (form) {
+            // Add mobile-specific input handling
+            inputs.forEach(input => {
+                // Add focus/blur animations
+                input.addEventListener('focus', function() {
+                    this.parentNode.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentNode.classList.remove('focused');
+                    }
+                });
+                
+                // Auto-scroll to input when focused (prevents keyboard covering input)
+                input.addEventListener('focus', function() {
+                    setTimeout(() => {
+                        this.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                    }, 300);
+                });
+            });
+            
+            // Enhance form submission feedback
+            form.addEventListener('submit', function(e) {
+                // Add haptic feedback on supported devices
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            });
+        }
+    }
+    
+    function setupPerformanceOptimizations() {
+        // Lazy load images when they come into view
+        const images = document.querySelectorAll('img');
+        
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                        }
+                        observer.unobserve(img);
+                    }
+                });
+            });
+            
+            images.forEach(img => imageObserver.observe(img));
+        }
+        
+        // Reduce animations on slow devices
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
+            document.body.classList.add('reduce-motion');
+        }
+    }
+    
+    function preventInputZoom() {
+        // Prevent zoom on input focus for iOS devices
+        const inputs = document.querySelectorAll('input, select, textarea');
+        
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                const viewport = document.querySelector('meta[name="viewport"]');
+                if (viewport) {
+                    viewport.setAttribute('content', 
+                        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+                    );
+                }
+            });
+            
+            input.addEventListener('blur', function() {
+                const viewport = document.querySelector('meta[name="viewport"]');
+                if (viewport) {
+                    viewport.setAttribute('content', 
+                        'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes'
+                    );
+                }
+            });
+        });
+    }
+    
+    function setupSwipeGestures() {
+        let startY = 0;
+        let startX = 0;
+        
+        // Setup swipe to close for modal-like elements
+        const modals = document.querySelectorAll('.subjects-details-container');
+        
+        modals.forEach(modal => {
+            modal.addEventListener('touchstart', function(e) {
+                startY = e.touches[0].clientY;
+                startX = e.touches[0].clientX;
+            }, { passive: true });
+            
+            modal.addEventListener('touchmove', function(e) {
+                if (!startY) return;
+                
+                const currentY = e.touches[0].clientY;
+                const currentX = e.touches[0].clientX;
+                const diffY = startY - currentY;
+                const diffX = startX - currentX;
+                
+                // Vertical swipe to close
+                if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 50) {
+                    if (diffY < -100) { // Swipe down
+                        this.style.display = 'none';
+                        startY = 0;
+                    }
+                }
+            }, { passive: true });
+            
+            modal.addEventListener('touchend', function() {
+                startY = 0;
+                startX = 0;
+            }, { passive: true });
+        });
+    }
+    
+    function applySmallViewportFixes() {
+        console.log('🎯 Applying small viewport fixes');
+        
+        // Fix centering issues
+        const heroSection = document.querySelector('.hero-section');
+        if (heroSection) {
+            heroSection.style.transform = 'none';
+            heroSection.style.position = 'relative';
+            heroSection.style.left = '0';
+            heroSection.style.right = '0';
+            heroSection.style.width = '100vw';
+            heroSection.style.maxWidth = '100vw';
+            heroSection.style.margin = '0';
+        }
+        
+        // Fix overflow issues
+        document.body.style.overflowX = 'hidden';
+        document.documentElement.style.overflowX = 'hidden';
+        
+        // Fix form elements font size
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            const fontSize = window.getComputedStyle(input).fontSize;
+            if (parseInt(fontSize) < 16) {
+                input.style.fontSize = '16px';
+            }
+        });
+    }
+    
+    // Handle orientation changes
+    window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+            // Recalculate viewport height
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+            
+            // Close mobile menu if open
+            const burgerMenu = document.getElementById('burger-menu');
+            const navLinks = document.getElementById('nav-links');
+            if (burgerMenu && navLinks) {
+                burgerMenu.classList.remove('active');
+                navLinks.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }, 100);
     });
     
-    // Fix hero stat numbers
-    document.querySelectorAll('.stat-number[data-value]').forEach(el => {
-        const target = parseInt(el.getAttribute('data-value'));
-        if (!isNaN(target)) {
-            const hasPlus = el.textContent.includes('+') || el.textContent === '0+';
-            el.textContent = target + (hasPlus ? '+' : '');
-        }
-    });
+    // Set viewport height custom property for mobile browsers
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
     
-    console.log('✨ All buttons fixed!');
-}
-
-// Run button fixes when DOM is ready and after a delay
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fixAllButtons);
-} else {
-    fixAllButtons();
-}
-
-// Also run after a delay to catch any dynamically added elements
-setTimeout(fixAllButtons, 1000);
-setTimeout(fixAllButtons, 3000);
+    // Update on resize
+    window.addEventListener('resize', () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }, { passive: true });
+})();
