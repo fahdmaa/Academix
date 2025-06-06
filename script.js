@@ -135,6 +135,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Variables pour les animations
     // typewriterInterval removed as it's unused
 
+    // CRITICAL: Initialize language IMMEDIATELY before anything else
+    const savedLanguage = localStorage.getItem('language') || 'fr';
+    document.documentElement.lang = savedLanguage;
+    document.documentElement.setAttribute('lang', savedLanguage);
+    console.log('🌐 Language set immediately to:', savedLanguage);
+    
     // Initialisation du thème et de la langue en premier
     initializeTheme();
     initializeLanguage();
@@ -833,10 +839,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let isDeleting = false;
         let animationId;
         
-        // Faster speeds for better user experience
-        const typingSpeed = 120;
-        const deletingSpeed = 80;
-        const pauseTime = 1500;
+        // Slower speeds for mobile to ensure full word display
+        const typingSpeed = 150;
+        const deletingSpeed = 100;
+        const pauseTime = 2000;
 
         function typeWriter() {
             const currentWord = words[currentWordIndex];
@@ -2097,6 +2103,21 @@ preloadImages();
         // Add mobile class to body
         document.body.classList.add('mobile-device');
         
+        // CRITICAL: Fix mobile overflow and scrolling issues
+        document.body.style.overflow = 'auto';
+        document.body.style.overflowX = 'hidden';
+        document.documentElement.style.overflow = 'auto';
+        document.documentElement.style.overflowX = 'hidden';
+        
+        // Remove any transform issues on hero section
+        const heroSection = document.querySelector('.hero-section');
+        if (heroSection) {
+            heroSection.style.transform = 'none';
+            heroSection.style.position = 'relative';
+            heroSection.style.width = '100%';
+            heroSection.style.maxWidth = '100vw';
+        }
+        
         // Enhanced mobile navigation
         setupMobileNavigation();
         
@@ -2409,12 +2430,18 @@ preloadImages();
     });
     
     // Set viewport height custom property for mobile browsers
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-    
-    // Update on resize
-    window.addEventListener('resize', () => {
+    function setViewportHeight() {
         const vh = window.innerHeight * 0.01;
         document.documentElement.style.setProperty('--vh', `${vh}px`);
+        console.log('Viewport height set:', vh + 'px');
+    }
+    
+    // Set initial viewport height
+    setViewportHeight();
+    
+    // Update on resize and orientation change
+    window.addEventListener('resize', setViewportHeight, { passive: true });
+    window.addEventListener('orientationchange', () => {
+        setTimeout(setViewportHeight, 100);
     }, { passive: true });
 })();
