@@ -171,30 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Language toggle - handled by direct addEventListener below
     });
 
-    // EMERGENCY BUTTON FIX - Direct onclick setup
-    setTimeout(() => {
-        console.log('🚨 Emergency button setup starting...');
-        
-        // Force theme button to work
-        const themeBtn = document.getElementById('theme-toggle');
-        if (themeBtn) {
-            themeBtn.onclick = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('🎨 THEME BUTTON CLICKED!');
-                const current = document.body.getAttribute('data-theme') || 'light';
-                const newTheme = current === 'dark' ? 'light' : 'dark';
-                document.body.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                console.log('✅ Theme switched to:', newTheme);
-            };
-            console.log('✅ Theme button onclick set');
-        } else {
-            console.error('❌ Theme button not found!');
-        }
-        
-        // Language button - remove duplicate handler, use main addEventListener
-    }, 1000);
     
     // Attendre que la langue soit initialisée avant de configurer le formulaire
     setTimeout(() => {
@@ -254,121 +230,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Animation des nombres statistiques
     animateStatNumbers();
 
-    // Gestion du thème
-    if (themeToggle) {
-        console.log('✅ Theme toggle button found, adding event listener');
-        themeToggle.addEventListener('click', function() {
-            console.log('🎨 Theme toggle clicked');
-            toggleTheme();
-        });
-    } else {
-        console.error('❌ Theme toggle button not found');
-    }
+    // Theme handling is now in setupFloatingControls()
 
-    // Gestion de la langue - COMPREHENSIVE DEBUG
-    console.log('🔍 Language elements check:');
-    console.log('  - languageToggle:', languageToggle);
-    console.log('  - languageDropdown:', languageDropdown);
-    console.log('  - languageOptions:', languageOptions.length);
+    // FIXED: Direct button event handling
+    console.log('🔧 Setting up floating controls...');
     
-    if (languageToggle) {
-        console.log('✅ Language toggle button found');
-        console.log('🔍 Button details:', {
-            id: languageToggle.id,
-            className: languageToggle.className,
-            tagName: languageToggle.tagName,
-            innerHTML: languageToggle.innerHTML,
-            disabled: languageToggle.disabled,
-            style: languageToggle.style.cssText
-        });
-        
-        // Add click event with maximum debugging
-        languageToggle.addEventListener('click', function(e) {
-            console.log('🌐🌐🌐 LANGUAGE BUTTON CLICKED! 🌐🌐🌐');
-            console.log('🔍 Event details:', {
-                type: e.type,
-                target: e.target,
-                currentTarget: e.currentTarget,
-                bubbles: e.bubbles,
-                defaultPrevented: e.defaultPrevented,
-                timeStamp: e.timeStamp
-            });
-            
-            // Check if button is still functional
-            console.log('🔍 Button state check:', {
-                disabled: this.disabled,
-                pointerEvents: getComputedStyle(this).pointerEvents,
-                visibility: getComputedStyle(this).visibility
-            });
-            
-            e.preventDefault();
-            e.stopPropagation();
-            
-            console.log('🔍 About to call toggleLanguageDropdown...');
-            toggleLanguageDropdown();
-        });
-        
-        // Mark that event listeners have been added
-        languageToggle._hasEventListeners = true;
-        
-        // Also try mousedown as backup
-        languageToggle.addEventListener('mousedown', function(e) {
-            console.log('🖱️ Language button mousedown fired');
-        });
-        
-        console.log('✅ Language event listeners added');
-    } else {
-        console.error('❌ Language toggle button not found');
-        // Try to find it manually
-        const manualFind = document.getElementById('language-toggle');
-        console.log('🔍 Manual search result:', manualFind);
-    }
+    // Wait for elements to be ready
+    setTimeout(function() {
+        setupFloatingControls();
+    }, 100);
 
-    // Sélection de la langue
-    if (languageOptions && languageOptions.length > 0) {
-        console.log(`✅ Found ${languageOptions.length} language options`);
-        languageOptions.forEach((option, index) => {
-            console.log(`🔍 Language option ${index}:`, {
-                lang: option.getAttribute('data-lang'),
-                text: option.textContent.trim(),
-                element: option
-            });
-            
-            option.addEventListener('click', function(e) {
-                console.log(`🌐 Language option clicked: ${this.getAttribute('data-lang')}`);
-                e.stopPropagation();
-                const lang = this.getAttribute('data-lang');
-                if (lang) {
-                    console.log(`🔄 Changing to language: ${lang}`);
-                    changeLanguage(lang);
-                    updateFormLanguage(); // Mettre à jour les options du formulaire
-                }
-                if (languageDropdown) {
-                    // Immediately close dropdown
-                    languageDropdown.classList.remove('show');
-                    languageDropdown.style.opacity = '0';
-                    languageDropdown.style.visibility = 'hidden';
-                    languageDropdown.style.pointerEvents = 'none';
-                    console.log('🔒 Dropdown closed');
-                    
-                    // CRITICAL FIX: Reset dropdown state AND re-verify button functionality
-                    setTimeout(() => {
-                        resetDropdownState();
-                        ensureLanguageButtonWorks();
-                    }, 100); // Reduced from 500ms to 100ms for faster recovery
-                }
-            });
-        });
-    } else {
-        console.error('❌ No language options found');
-    }
+    // Language options handling is now in setupFloatingControls()
 
-    // Fermer le menu de langue en cliquant en dehors
-    document.addEventListener('click', function(e) {
-        if (languageDropdown && languageToggle && !languageToggle.contains(e.target)) {
-            languageDropdown.classList.remove('show');
-        }
-    });
+    // Outside click handling is now in setupFloatingControls()
 
     // Achievement animations are now handled in setupScrollAnimations
 
@@ -1051,71 +925,164 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('✅ Language button functionality verified/restored');
     }
     
-    window.toggleLanguageDropdown = function() {
-        console.log('🌐 toggleLanguageDropdown function called!');
+    // FLOATING CONTROLS SETUP - Using Event Delegation for Reliability
+    function setupFloatingControls() {
+        console.log('🎛️ Setting up floating controls with event delegation...');
         
-        const dropdown = document.getElementById('language-dropdown');
-        if (!dropdown) {
-            console.error('❌ Language dropdown not found');
+        // Remove existing delegated listeners to avoid duplicates
+        if (window.floatingControlsSetup) {
+            console.log('🔄 Skipping setup - already configured with delegation');
             return;
         }
         
-        console.log('✅ Dropdown element found:', dropdown);
-
-        // Check current state
-        const currentStyle = getComputedStyle(dropdown);
-        const currentOpacity = currentStyle.opacity;
-        const currentVisibility = currentStyle.visibility;
-        const hasShowClass = dropdown.classList.contains('show');
-        
-        console.log('🔍 Current state:', {
-            opacity: currentOpacity,
-            visibility: currentVisibility,
-            classes: dropdown.className,
-            hasShowClass: hasShowClass
+        // Use event delegation on document body for reliability
+        document.body.addEventListener('click', function(e) {
+            // Theme Button Handler
+            if (e.target.closest('#theme-toggle')) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🎨 Theme button clicked via delegation!');
+                
+                const currentTheme = document.body.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                console.log(`✅ Theme changed to: ${newTheme}`);
+                return;
+            }
+            
+            // Language Button Handler
+            if (e.target.closest('#language-toggle')) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🌐 Language button clicked via delegation!');
+                
+                const dropdown = document.getElementById('language-dropdown');
+                if (dropdown) {
+                    const isOpen = dropdown.classList.contains('show');
+                    if (isOpen) {
+                        dropdown.classList.remove('show');
+                        console.log('🔒 Language dropdown closed');
+                    } else {
+                        dropdown.classList.add('show');
+                        console.log('🔓 Language dropdown opened');
+                    }
+                } else {
+                    console.error('❌ Language dropdown not found');
+                }
+                return;
+            }
+            
+            // Language Option Handler
+            const langOption = e.target.closest('.lang-option');
+            if (langOption) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const lang = langOption.getAttribute('data-lang');
+                if (lang) {
+                    console.log(`🔄 Switching to language: ${lang}`);
+                    changeLanguage(lang);
+                    updateFormLanguage();
+                    
+                    // Close dropdown
+                    const dropdown = document.getElementById('language-dropdown');
+                    if (dropdown) {
+                        dropdown.classList.remove('show');
+                        console.log('🔒 Language dropdown closed after selection');
+                    }
+                }
+                return;
+            }
+            
+            // Close dropdown when clicking outside
+            const dropdown = document.getElementById('language-dropdown');
+            const langControl = document.querySelector('.language-control');
+            
+            if (dropdown && langControl && !langControl.contains(e.target)) {
+                dropdown.classList.remove('show');
+                console.log('🔒 Language dropdown closed (outside click)');
+            }
         });
-
-        // SAFETY: If dropdown is in an inconsistent state, reset it first
-        if ((hasShowClass && currentOpacity === '0') || (!hasShowClass && currentOpacity === '1')) {
-            console.log('⚠️ Inconsistent state detected, resetting...');
-            resetDropdownState();
-        }
-
-        // Toggle using CSS class
-        dropdown.classList.toggle('show');
-        const newHasShow = dropdown.classList.contains('show');
         
-        console.log('🔄 After toggle:', {
-            hasShowClass: newHasShow,
-            classes: dropdown.className
-        });
+        // Mark as setup to prevent duplicates
+        window.floatingControlsSetup = true;
         
-        // BACKUP METHOD: Force with inline styles if CSS isn't working
-        if (newHasShow) {
-            dropdown.style.opacity = '1';
-            dropdown.style.visibility = 'visible';
-            dropdown.style.transform = 'translateY(0)';
-            dropdown.style.pointerEvents = 'auto';
-            console.log('🚨 FORCED VISIBLE with inline styles');
-        } else {
-            dropdown.style.opacity = '0';
-            dropdown.style.visibility = 'hidden';
-            dropdown.style.transform = 'translateY(-10px)';
-            dropdown.style.pointerEvents = 'none';
-            console.log('🚨 FORCED HIDDEN with inline styles');
-        }
+        console.log('✅ Floating controls setup complete with event delegation');
         
-        // Check final computed style
-        setTimeout(() => {
-            const finalStyle = getComputedStyle(dropdown);
-            console.log('🎯 Final computed style:', {
-                opacity: finalStyle.opacity,
-                visibility: finalStyle.visibility,
-                transform: finalStyle.transform,
-                zIndex: finalStyle.zIndex,
-                position: finalStyle.position
+        // Add visual test indicators
+        addTestIndicators();
+    }
+    
+    // Visual test function to verify button functionality
+    function addTestIndicators() {
+        // Add pulsing animation to buttons for visibility
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .control-btn {
+                animation: buttonPulse 2s infinite ease-in-out;
+            }
+            
+            @keyframes buttonPulse {
+                0%, 100% { 
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 10px var(--primary-glow);
+                }
+                50% { 
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 20px var(--primary-glow);
+                }
+            }
+            
+            /* Light mode pulse animation */
+            body[data-theme="light"] .control-btn {
+                animation: buttonPulseLight 2s infinite ease-in-out;
+            }
+            
+            @keyframes buttonPulseLight {
+                0%, 100% { 
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 10px var(--primary-glow);
+                }
+                50% { 
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 20px var(--primary-glow);
+                }
+            }
+            
+            .control-btn:hover {
+                animation: none;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Add click test visual feedback
+        document.querySelectorAll('.control-btn').forEach(btn => {
+            btn.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.95)';
+                this.style.backgroundColor = 'var(--primary-light)';
             });
-        }, 100);
+            
+            btn.addEventListener('mouseup', function() {
+                this.style.transform = '';
+                this.style.backgroundColor = '';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.backgroundColor = '';
+            });
+        });
+        
+        console.log('🎯 Test indicators added to buttons');
+    }
+    
+    // Simple toggle function for compatibility
+    window.toggleLanguageDropdown = function() {
+        const dropdown = document.getElementById('language-dropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('show');
+            const isVisible = dropdown.classList.contains('show');
+            console.log(`🌐 Language dropdown ${isVisible ? 'opened' : 'closed'}`);
+        }
     }
 
     // Fonction pour changer la langue
@@ -1241,43 +1208,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mettre à jour l'apparence du bouton de langue
     function updateLanguageButton(lang) {
-        if (!languageToggle) return;
+        // Use fresh query to get current button
+        const langToggle = document.getElementById('language-toggle');
+        if (!langToggle) {
+            console.log('⚠️ Language toggle not found during update');
+            return;
+        }
 
-        const currentLang = languageToggle.querySelector('.current-lang');
+        const currentLang = langToggle.querySelector('.current-lang');
         if (currentLang) {
             currentLang.textContent = lang.toUpperCase();
+            console.log(`✅ Language button updated to: ${lang.toUpperCase()}`);
+        } else {
+            console.log('⚠️ .current-lang element not found');
         }
         
-        // DEBUG: Check if button is still functional after language change
-        console.log('🔍 Language button after update:', {
-            hasEventListeners: languageToggle._hasEventListeners,
-            disabled: languageToggle.disabled,
-            style: languageToggle.style.cssText,
-            pointerEvents: getComputedStyle(languageToggle).pointerEvents
-        });
-        
-        // SAFETY: Ensure button is still clickable
-        languageToggle.style.pointerEvents = 'auto';
-        languageToggle.style.cursor = 'pointer';
-        languageToggle.disabled = false;
-        
-        // CRITICAL FIX: Ensure button remains functional after any language change
-        setTimeout(() => {
-            ensureLanguageButtonWorks();
-        }, 50);
+        // Ensure button remains clickable (redundant with delegation but good for safety)
+        langToggle.style.pointerEvents = 'auto';
+        langToggle.style.cursor = 'pointer';
+        langToggle.disabled = false;
     }
 
     // Marquer l'option active dans le menu déroulant
     function updateActiveLanguageOption(lang) {
-        if (!languageOptions || languageOptions.length === 0) return;
+        // Use fresh query to get current options
+        const currentLanguageOptions = document.querySelectorAll('.lang-option');
+        if (!currentLanguageOptions || currentLanguageOptions.length === 0) {
+            console.log('⚠️ No language options found during update');
+            return;
+        }
 
-        languageOptions.forEach(option => {
+        currentLanguageOptions.forEach(option => {
             if (option.getAttribute('data-lang') === lang) {
                 option.classList.add('active');
             } else {
                 option.classList.remove('active');
             }
         });
+        
+        console.log(`✅ Active language option updated to: ${lang}`);
     }
 
     // Ouvrir les détails d'expertise
@@ -2012,62 +1981,6 @@ OUIIPROF - Cours Particuliers
         });
     }, 1000);
     
-    // EMERGENCY TEST: Try to call toggleLanguageDropdown manually after 3 seconds
-    setTimeout(() => {
-        console.log('🧪 TESTING: Manual call to toggleLanguageDropdown...');
-        if (typeof toggleLanguageDropdown === 'function') {
-            toggleLanguageDropdown();
-        } else {
-            console.error('❌ toggleLanguageDropdown function not available');
-        }
-    }, 3000);
-    
-    // EMERGENCY BACKUP: Create a test function accessible from console
-    window.testLanguageDropdown = function() {
-        console.log('🧪 Test function called');
-        const dropdown = document.getElementById('language-dropdown');
-        if (dropdown) {
-            const isVisible = dropdown.style.opacity === '1' || dropdown.classList.contains('show');
-            if (isVisible) {
-                dropdown.style.opacity = '0';
-                dropdown.style.visibility = 'hidden';
-                dropdown.classList.remove('show');
-                console.log('🔒 Manually hidden dropdown');
-            } else {
-                dropdown.style.opacity = '1';
-                dropdown.style.visibility = 'visible';
-                dropdown.style.transform = 'translateY(0)';
-                dropdown.classList.add('show');
-                console.log('🔓 Manually shown dropdown');
-            }
-        }
-    };
-    
-    // ALTERNATIVE EVENT METHOD: Try body delegation as absolute backup
-    document.body.addEventListener('click', function(e) {
-        if (e.target && e.target.closest('#language-toggle')) {
-            console.log('🌐 BODY DELEGATION: Language button clicked!');
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Direct toggle without function call
-            const dropdown = document.getElementById('language-dropdown');
-            if (dropdown) {
-                const isVisible = dropdown.classList.contains('show');
-                if (isVisible) {
-                    dropdown.classList.remove('show');
-                    dropdown.style.opacity = '0';
-                    dropdown.style.visibility = 'hidden';
-                } else {
-                    dropdown.classList.add('show');
-                    dropdown.style.opacity = '1';
-                    dropdown.style.visibility = 'visible';
-                    dropdown.style.transform = 'translateY(0)';
-                }
-                console.log(`🔄 Dropdown ${isVisible ? 'hidden' : 'shown'} via body delegation`);
-            }
-        }
-    });
 });
 
 // Fonction pour précharger les images
@@ -2086,36 +1999,6 @@ function preloadImages() {
 // Déclencher le préchargement
 preloadImages();
 
-    
-    // Language toggle button
-    const langToggle = document.getElementById('language-toggle');
-    if (langToggle) {
-        langToggle.style.cursor = 'pointer';
-        langToggle.style.pointerEvents = 'auto';
-        langToggle.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleLanguageDropdown();
-        };
-        console.log('✅ Language button fixed');
-    }
-    
-    // Language option buttons
-    const langOptions = document.querySelectorAll('.lang-option');
-    langOptions.forEach((option, index) => {
-        option.style.cursor = 'pointer';
-        option.style.pointerEvents = 'auto';
-        option.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const lang = this.getAttribute('data-lang');
-            changeLanguage(lang);
-            document.getElementById('language-dropdown').classList.remove('show');
-        };
-    });
-    if (langOptions.length > 0) {
-        console.log('✅ Language options fixed:', langOptions.length);
-    }
     
     // CTA buttons
     const ctaButtons = document.querySelectorAll('.cta-button, .cta-btn, .book-btn, a[href="#appointment"]');
