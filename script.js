@@ -300,7 +300,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Configuration des animations de scroll
     function setupScrollAnimations() {
-        // Observer pour les animations de scroll
+        // Detect mobile device
+        const isMobile = window.innerWidth <= 768;
+        
+        if (isMobile) {
+            // On mobile, skip scroll animations to prevent stuttering
+            // Just show all elements immediately and animate numbers
+            const achievementCards = document.querySelectorAll('.achievement-card');
+            achievementCards.forEach(card => {
+                if (!card.hasAttribute('data-animated')) {
+                    card.setAttribute('data-animated', 'true');
+                    animateNumber(card);
+                }
+            });
+            
+            // Show all elements immediately on mobile
+            const elementsToShow = document.querySelectorAll('.section-header, .expertise-card, .achievement-card, .form-section, .footer');
+            elementsToShow.forEach(element => {
+                element.classList.add('revealed');
+                element.style.opacity = '1';
+                element.style.transform = 'none';
+            });
+            return;
+        }
+        
+        // Observer pour les animations de scroll (desktop only)
         const scrollObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -318,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
             rootMargin: '0px 0px -50px 0px'
         });
 
-        // Ajouter les classes d'animation aux éléments
+        // Ajouter les classes d'animation aux éléments (desktop only)
         const elementsToAnimate = [
             { selector: '.section-header', animation: 'scroll-reveal' },
             { selector: '.expertise-card', animation: 'scroll-reveal-scale' },
@@ -1932,10 +1956,22 @@ OUIIPROF - Cours Particuliers
             const targetElement = document.querySelector(targetId);
 
             if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80,
-                    behavior: 'smooth'
-                });
+                // Detect mobile device
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // Use instant scroll on mobile to prevent stuttering
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'auto'
+                    });
+                } else {
+                    // Use smooth scroll on desktop
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
             }
         });
     });
@@ -2224,21 +2260,21 @@ preloadImages();
     }
     
     function setupScrollOptimizations() {
+        // Simplified scroll optimization for mobile - less frequent updates
         let ticking = false;
+        let scrollTimeout;
         
         function updateScrollPosition() {
             const scrolled = window.pageYOffset;
             const header = document.getElementById('header');
             
             if (header) {
-                // Don't override the background color, just update shadow
+                // Simplified header shadow update
                 if (scrolled > 50) {
-                    header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.15)';
+                    header.classList.add('scrolled');
                 } else {
-                    header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                    header.classList.remove('scrolled');
                 }
-                // Remove any background style to let CSS handle it
-                header.style.removeProperty('background');
             }
             
             ticking = false;
@@ -2246,11 +2282,16 @@ preloadImages();
         
         function requestTick() {
             if (!ticking) {
-                requestAnimationFrame(updateScrollPosition);
+                // Use throttled requestAnimationFrame for better performance
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    requestAnimationFrame(updateScrollPosition);
+                }, 16); // ~60fps max
                 ticking = true;
             }
         }
         
+        // Use passive scroll listener with throttling
         window.addEventListener('scroll', requestTick, { passive: true });
     }
     
