@@ -179,14 +179,14 @@ Contrast Ratios (WCAG AA Compliant):
     --shadow-xl: 0 20px 40px rgba(10, 44, 61, 0.2);
     --shadow-glow: 0 0 20px rgba(0, 137, 199, 0.3);
 
-    /* Thème par défaut (sombre) */
-    --bg-primary: var(--dark);
-    --bg-secondary: var(--dark-light);
-    --bg-card: var(--dark-lighter);
-    --text-primary: var(--white);
-    --text-secondary: var(--light-gray);
-    --text-muted: var(--gray);
-    --border-color: rgba(0, 174, 239, 0.1);
+    /* Thème par défaut (clair) */
+    --bg-primary: var(--white);
+    --bg-secondary: var(--light-gray);
+    --bg-card: var(--white);
+    --text-primary: var(--dark);
+    --text-secondary: var(--dark-lighter);
+    --text-muted: var(--gray-dark);
+    --border-color: rgba(0, 137, 199, 0.15);
 }
 
 /* Thème clair */
@@ -264,6 +264,32 @@ body[data-theme="light"] .rating-card {
 
 body[data-theme="light"] .info-card {
     box-shadow: var(--shadow-lg);
+}
+
+/* Thème sombre */
+body[data-theme="dark"] {
+    /* Dark theme with new color palette */
+    --primary: var(--gradient-blue-start);
+    --primary-dark: #006B9A;
+    --primary-light: var(--gradient-cyan-end);
+    --primary-glow: rgba(0, 137, 199, 0.4);
+    --accent: var(--white);
+    --accent-light: var(--light-gray);
+    --accent-glow: rgba(255, 255, 255, 0.1);
+    
+    --bg-primary: var(--dark);
+    --bg-secondary: var(--dark-light);
+    --bg-card: var(--dark-lighter);
+    --text-primary: var(--white);
+    --text-secondary: var(--light-gray);
+    --text-muted: var(--gray);
+    --border-color: rgba(0, 174, 239, 0.1);
+    
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 20px rgba(0, 137, 199, 0.4);
 }
 
 /* Reset et styles de base */

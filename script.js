@@ -17,9 +17,19 @@ function sanitizeInput(input) {
         .substring(0, 1000); // Limit length
 }
 
-// Define constants for local storage
-const STORAGE_KEY = window.STORAGE_KEY || 'ouiiprof_submissions';
-const MAX_STORED_SUBMISSIONS = window.MAX_STORED_SUBMISSIONS || 100;
+// Theme toggle functionality (global scope)
+function toggleTheme() {
+    const currentTheme = document.body.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    document.body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    console.log(`✅ Theme changed to: ${newTheme}`);
+}
+
+// Make toggleTheme available globally
+window.toggleTheme = toggleTheme;
 
 // Attendre que le DOM soit entièrement chargé
 document.addEventListener('DOMContentLoaded', function() {
@@ -78,14 +88,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Variables pour les animations
     // typewriterInterval removed as it's unused
 
+    // CRITICAL: Initialize theme FIRST to ensure proper display
+    initializeTheme();
+    
     // CRITICAL: Initialize language IMMEDIATELY before anything else
     const savedLanguage = localStorage.getItem('language') || 'fr';
     document.documentElement.lang = savedLanguage;
     document.documentElement.setAttribute('lang', savedLanguage);
     console.log('🌐 Language set immediately to:', savedLanguage);
     
-    // Initialisation du thème et de la langue en premier
-    initializeTheme();
+    // Then initialize language UI
     initializeLanguage();
     
     // Ensure buttons are properly configured for clicking
@@ -910,19 +922,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Use event delegation on document body for reliability
         document.body.addEventListener('click', function(e) {
-            // Theme Button Handler
+            // Theme Button Handler - now using the centralized toggleTheme function
             if (e.target.closest('#theme-toggle')) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('🎨 Theme button clicked via delegation!');
-                
-                const currentTheme = document.body.getAttribute('data-theme') || 'light';
-                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                
-                document.body.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                
-                console.log(`✅ Theme changed to: ${newTheme}`);
+                console.log('🎨 Theme button clicked via setupFloatingControls!');
+                toggleTheme();
                 return;
             }
             
