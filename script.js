@@ -1541,10 +1541,8 @@ OUIIPROF - Cours Particuliers`
         submitBtn.innerHTML = loadingText[currentLang];
         submitBtn.disabled = true;
 
-        // Send to Azure backend
-        async function sendToAzure(retryCount = 0) {
-            const maxRetries = 2;
-            
+        // Send to Azure backend (single attempt, no retries)
+        async function sendToAzure() {
             try {
                 console.log('🚀 Sending form data to Azure backend...');
                 console.log('📤 Data being sent:', submissionData);
@@ -1594,33 +1592,13 @@ OUIIPROF - Cours Particuliers`
                 
             } catch (error) {
                 console.error('❌ Azure submission failed:', error);
-                console.error('🔄 Retry count:', retryCount);
                 console.error('🔍 Full error:', error.message);
                 console.error('🌐 Current URL:', window.location.href);
                 
-                if (retryCount < maxRetries && (error.message.includes('429') || error.message.includes('5'))) {
-                    console.log(`🔄 Retrying submission in 3 seconds... (attempt ${retryCount + 1}/${maxRetries})`);
-                    setTimeout(() => {
-                        sendToAzure(retryCount + 1);
-                    }, 3000);
-                } else {
-                    console.error('❌ Max retries reached or permanent error');
-                    
-                    // Check if data was at least stored locally
-                    const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-                    if (submissions.length > 0 && submissions[0].fullName === formData.get('fullName')) {
-                        console.log('✅ Form data was stored locally. Showing success message.');
-                        showSuccessMessage();
-                        appointmentForm.reset();
-                        if (subjectsInput) {
-                            subjectsInput.value = '';
-                        }
-                    } else {
-                        showErrorMessage();
-                    }
-                    submitBtn.innerHTML = submitBtnText;
-                    submitBtn.disabled = false;
-                }
+                // Show error message immediately - no retries
+                showErrorMessage();
+                submitBtn.innerHTML = submitBtnText;
+                submitBtn.disabled = false;
             }
         }
         
