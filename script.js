@@ -1,10 +1,4 @@
-// Define constants inline to avoid config loading issues
-const EMAILJS_CONFIG = window.EMAILJS_CONFIG || {
-    SERVICE_ID: 'service_s1m3yzm',
-    TEMPLATE_ID: 'template_ng68h4w',
-    PUBLIC_KEY: 'XDDbbFjUrpZV-gFWP'
-};
-
+// Define constants for local storage
 const STORAGE_KEY = window.STORAGE_KEY || 'ouiiprof_submissions';
 const MAX_STORED_SUBMISSIONS = window.MAX_STORED_SUBMISSIONS || 100;
 
@@ -23,65 +17,15 @@ function sanitizeInput(input) {
         .substring(0, 1000); // Limit length
 }
 
-// Initialize EmailJS with better error handling and fallback loading
-(function() {
-    let initAttempts = 0;
-    const maxInitAttempts = 10;
-    
-    function loadEmailJSFallback() {
-        if (typeof emailjs === 'undefined') {
-            console.log('Loading EmailJS fallback...');
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
-            script.onload = function() {
-                console.log('EmailJS fallback loaded');
-                setTimeout(initEmailJS, 500);
-            };
-            script.onerror = function() {
-                console.error('Failed to load EmailJS fallback');
-            };
-            document.head.appendChild(script);
-        }
-    }
-    
-    function initEmailJS() {
-        initAttempts++;
-        console.log('EmailJS init attempt:', initAttempts);
-        console.log('Config check:', {
-            hasConfig: typeof EMAILJS_CONFIG !== 'undefined',
-            config: EMAILJS_CONFIG,
-            hasEmailJS: typeof emailjs !== 'undefined'
-        });
-        
-        if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG && EMAILJS_CONFIG.PUBLIC_KEY) {
-            try {
-                emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
-                console.log('EmailJS initialized successfully on attempt:', initAttempts);
-                window.emailJSReady = true;
-            } catch (error) {
-                console.error('EmailJS initialization error:', error);
-            }
-        } else {
-            if (initAttempts < maxInitAttempts) {
-                console.warn('EmailJS or config not loaded yet, retrying...', initAttempts);
-                setTimeout(initEmailJS, 1000);
-            } else if (initAttempts === maxInitAttempts) {
-                console.warn('Max init attempts reached, trying fallback...');
-                loadEmailJSFallback();
-            }
-        }
-    }
-    
-    // Try to initialize immediately
-    initEmailJS();
-})();
+// Azure backend configuration
+const AZURE_ENDPOINT = 'https://ouiiprof-form-handler.azurewebsites.net/api/handleForm?code=OyFN6PKeeoLhT32nPa5tECi-y5wZBIHafl0ygfWfT-amAzFuFhtamQ==';
+console.log('✅ Azure backend endpoint configured');
 
 // Attendre que le DOM soit entièrement chargé
 document.addEventListener('DOMContentLoaded', function() {
     // Debug information
     console.log('DOM loaded');
-    console.log('EmailJS available:', typeof emailjs !== 'undefined');
-    console.log('Config available:', typeof EMAILJS_CONFIG !== 'undefined');
+    console.log('Azure endpoint configured:', AZURE_ENDPOINT);
     console.log('Current URL:', window.location.href);
     
     // Check Font Awesome icons
@@ -1548,35 +1492,39 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(appointmentForm);
         const subjects = formData.get('subjects') || '';
         
-        const templateParams = {
-            fullName: sanitizeInput(formData.get('fullName')),
+        // Prepare data for Azure backend
+        const submissionData = {
+            name: sanitizeInput(formData.get('fullName')),
             email: sanitizeInput(formData.get('email')),
-            phone: sanitizeInput(formData.get('phone')),
-            city: sanitizeInput(formData.get('city')),
-            method: sanitizeInput(formData.get('method')),
-            hours: sanitizeInput(formData.get('hours')),
-            subjects: sanitizeInput(subjects) || 'Non spécifiées',
-            // Add additional fields that might be needed
-            to_email: 'fahd.maatoug@outlook.fr',
-            from_name: sanitizeInput(formData.get('fullName')),
-            from_email: sanitizeInput(formData.get('email')),
-            message: `Nouvelle demande de ${sanitizeInput(formData.get('fullName'))} pour ${sanitizeInput(formData.get('hours'))} heures de cours.`,
-            // Add submission data for backup
-            submission_data: JSON.stringify({
-                fullName: formData.get('fullName'),
-                email: formData.get('email'),
-                phone: formData.get('phone'),
-                city: formData.get('city'),
-                method: formData.get('method'),
-                hours: formData.get('hours'),
-                subjects: subjects,
-                timestamp: new Date().toISOString(),
-                source: window.location.hostname
-            })
+            message: `🎓 NOUVELLE DEMANDE DE COURS
+
+👤 Nom: ${sanitizeInput(formData.get('fullName'))}
+📧 Email: ${sanitizeInput(formData.get('email'))}
+📱 Téléphone: ${sanitizeInput(formData.get('phone'))}
+🏙️ Ville: ${sanitizeInput(formData.get('city'))}
+📚 Méthode: ${sanitizeInput(formData.get('method'))}
+⏰ Heures: ${sanitizeInput(formData.get('hours'))}
+📖 Matières: ${sanitizeInput(subjects) || 'Non spécifiées'}
+
+🌐 Envoyé depuis: ${window.location.hostname}
+📅 Date: ${new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })}
+
+---
+OUIIPROF - Cours Particuliers`
         };
 
-        // Store submission locally
-        storeSubmission(templateParams);
+        // Store submission locally as backup
+        storeSubmission({
+            fullName: formData.get('fullName'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            city: formData.get('city'),
+            method: formData.get('method'),
+            hours: formData.get('hours'),
+            subjects: subjects,
+            timestamp: new Date().toISOString(),
+            source: window.location.hostname
+        });
 
         // Loading effect
         const submitBtnText = submitBtn.innerHTML;
@@ -1589,253 +1537,91 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.innerHTML = loadingText[currentLang];
         submitBtn.disabled = true;
 
-        // Send email using EmailJS with better error handling
-        function sendEmailWithRetry(retryCount = 0) {
+        // Send to Azure backend
+        async function sendToAzure(retryCount = 0) {
             const maxRetries = 2;
             
-            // Ensure config is available
-            if (!EMAILJS_CONFIG || !EMAILJS_CONFIG.PUBLIC_KEY) {
-                console.error('❌ EmailJS configuration not available');
-                showErrorMessage();
+            try {
+                console.log('🚀 Sending form data to Azure backend...');
+                console.log('📤 Data being sent:', submissionData);
+                
+                const response = await fetch(AZURE_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(submissionData)
+                });
+
+                console.log('📊 Azure Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Azure API Error Response:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
+                }
+
+                const result = await response.json();
+                console.log('✅ Azure API Success Response:', result);
+                console.log('📧 Form submitted successfully!');
+                console.log('🌐 From domain:', window.location.hostname);
+                
+                // Update local storage with success flag
+                try {
+                    const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                    if (submissions.length > 0) {
+                        submissions[0].azureSent = true;
+                        submissions[0].azureResponse = result;
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+                        console.log('💾 Submission updated with Azure confirmation');
+                    }
+                } catch (storageError) {
+                    console.warn('⚠️ Failed to update submission:', storageError);
+                }
+                
+                showSuccessMessage();
+                appointmentForm.reset();
+                // Clear subjects input
+                if (subjectsInput) {
+                    subjectsInput.value = '';
+                }
                 submitBtn.innerHTML = submitBtnText;
                 submitBtn.disabled = false;
-                return;
-            }
-            
-            if (typeof emailjs !== 'undefined') {
-                console.log('🚀 Sending email with params:', templateParams);
-                console.log('📧 Using service:', EMAILJS_CONFIG.SERVICE_ID);
-                console.log('📋 Using template:', EMAILJS_CONFIG.TEMPLATE_ID);
-                console.log('🌐 Current domain:', window.location.hostname);
-                console.log('🔧 EmailJS ready state:', window.emailJSReady);
-                console.log('📦 EmailJS object:', typeof emailjs, emailjs);
                 
-                // Validate configuration first
-                if (!EMAILJS_CONFIG.SERVICE_ID || !EMAILJS_CONFIG.TEMPLATE_ID || !EMAILJS_CONFIG.PUBLIC_KEY) {
-                    console.error('❌ EmailJS configuration incomplete:', EMAILJS_CONFIG);
-                    showErrorMessage();
-                    submitBtn.innerHTML = submitBtnText;
-                    submitBtn.disabled = false;
-                    return;
-                }
+            } catch (error) {
+                console.error('❌ Azure submission failed:', error);
+                console.error('🔄 Retry count:', retryCount);
+                console.error('🔍 Full error:', error.message);
+                console.error('🌐 Current URL:', window.location.href);
                 
-                // Test EmailJS availability
-                if (!emailjs.send) {
-                    console.error('❌ EmailJS.send method not available');
-                    showErrorMessage();
-                    submitBtn.innerHTML = submitBtnText;
-                    submitBtn.disabled = false;
-                    return;
-                }
-                
-                // Generate unique submission ID for tracking
-                const submissionId = 'SUB_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-                const timestamp = new Date().toLocaleString('fr-FR', { 
-                    timeZone: 'Europe/Paris',
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
-                // Send with simpler parameters to avoid template issues
-                const simpleParams = {
-                    from_name: templateParams.from_name,
-                    from_email: templateParams.from_email,
-                    message: `🎓 NOUVELLE DEMANDE DE COURS - ${submissionId}
-
-👤 Nom: ${templateParams.from_name}
-📧 Email: ${templateParams.from_email}
-📱 Téléphone: ${templateParams.phone || 'Non fourni'}
-🎯 Niveau: ${templateParams.level || 'Non spécifié'}
-📚 Matières: ${templateParams.subjects || 'Non spécifiées'}
-⏰ Préférences: ${templateParams.preferences || 'Aucune'}
-💬 Commentaires: ${templateParams.message || 'Aucun'}
-
-🌐 Envoyé depuis: ${window.location.hostname}
-📅 Date: ${timestamp}
-🔍 ID: ${submissionId}
-
----
-OUIIPROF - Cours Particuliers
-`,
-                    to_name: 'OUIIPROF Admin',
-                    to_email: 'fahd.maatoug@outlook.fr',
-                    reply_to: templateParams.from_email,
-                    submission_id: submissionId
-                };
-                
-                console.log('📤 Sending simplified email params:', simpleParams);
-                console.log('🌍 Environment check:', {
-                    isVercel: window.location.hostname.includes('vercel.app'),
-                    isLocalhost: window.location.hostname === 'localhost',
-                    hostname: window.location.hostname,
-                    protocol: window.location.protocol
-                });
-                
-                // For Vercel, use direct API call first as it's more reliable
-                const isVercel = window.location.hostname.includes('vercel.app');
-                
-                let emailJSPromise;
-                
-                if (isVercel) {
-                    console.log('🚀 Vercel detected, using direct API call first');
-                    // Use direct API call for Vercel
-                    emailJSPromise = fetch('https://api.emailjs.com/api/v1.0/email/send', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            service_id: EMAILJS_CONFIG.SERVICE_ID,
-                            template_id: EMAILJS_CONFIG.TEMPLATE_ID,
-                            user_id: EMAILJS_CONFIG.PUBLIC_KEY,
-                            template_params: simpleParams
-                        })
-                    }).then(response => {
-                        console.log('📊 Direct API Response status:', response.status);
-                        console.log('📊 Direct API Response headers:', response.headers);
-                        if (!response.ok) {
-                            return response.text().then(text => {
-                                console.error('❌ API Error Response:', text);
-                                throw new Error(`HTTP ${response.status}: ${response.statusText} - ${text}`);
-                            });
-                        }
-                        return response.text().then(text => {
-                            console.log('✅ Direct API Success Response:', text);
-                            return { status: response.status, text: 'OK (Direct API)', response: text };
-                        });
-                    }).catch(error => {
-                        console.warn('🔄 Direct API failed, trying EmailJS library...', error);
-                        // Fallback to EmailJS library
-                        return emailjs.send(
-                            EMAILJS_CONFIG.SERVICE_ID,
-                            EMAILJS_CONFIG.TEMPLATE_ID,
-                            simpleParams,
-                            EMAILJS_CONFIG.PUBLIC_KEY
-                        );
-                    });
+                if (retryCount < maxRetries && (error.message.includes('429') || error.message.includes('5'))) {
+                    console.log(`🔄 Retrying submission in 3 seconds... (attempt ${retryCount + 1}/${maxRetries})`);
+                    setTimeout(() => {
+                        sendToAzure(retryCount + 1);
+                    }, 3000);
                 } else {
-                    console.log('🏠 Localhost detected, using EmailJS library');
-                    // For localhost, use EmailJS library first
-                    emailJSPromise = emailjs.send(
-                        EMAILJS_CONFIG.SERVICE_ID,
-                        EMAILJS_CONFIG.TEMPLATE_ID,
-                        simpleParams,
-                        EMAILJS_CONFIG.PUBLIC_KEY
-                    ).catch(error => {
-                        console.warn('🔄 EmailJS library failed, trying direct API call...', error);
-                        
-                        // Fallback to direct EmailJS REST API call
-                        return fetch('https://api.emailjs.com/api/v1.0/email/send', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                service_id: EMAILJS_CONFIG.SERVICE_ID,
-                                template_id: EMAILJS_CONFIG.TEMPLATE_ID,
-                                user_id: EMAILJS_CONFIG.PUBLIC_KEY,
-                                template_params: simpleParams
-                            })
-                        }).then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                            }
-                            return { status: response.status, text: 'OK (Direct API)' };
-                        });
-                    });
-                }
-                
-                emailJSPromise.then(
-                    function(response) {
-                        console.log('✅ EmailJS SUCCESS!', response.status, response.text);
-                        console.log('🎯 Full response:', response);
-                        console.log('📧 Email sent with ID:', submissionId);
-                        console.log('🕒 Timestamp:', timestamp);
-                        console.log('🌐 From domain:', window.location.hostname);
-                        console.log('📬 To email:', 'fahd.maatoug@outlook.fr');
-                        
-                        // Store submission locally as backup
-                        try {
-                            const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-                            submissions.unshift({
-                                ...templateParams,
-                                submissionId,
-                                timestamp,
-                                domain: window.location.hostname,
-                                emailSent: true,
-                                emailResponse: response
-                            });
-                            localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions.slice(0, MAX_STORED_SUBMISSIONS)));
-                            console.log('💾 Submission stored locally with email confirmation');
-                        } catch (storageError) {
-                            console.warn('⚠️ Failed to store submission locally:', storageError);
-                        }
-                        
+                    console.error('❌ Max retries reached or permanent error');
+                    
+                    // Check if data was at least stored locally
+                    const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                    if (submissions.length > 0 && submissions[0].fullName === formData.get('fullName')) {
+                        console.log('✅ Form data was stored locally. Showing success message.');
                         showSuccessMessage();
                         appointmentForm.reset();
-                        // Clear subjects input
                         if (subjectsInput) {
                             subjectsInput.value = '';
                         }
-                        submitBtn.innerHTML = submitBtnText;
-                        submitBtn.disabled = false;
-                    },
-                    function(error) {
-                        console.error('❌ EmailJS FAILED...', error);
-                        console.error('📝 Error status:', error.status);
-                        console.error('📝 Error text:', error.text || error.message);
-                        console.error('🔄 Retry count:', retryCount);
-                        console.error('🔍 Full error object:', JSON.stringify(error));
-                        console.error('🌐 Current URL:', window.location.href);
-                        console.error('📧 Email config:', EMAILJS_CONFIG);
-                        
-                        if (retryCount < maxRetries && (error.status === 429 || error.status >= 500)) {
-                            console.log(`🔄 Retrying email send in 3 seconds... (attempt ${retryCount + 1}/${maxRetries})`);
-                            setTimeout(() => {
-                                sendEmailWithRetry(retryCount + 1);
-                            }, 3000);
-                        } else {
-                            console.error('❌ Max retries reached or permanent error');
-                            // Check if data was at least stored locally
-                            const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-                            if (submissions.length > 0 && submissions[0].fullName === templateParams.fullName) {
-                                console.log('✅ Form data was stored locally. Showing success message.');
-                                showSuccessMessage();
-                                appointmentForm.reset();
-                                if (subjectsInput) {
-                                    subjectsInput.value = '';
-                                }
-                            } else {
-                                showErrorMessage();
-                            }
-                            submitBtn.innerHTML = submitBtnText;
-                            submitBtn.disabled = false;
-                        }
+                    } else {
+                        showErrorMessage();
                     }
-                );
-            } else {
-                // Wait for EmailJS to load and retry
-                if (retryCount < maxRetries) {
-                    console.warn('EmailJS not ready, waiting and retrying...', retryCount);
-                    setTimeout(() => {
-                        sendEmailWithRetry(retryCount + 1);
-                    }, 1000);
-                } else {
-                    // Fallback if EmailJS is not configured after retries
-                    console.warn('EmailJS not configured after retries. Form data stored locally only.');
-                    showSuccessMessage();
-                    appointmentForm.reset();
                     submitBtn.innerHTML = submitBtnText;
                     submitBtn.disabled = false;
                 }
             }
         }
         
-        // Start the email sending process
-        sendEmailWithRetry();
+        // Start the submission process
+        sendToAzure();
     }
 
     // Store submission in localStorage
