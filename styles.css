@@ -361,7 +361,7 @@ body[data-theme="light"] .logo-dark {
     background: var(--gradient-primary);
     color: var(--white);
     border: none;
-    padding: 12px 28px;
+    padding: 12px 20px;
     border-radius: 50px;
     font-size: 1rem;
     font-weight: 600;
@@ -371,7 +371,8 @@ body[data-theme="light"] .logo-dark {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    line-height: 1.2;
+    line-height: 1;
+    white-space: nowrap;
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-md);
@@ -532,9 +533,11 @@ body[data-theme="light"] .logo-dark {
     display: inline-block;
     min-width: 200px; /* Default minimum width */
     text-align: left;
-    vertical-align: top;
+    vertical-align: baseline;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible;
+    line-height: 1.3;
+    height: auto;
 }
 
 .typewriter-cursor {
@@ -572,6 +575,8 @@ body[data-theme="light"] .logo-dark {
 .stat-item {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .stat-number {
@@ -1430,7 +1435,7 @@ html[lang="ar"] .ar-option {
 
 .submit-btn {
     width: 100%;
-    padding: 18px;
+    padding: 16px;
     background: var(--gradient-primary);
     color: var(--white);
     border: none;
@@ -1442,6 +1447,7 @@ html[lang="ar"] .ar-option {
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: 1;
     gap: 10px;
     margin-top: 20px;
     position: relative;
@@ -2079,6 +2085,16 @@ html[lang="ar"] .expertise-card:hover .expertise-more::after {
 
 /* Mobile (max-width: 768px) - CONSOLIDATED */
 @media (max-width: 768px) {
+    /* Hero Section Mobile Layout */
+    .hero-section .container {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 0 !important;
+        text-align: center !important;
+        max-width: 100% !important;
+        padding: 0 20px !important;
+    }
     /* General */
     body {
         overflow-x: hidden;
@@ -2240,10 +2256,11 @@ html[lang="ar"] .expertise-card:hover .expertise-more::after {
     
     /* Achievements grid */
     .achievements-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        max-width: 500px;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        max-width: 320px;
         padding: 0 20px;
+        margin: 0 auto;
     }
     
     .achievement-card {
@@ -2430,10 +2447,11 @@ html[lang="ar"] .expertise-card:hover .expertise-more::after {
     }
     
     .achievements-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        grid-template-columns: 1fr;
+        gap: 14px;
         padding: 0 16px;
-        max-width: 400px;
+        max-width: 280px;
+        margin: 0 auto;
     }
     
     .achievement-card {
@@ -2739,6 +2757,36 @@ body[data-theme="light"] .mode-icon.light {
         overflow-x: hidden !important;
     }
     
+    /* CRITICAL: Fix language display issues - ensure only active language shows */
+    .fr, .en, .ar {
+        display: none !important;
+    }
+    
+    html[lang="fr"] .fr {
+        display: block !important;
+    }
+    
+    html[lang="en"] .en {
+        display: block !important;
+    }
+    
+    html[lang="ar"] .ar {
+        display: block !important;
+    }
+    
+    /* For inline elements like spans in buttons */
+    html[lang="fr"] .fr {
+        display: inline !important;
+    }
+    
+    html[lang="en"] .en {
+        display: inline !important;
+    }
+    
+    html[lang="ar"] .ar {
+        display: inline !important;
+    }
+    
     body {
         overflow-x: hidden !important;
         font-size: 16px; /* Ensure readability on mobile */
@@ -2815,14 +2863,35 @@ body[data-theme="light"] .mode-icon.light {
     
     .cta-button {
         margin-top: 20px !important;
-        padding: 10px 24px !important;
-        font-size: 0.9rem !important;
+        padding: 0 24px !important;
+        font-size: 1.17rem !important;
+        font-weight: 600 !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
         width: auto !important;
         max-width: 80% !important;
-        line-height: 1.1 !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+        text-align: center !important;
+        border-radius: 8px !important;
+        height: 33px !important;
+        min-height: 33px !important;
+        box-sizing: border-box !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        vertical-align: middle !important;
+    }
+    
+    .cta-button:hover,
+    .cta-button:focus {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(0, 137, 199, 0.3) !important;
+    }
+    
+    .cta-button:active {
+        transform: translateY(0) !important;
+        transition: all 0.1s ease !important;
     }
     
     /* Burger Menu Styling */
@@ -2862,6 +2931,7 @@ body[data-theme="light"] .mode-icon.light {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        overflow: visible !important;
     }
     
     .hero-section .container {
@@ -2870,39 +2940,94 @@ body[data-theme="light"] .mode-icon.light {
         align-items: center !important;
         justify-content: center !important;
         width: 100% !important;
+        overflow: visible !important;
     }
     
     .hero-content {
         text-align: center !important;
-        margin-bottom: 40px !important;
+        margin-bottom: 0 !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
         width: 100% !important;
         max-width: 100% !important;
+        order: 1 !important;
+        padding: 0 15px 50px 15px !important;
+        overflow: visible !important;
+        min-height: 300px !important;
     }
     
     .hero-title {
-        font-size: 2rem !important;
-        line-height: 1.3 !important;
-        margin: 20px 0 !important;
+        font-size: 3.38rem !important;
+        line-height: 1.4 !important;
+        margin: 26px 0 15px 0 !important;
         text-align: center !important;
+        font-weight: 800 !important;
+        overflow: visible !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 150px !important;
+    }
+    
+    .hero-title .highlight {
+        font-size: 4.16rem !important;
+        font-weight: 800 !important;
+        display: inline !important;
+        overflow: visible !important;
+        width: auto !important;
+        line-height: 1.3 !important;
+        height: auto !important;
+    }
+    
+    .typewriter-container {
+        font-size: 4.16rem !important;
+        font-weight: 800 !important;
+        min-width: 400px !important;
+        display: inline-block !important;
+        overflow: visible !important;
+        width: auto !important;
+        max-width: none !important;
+        height: auto !important;
+        min-height: 80px !important;
+        line-height: 1.3 !important;
+        vertical-align: baseline !important;
+    }
+    
+    #typewriter-text-fr,
+    #typewriter-text-en,
+    #typewriter-text-ar {
+        font-size: 4.16rem !important;
+        font-weight: 800 !important;
+        display: inline !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        line-height: 1.3 !important;
+        height: auto !important;
+        vertical-align: baseline !important;
+    }
+    
+    .typewriter-cursor {
+        font-size: 4.16rem !important;
+        font-weight: 400 !important;
+        display: inline !important;
     }
     
     .hero-description {
-        font-size: 1rem !important;
-        line-height: 1.6 !important;
-        margin: 20px auto 30px auto !important;
+        font-size: 1.43rem !important;
+        line-height: 1.5 !important;
+        margin: 15px auto 39px auto !important;
         text-align: center !important;
         max-width: 90% !important;
     }
     
     .hero-label {
-        font-size: 0.8rem !important;
-        margin-bottom: 15px !important;
+        font-size: 1.17rem !important;
+        margin-bottom: 19px !important;
         text-align: center !important;
         display: inline-block !important;
+        font-weight: 700 !important;
+        letter-spacing: 2px !important;
     }
     
     .book-btn {
@@ -2915,24 +3040,27 @@ body[data-theme="light"] .mode-icon.light {
     .hero-stats {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 15px !important;
-        margin: 30px auto !important;
+        gap: 26px !important;
+        margin: 39px auto !important;
         width: 100% !important;
-        max-width: 350px !important;
+        justify-items: center !important;
+        max-width: 450px !important;
         justify-content: center !important;
     }
     
     .stat-item {
-        padding: 15px !important;
+        padding: 19px !important;
         text-align: center !important;
     }
     
     .stat-number {
-        font-size: 1.5rem !important;
+        font-size: 2.34rem !important;
+        font-weight: 800 !important;
     }
     
     .stat-label {
-        font-size: 0.9rem !important;
+        font-size: 1.3rem !important;
+        font-weight: 500 !important;
     }
     
     /* Achievement Cards Mobile */
@@ -2941,82 +3069,220 @@ body[data-theme="light"] .mode-icon.light {
         display: flex !important;
         justify-content: center !important;
         margin: 0 auto !important;
+        padding: 0 !important;
+        order: 2 !important;
     }
     
     .achievements-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 15px !important;
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
         margin: 30px auto 0 auto !important;
         width: 100% !important;
-        max-width: 400px !important;
+        max-width: 300px !important;
         justify-content: center !important;
     }
     
     .achievement-card {
-        padding: 20px 15px !important;
-        text-align: center !important;
+        padding: 20px !important;
         display: flex !important;
-        flex-direction: column !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        border-radius: 16px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        min-height: 80px !important;
+    }
+    
+    .achievement-icon {
+        width: 52px !important;
+        height: 52px !important;
+        margin: 0 18px 0 0 !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        border-radius: 50% !important;
+        background: rgba(0, 137, 199, 0.1) !important;
+        color: var(--primary) !important;
+        font-size: 1.4rem !important;
+    }
+    
+    .achievement-content {
+        flex: 1 !important;
+        text-align: left !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+        padding-left: 4px !important;
     }
     
     .achievement-stats {
-        flex-direction: column !important;
-        align-items: center !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: baseline !important;
+        margin-bottom: 4px !important;
+        justify-content: flex-start !important;
     }
     
     .achievement-number {
         font-size: 1.8rem !important;
+        font-weight: 800 !important;
+        margin-right: 4px !important;
+        color: var(--primary) !important;
+    }
+    
+    .achievement-unit {
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+        color: var(--primary) !important;
     }
     
     .achievement-title {
-        font-size: 1rem !important;
-        margin: 10px 0 5px 0 !important;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        margin: 2px 0 2px 0 !important;
+        text-align: left !important;
+        line-height: 1.2 !important;
+        width: 100% !important;
+        color: var(--text-primary) !important;
     }
     
     .achievement-description {
-        font-size: 0.85rem !important;
+        font-size: 0.9rem !important;
+        text-align: left !important;
+        margin: 0 !important;
+        opacity: 0.7 !important;
+        line-height: 1.3 !important;
+        width: 100% !important;
     }
     
-    /* Services Section Mobile */
+    /* Services Section Mobile - Phone Optimized */
     .services-grid {
         grid-template-columns: 1fr !important;
-        gap: 16px !important;
+        gap: 20px !important;
     }
     
     .service-card {
-        padding: 20px 16px !important;
-        text-align: center !important;
+        padding: 24px !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        border-radius: 14px !important;
+        border-radius: 16px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        min-height: 140px !important;
     }
     
     .service-icon {
-        margin-bottom: 15px !important;
+        width: 56px !important;
+        height: 56px !important;
+        margin: 0 0 16px 0 !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        background: rgba(0, 137, 199, 0.1) !important;
     }
     
     .icon-lg {
         font-size: 2rem !important;
+        color: var(--primary) !important;
     }
     
-    /* Expertise Cards Mobile */
+    .service-content {
+        width: 100% !important;
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+    
+    .service-card h3 {
+        font-size: 1.3rem !important;
+        font-weight: 700 !important;
+        margin: 0 0 8px 0 !important;
+        text-align: center !important;
+        line-height: 1.3 !important;
+        width: 100% !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .service-card p {
+        font-size: 1rem !important;
+        text-align: center !important;
+        margin: 0 !important;
+        opacity: 0.8 !important;
+        line-height: 1.4 !important;
+        width: 100% !important;
+        max-width: 280px !important;
+    }
+    
+    /* Expertise Cards Mobile - Phone Optimized */
     .expertise-grid {
         grid-template-columns: 1fr !important;
-        gap: 16px !important;
+        gap: 20px !important;
     }
     
     .expertise-card {
-        padding: 20px 16px !important;
-        text-align: center !important;
+        padding: 24px !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        border-radius: 14px !important;
+        border-radius: 16px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        min-height: 140px !important;
+    }
+    
+    .expertise-icon {
+        width: 56px !important;
+        height: 56px !important;
+        margin: 0 0 16px 0 !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 2rem !important;
+        border-radius: 50% !important;
+        background: rgba(0, 137, 199, 0.1) !important;
+        color: var(--primary) !important;
+    }
+    
+    .expertise-content {
+        width: 100% !important;
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+    
+    .expertise-card h3 {
+        font-size: 1.3rem !important;
+        font-weight: 700 !important;
+        margin: 0 0 8px 0 !important;
+        text-align: center !important;
+        line-height: 1.3 !important;
+        width: 100% !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .expertise-card p {
+        font-size: 1rem !important;
+        text-align: center !important;
+        margin: 0 !important;
+        opacity: 0.8 !important;
+        line-height: 1.4 !important;
+        width: 100% !important;
+        max-width: 280px !important;
     }
     
     /* Subjects Details Mobile */
@@ -3085,9 +3351,41 @@ body[data-theme="light"] .mode-icon.light {
     
     .submit-btn {
         width: 100% !important;
-        padding: 15px !important;
-        font-size: 1.1rem !important;
+        padding: 0 20px !important;
+        font-size: 1.235rem !important;
+        font-weight: 600 !important;
         margin-top: 20px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+        text-align: center !important;
+        border-radius: 8px !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        box-sizing: border-box !important;
+        white-space: nowrap !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        border: none !important;
+        vertical-align: middle !important;
+    }
+    
+    .submit-btn:hover,
+    .submit-btn:focus {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(0, 137, 199, 0.3) !important;
+    }
+    
+    .submit-btn:active {
+        transform: translateY(0) !important;
+        transition: all 0.1s ease !important;
+    }
+    
+    .submit-btn:disabled {
+        opacity: 0.7 !important;
+        cursor: not-allowed !important;
+        transform: none !important;
     }
     
     /* Floating Controls Mobile */
@@ -3138,18 +3436,18 @@ body[data-theme="light"] .mode-icon.light {
     }
     
     .section-title {
-        font-size: 1.8rem !important;
+        font-size: 2.34rem !important;
         line-height: 1.3 !important;
-        margin: 15px 0 !important;
+        margin: 19px 0 !important;
     }
     
     .section-subtitle {
-        font-size: 0.9rem !important;
-        margin-bottom: 10px !important;
+        font-size: 1.17rem !important;
+        margin-bottom: 13px !important;
     }
     
     .section-description {
-        font-size: 1rem !important;
+        font-size: 1.3rem !important;
         line-height: 1.6 !important;
     }
     
@@ -3222,20 +3520,63 @@ body[data-theme="light"] .mode-icon.light {
     
     .hero-content {
         padding: 0 10px !important;
+        overflow: visible !important;
     }
     
     .hero-title {
-        font-size: 1.4rem !important;
+        font-size: 2.34rem !important;
         padding: 0 10px !important;
-        margin: 15px 0 !important;
-        line-height: 1.4 !important;
+        margin: 19px 0 10px 0 !important;
+        line-height: 1.5 !important;
+        font-weight: 800 !important;
+        overflow: visible !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 120px !important;
     }
     
     .hero-title .highlight {
-        font-size: 1.8rem !important;
-        font-weight: 700 !important;
+        font-size: 2.86rem !important;
+        font-weight: 800 !important;
         display: block !important;
-        margin-top: 10px !important;
+        margin-top: 13px !important;
+        overflow: visible !important;
+        width: auto !important;
+        line-height: 1.4 !important;
+        height: auto !important;
+    }
+    
+    .typewriter-container {
+        font-size: 2.86rem !important;
+        font-weight: 800 !important;
+        min-width: 300px !important;
+        display: inline-block !important;
+        overflow: visible !important;
+        width: auto !important;
+        max-width: none !important;
+        height: auto !important;
+        min-height: 60px !important;
+        line-height: 1.4 !important;
+        vertical-align: baseline !important;
+    }
+    
+    #typewriter-text-fr,
+    #typewriter-text-en,
+    #typewriter-text-ar {
+        font-size: 2.86rem !important;
+        font-weight: 800 !important;
+        display: inline !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        line-height: 1.4 !important;
+        height: auto !important;
+        vertical-align: baseline !important;
+    }
+    
+    .typewriter-cursor {
+        font-size: 2.86rem !important;
+        font-weight: 400 !important;
+        display: inline !important;
     }
     
     .hero-title br {
@@ -3245,13 +3586,13 @@ body[data-theme="light"] .mode-icon.light {
     }
     
     .hero-description {
-        font-size: 0.95rem !important;
+        font-size: 1.235rem !important;
         padding: 0 10px !important;
-        margin: 15px 0 25px 0 !important;
+        margin: 10px 0 32px 0 !important;
     }
     
     .hero-label {
-        font-size: 0.75rem !important;
+        font-size: 0.975rem !important;
     }
     
     /* Fix Hero Stats for 437px width */
@@ -3270,11 +3611,13 @@ body[data-theme="light"] .mode-icon.light {
     }
     
     .stat-number {
-        font-size: 1.2rem !important;
+        font-size: 2.08rem !important;
+        font-weight: 800 !important;
     }
     
     .stat-label {
-        font-size: 0.75rem !important;
+        font-size: 1.17rem !important;
+        font-weight: 500 !important;
     }
     
     /* Achievement Cards for Small Mobile */
@@ -3285,11 +3628,12 @@ body[data-theme="light"] .mode-icon.light {
     }
     
     .achievements-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10px !important;
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
         width: 100% !important;
-        max-width: none !important;
+        max-width: 280px !important;
         padding: 0 !important;
+        margin: 0 auto !important;
     }
     
     .achievement-card {
@@ -3348,8 +3692,10 @@ body[data-theme="light"] .mode-icon.light {
     }
     
     .typewriter-container {
-        min-width: 180px !important;
+        min-width: 200px !important;
         height: 1.8em !important;
+        text-align: center !important;
+        margin: 0 auto !important;
     }
     
     /* Fix Hero Section centering */
