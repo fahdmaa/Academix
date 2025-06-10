@@ -10,7 +10,7 @@ OOUI PROF is a static single-page web application for booking private finance an
 
 ### Technology Stack
 - **Frontend**: Pure HTML, CSS, JavaScript (no framework)
-- **Email Service**: EmailJS for contact form submissions
+- **Backend**: Azure Functions for contact form submissions
 - **Storage**: LocalStorage for user preferences and form data backup
 - **Deployment**: Static files, can be served from any web server
 
@@ -27,8 +27,8 @@ OOUI PROF is a static single-page web application for booking private finance an
    - Theme preference saved to localStorage
 
 3. **Form Handling**
-   - EmailJS integration (service_id: "service_0btadmm", template_id: "template_kbj9hcc")
-   - Backup submission to localStorage if EmailJS fails
+   - Azure Functions backend integration for form submissions
+   - Backup submission to localStorage if Azure backend fails
    - Form validation and error handling
 
 4. **Mobile Support**
@@ -71,7 +71,7 @@ php -S localhost:8000
 ## Important Notes
 
 1. **No Build Process**: Changes to files are immediately reflected - no compilation needed
-2. **Security**: Input sanitization implemented, EmailJS credentials properly managed
+2. **Security**: Input sanitization implemented, Azure Functions provide secure backend
 3. **localStorage Keys**: `theme`, `language`, `formSubmissions`
 4. **Testing**: Manual testing only - open HTML files directly in browser
 5. **Mobile Integration**: All mobile functionality is now integrated into the main files (index.html, styles.css, script.js)

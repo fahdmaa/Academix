@@ -17,15 +17,14 @@ function sanitizeInput(input) {
         .substring(0, 1000); // Limit length
 }
 
-// Azure backend configuration
-const AZURE_ENDPOINT = 'https://ouiiprof-form-handler.azurewebsites.net/api/handleForm?code=OyFN6PKeeoLhT32nPa5tECi-y5wZBIHafl0ygfWfT-amAzFuFhtamQ==';
-console.log('✅ Azure backend endpoint configured');
+// Define constants for local storage
+const STORAGE_KEY = window.STORAGE_KEY || 'ouiiprof_submissions';
+const MAX_STORED_SUBMISSIONS = window.MAX_STORED_SUBMISSIONS || 100;
 
 // Attendre que le DOM soit entièrement chargé
 document.addEventListener('DOMContentLoaded', function() {
     // Debug information
     console.log('DOM loaded');
-    console.log('Azure endpoint configured:', AZURE_ENDPOINT);
     console.log('Current URL:', window.location.href);
     
     // Check Font Awesome icons
@@ -1545,7 +1544,7 @@ OUIIPROF - Cours Particuliers`
                 console.log('🚀 Sending form data to Azure backend...');
                 console.log('📤 Data being sent:', submissionData);
                 
-                const response = await fetch(AZURE_ENDPOINT, {
+                const response = await fetch('https://ouiiprof-form-handler.azurewebsites.net/api/handleForm?code=OyFN6PKeeoLhT32nPa5tECi-y5wZBIHafl0ygfWfT-amAzFuFhtamQ==', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
