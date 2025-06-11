@@ -693,18 +693,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const options = {
             fr: [
                 { value: '', text: 'Choisissez une option', disabled: true, selected: true },
-                { value: 'online', text: 'En ligne' },
-                { value: 'presential', text: 'Présentiel' }
+                { value: 'Email', text: 'Email' },
+                { value: 'Phone', text: 'Téléphone' },
+                { value: 'WhatsApp', text: 'WhatsApp' }
             ],
             en: [
                 { value: '', text: 'Choose an option', disabled: true, selected: true },
-                { value: 'online', text: 'Online' },
-                { value: 'presential', text: 'In-person' }
+                { value: 'Email', text: 'Email' },
+                { value: 'Phone', text: 'Phone' },
+                { value: 'WhatsApp', text: 'WhatsApp' }
             ],
             ar: [
                 { value: '', text: 'اختر خيارًا', disabled: true, selected: true },
-                { value: 'online', text: 'عبر الإنترنت' },
-                { value: 'presential', text: 'شخصي' }
+                { value: 'Email', text: 'البريد الإلكتروني' },
+                { value: 'Phone', text: 'الهاتف' },
+                { value: 'WhatsApp', text: 'واتساب' }
             ]
         };
 
@@ -1494,27 +1497,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Get form data
         const formData = new FormData(appointmentForm);
-        const subjects = formData.get('subjects') || '';
+        
+        // Get selected subjects from checkboxes
+        const selectedSubjects = [];
+        const subjectCheckboxes = appointmentForm.querySelectorAll('input[name="subjects"]:checked');
+        subjectCheckboxes.forEach(checkbox => {
+            selectedSubjects.push(checkbox.value);
+        });
+        const subjects = selectedSubjects.join(', ');
+        
+        // Get message directly from form field
+        const messageField = sanitizeInput(formData.get('message'));
+        
+        // Create a formatted message that includes all form data
+        const message = messageField || `Message depuis le formulaire de contact`;
         
         // Prepare data for Azure backend
         const submissionData = {
             name: sanitizeInput(formData.get('fullName')),
             email: sanitizeInput(formData.get('email')),
-            message: `🎓 NOUVELLE DEMANDE DE COURS
-
-👤 Nom: ${sanitizeInput(formData.get('fullName'))}
-📧 Email: ${sanitizeInput(formData.get('email'))}
-📱 Téléphone: ${sanitizeInput(formData.get('phone'))}
-🏙️ Ville: ${sanitizeInput(formData.get('city'))}
-📚 Méthode: ${sanitizeInput(formData.get('method'))}
-⏰ Heures: ${sanitizeInput(formData.get('hours'))}
-📖 Matières: ${sanitizeInput(subjects) || 'Non spécifiées'}
-
-🌐 Envoyé depuis: ${window.location.hostname}
-📅 Date: ${new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })}
-
----
-OUIIPROF - Cours Particuliers`
+            message: message,
+            phone: sanitizeInput(formData.get('phone')) || 'Non fourni',
+            city: sanitizeInput(formData.get('city')) || 'Non fourni',
+            method: sanitizeInput(formData.get('method')) || 'Non spécifié',
+            hours: sanitizeInput(formData.get('hours')) || 'Non spécifié',
+            subjects: subjects || 'Non spécifié',
+            subject: 'Contact depuis le site web'
         };
 
         // Store submission locally as backup
@@ -1581,12 +1589,22 @@ OUIIPROF - Cours Particuliers`
                     console.warn('⚠️ Failed to update submission:', storageError);
                 }
                 
-                showSuccessMessage();
-                appointmentForm.reset();
-                // Clear subjects input
-                if (subjectsInput) {
-                    subjectsInput.value = '';
+                // Show appropriate success message based on Azure response
+                if (result.success) {
+                    if (result.emailSent) {
+                        showSuccessMessage('Votre message a été envoyé avec succès!');
+                    } else {
+                        showSuccessMessage('Votre message a été enregistré. Nous vous contacterons bientôt!');
+                    }
+                } else {
+                    showSuccessMessage(); // Default success message
                 }
+                
+                appointmentForm.reset();
+                // Clear subjects checkboxes
+                const checkboxes = appointmentForm.querySelectorAll('input[name="subjects"]:checked');
+                checkboxes.forEach(checkbox => checkbox.checked = false);
+                
                 submitBtn.innerHTML = submitBtnText;
                 submitBtn.disabled = false;
                 
@@ -1631,21 +1649,65 @@ OUIIPROF - Cours Particuliers`
     }
 
     // Show success message
-    function showSuccessMessage() {
-        successMessage.classList.add('show');
-        setTimeout(() => {
-            successMessage.classList.remove('show');
-        }, 3000);
+    function showSuccessMessage(customMessage = null) {
+        if (customMessage) {
+            // Create dynamic success message
+            const currentLang = document.documentElement.lang || 'fr';
+            const translations = {
+                'Votre message a été envoyé avec succès!': {
+                    fr: 'Votre message a été envoyé avec succès!',
+                    en: 'Your message has been sent successfully!',
+                    ar: 'تم إرسال رسالتك بنجاح!'
+                },
+                'Votre message a été enregistré. Nous vous contacterons bientôt!': {
+                    fr: 'Votre message a été enregistré. Nous vous contacterons bientôt!',
+                    en: 'Your message has been saved. We will contact you soon!',
+                    ar: 'تم حفظ رسالتك. سنتواصل معك قريباً!'
+                }
+            };
+            
+            const translatedMessage = translations[customMessage] 
+                ? translations[customMessage][currentLang] 
+                : customMessage;
+            
+            const dynamicSuccessDiv = document.createElement('div');
+            dynamicSuccessDiv.className = 'success-message show';
+            dynamicSuccessDiv.innerHTML = `
+                <div class="success-content">
+                    <div class="success-icon">✅</div>
+                    <h3>${translatedMessage}</h3>
+                    <p>
+                        <span class="fr">Nous vous contacterons bientôt.</span>
+                        <span class="en">We will contact you soon.</span>
+                        <span class="ar">سنتصل بك قريبًا.</span>
+                    </p>
+                </div>
+            `;
+            document.body.appendChild(dynamicSuccessDiv);
+            
+            setTimeout(() => {
+                dynamicSuccessDiv.classList.remove('show');
+                setTimeout(() => dynamicSuccessDiv.remove(), 300);
+            }, 4000);
+        } else {
+            // Use existing success message element
+            successMessage.classList.add('show');
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 3000);
+        }
     }
 
     // Show error message
-    function showErrorMessage() {
+    function showErrorMessage(customMessage = null) {
         const currentLang = document.documentElement.lang || 'fr';
-        const errorMessages = {
+        const defaultErrorMessages = {
             fr: 'Une erreur est survenue. Veuillez réessayer.',
             en: 'An error occurred. Please try again.',
             ar: 'حدث خطأ. يرجى المحاولة مرة أخرى.'
         };
+        
+        const message = customMessage || defaultErrorMessages[currentLang];
         
         // Create temporary error message
         const errorDiv = document.createElement('div');
@@ -1653,7 +1715,7 @@ OUIIPROF - Cours Particuliers`
         errorDiv.innerHTML = `
             <div class="error-content">
                 <div class="error-icon">❌</div>
-                <p>${errorMessages[currentLang]}</p>
+                <p>${message}</p>
             </div>
         `;
         document.body.appendChild(errorDiv);

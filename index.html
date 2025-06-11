@@ -615,37 +615,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="city">
-                            <span class="fr">Ville *</span>
-                            <span class="en">City *</span>
-                            <span class="ar">المدينة *</span>
-                        </label>
-                        <input type="text" id="city" name="city" class="form-control" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="method">
-                            <span class="fr">Méthode souhaitée *</span>
-                            <span class="en">Preferred Method *</span>
-                            <span class="ar">الطريقة المفضلة *</span>
-                        </label>
-                        <select id="method" name="method" class="form-control" required>
-                            <option value="" disabled selected>Choisissez une option</option>
-                            <option value="online">En ligne</option>
-                            <option value="presential">Présentiel</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="hours">
-                            <span class="fr">Nombre d'heures (approximativement) *</span>
-                            <span class="en">Number of Hours (approximately) *</span>
-                            <span class="ar">عدد الساعات (تقريبًا) *</span>
-                        </label>
-                        <input type="number" id="hours" name="hours" min="1" max="100" class="form-control" required>
-                    </div>
-
-                    <div class="form-group">
                         <label for="email">
                             <span class="fr">Adresse e-mail *</span>
                             <span class="en">Email Address *</span>
@@ -656,20 +625,106 @@
 
                     <div class="form-group">
                         <label for="phone">
-                            <span class="fr">Numéro de téléphone *</span>
-                            <span class="en">Phone Number *</span>
-                            <span class="ar">رقم الهاتف *</span>
+                            <span class="fr">Numéro de téléphone</span>
+                            <span class="en">Phone Number</span>
+                            <span class="ar">رقم الهاتف</span>
                         </label>
-                        <input type="tel" id="phone" name="phone" class="form-control" required>
+                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="+212 6XX-XXXXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">
+                            <span class="fr">Ville</span>
+                            <span class="en">City</span>
+                            <span class="ar">المدينة</span>
+                        </label>
+                        <input type="text" id="city" name="city" class="form-control" placeholder="Ex: Casablanca, Rabat...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="method">
+                            <span class="fr">Méthode de contact préférée</span>
+                            <span class="en">Preferred Contact Method</span>
+                            <span class="ar">طريقة الاتصال المفضلة</span>
+                        </label>
+                        <select id="method" name="method" class="form-control">
+                            <option value="">
+                                <span class="fr">Choisissez une option</span>
+                                <span class="en">Choose an option</span>
+                                <span class="ar">اختر خيارًا</span>
+                            </option>
+                            <option value="Email">Email</option>
+                            <option value="Phone">
+                                <span class="fr">Téléphone</span>
+                                <span class="en">Phone</span>
+                                <span class="ar">الهاتف</span>
+                            </option>
+                            <option value="WhatsApp">WhatsApp</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hours">
+                            <span class="fr">Horaires disponibles</span>
+                            <span class="en">Available Hours</span>
+                            <span class="ar">الساعات المتاحة</span>
+                        </label>
+                        <input type="text" id="hours" name="hours" class="form-control" placeholder="Ex: Lundi-Vendredi 18h-20h">
                     </div>
 
                     <div class="form-group full-width">
-                        <label for="subjects">
-                            <span class="fr">Matières d'intérêt (optionnel)</span>
-                            <span class="en">Subjects of Interest (optional)</span>
-                            <span class="ar">المواد ذات الاهتمام (اختياري)</span>
+                        <label>
+                            <span class="fr">Matières d'intérêt</span>
+                            <span class="en">Subjects of Interest</span>
+                            <span class="ar">المواد ذات الاهتمام</span>
                         </label>
-                        <input type="text" id="subjects" name="subjects" class="form-control" placeholder="Ex: Finance d'entreprise, Comptabilité">
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="subjects" value="Mathematics">
+                                <span class="fr">Mathématiques</span>
+                                <span class="en">Mathematics</span>
+                                <span class="ar">الرياضيات</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="subjects" value="Physics">
+                                <span class="fr">Physique</span>
+                                <span class="en">Physics</span>
+                                <span class="ar">الفيزياء</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="subjects" value="Chemistry">
+                                <span class="fr">Chimie</span>
+                                <span class="en">Chemistry</span>
+                                <span class="ar">الكيمياء</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="subjects" value="Biology">
+                                <span class="fr">Biologie</span>
+                                <span class="en">Biology</span>
+                                <span class="ar">الأحياء</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="subjects" value="Finance">
+                                <span class="fr">Finance</span>
+                                <span class="en">Finance</span>
+                                <span class="ar">التمويل</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="subjects" value="Accounting">
+                                <span class="fr">Comptabilité</span>
+                                <span class="en">Accounting</span>
+                                <span class="ar">المحاسبة</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="message">
+                            <span class="fr">Message *</span>
+                            <span class="en">Message *</span>
+                            <span class="ar">الرسالة *</span>
+                        </label>
+                        <textarea id="message" name="message" class="form-control" rows="5" required placeholder="Décrivez vos besoins..."></textarea>
                     </div>
                 </div>
 
