@@ -442,7 +442,7 @@ header.scrolled {
 }
 
 .logo-img {
-    height: 55px;
+    height: 40px;
     width: auto;
     transition: transform 0.3s ease;
 }
@@ -2479,7 +2479,7 @@ html[lang="ar"] .cta-button {
     
     /* Logo */
     .logo-img {
-        height: 45px;
+        height: 35px;
     }
     
     /* Hero section */
@@ -2713,7 +2713,7 @@ html[lang="ar"] .cta-button {
     }
 
     .logo-img {
-        height: 30px;
+        height: 25px;
     }
 
     .floating-controls {
@@ -3177,7 +3177,7 @@ body[data-theme="light"] .mode-icon.light {
     }
     
     .logo-img {
-        height: 35px !important;
+        height: 30px !important;
         width: auto !important;
     }
     
