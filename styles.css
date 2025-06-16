@@ -286,7 +286,7 @@ body[data-theme="dark"] {
     --bg-card: var(--dark-lighter);
     --text-primary: var(--white);
     --text-secondary: var(--ultra-light-blue);
-    --text-muted: var(--gray);
+    --text-muted: #B8BCC8;
     --border-color: rgba(47, 193, 255, 0.12);
     
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
@@ -343,6 +343,26 @@ body[data-theme="dark"] .achievement-card .stat-number {
 }
 
 body[data-theme="dark"] .achievement-card .stat-label {
+    color: var(--text-secondary);
+}
+
+/* Dark mode subtitle overrides - make subtitles white for better contrast */
+body[data-theme="dark"] .hero-description,
+body[data-theme="dark"] .section-description,
+body[data-theme="dark"] .achievement-description,
+body[data-theme="dark"] .service-description,
+body[data-theme="dark"] .expertise-description,
+body[data-theme="dark"] .tagline,
+body[data-theme="dark"] .section-header p,
+body[data-theme="dark"] .details-header h3,
+body[data-theme="dark"] .footer-section h3,
+body[data-theme="dark"] .footer-section p {
+    color: var(--white);
+}
+
+/* Ensure muted text elements are more visible in dark mode */
+body[data-theme="dark"] .stat-label,
+body[data-theme="dark"] .multiselect-placeholder {
     color: var(--text-secondary);
 }
 
