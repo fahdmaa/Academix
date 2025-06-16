@@ -381,6 +381,8 @@ body[data-theme="dark"] .multiselect-placeholder {
 html {
     scroll-behavior: smooth;
     font-size: 16px;
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 body {
@@ -397,6 +399,8 @@ body {
     /* Fix iOS scrolling */
     -webkit-overflow-scrolling: touch;
     position: relative;
+    width: 100%;
+    max-width: 100%;
 }
 
 .container {
@@ -2012,6 +2016,80 @@ html[lang="ar"] {
     direction: rtl;
 }
 
+/* Fix for RTL blank space issue */
+html[lang="ar"] body {
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: relative !important;
+}
+
+html[lang="ar"] * {
+    box-sizing: border-box !important;
+}
+
+/* Fix typewriter min-width in RTL */
+html[lang="ar"] .typewriter-container {
+    min-width: 250px !important;
+    width: 250px !important;
+    max-width: 250px !important;
+    text-align: right !important;
+    direction: rtl !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+    vertical-align: baseline !important;
+    position: relative !important;
+}
+
+/* Fix transform values for RTL */
+html[lang="ar"] .scroll-reveal-left {
+    transform: translateX(40px) !important;
+}
+
+html[lang="ar"] .scroll-reveal-right {
+    transform: translateX(-40px) !important;
+}
+
+html[lang="ar"] .expertise-card:hover .expertise-more::after {
+    transform: translateX(-5px) rotate(180deg) !important;
+}
+
+html[lang="ar"] .multiselect-option:hover {
+    transform: translateX(-4px) !important;
+}
+
+html[lang="ar"] .lang-option:hover {
+    transform: translateX(-5px) !important;
+}
+
+html[lang="ar"] .container {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow: hidden !important;
+}
+
+html[lang="ar"] .hero-section {
+    overflow: hidden !important;
+}
+
+html[lang="ar"] .hero-section .container {
+    overflow: visible !important;
+}
+
+html[lang="ar"] header {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+html[lang="ar"] .nav-container {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
 html[lang="ar"] .floating-controls {
     right: auto;
     left: 30px;
@@ -2030,6 +2108,44 @@ html[lang="ar"] .expertise-more::after {
 
 html[lang="ar"] .expertise-card:hover .expertise-more::after {
     transform: translateX(-5px) rotate(180deg);
+}
+
+/* Additional RTL fixes for navigation and layout */
+html[lang="ar"] .nav-links {
+    text-align: right;
+}
+
+html[lang="ar"] .nav-link {
+    direction: rtl;
+}
+
+html[lang="ar"] .hero-content {
+    text-align: right !important;
+    margin-right: 0 !important;
+    margin-left: 120px !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+}
+
+html[lang="ar"] .hero-stats {
+    direction: rtl;
+}
+
+html[lang="ar"] .achievements-grid {
+    direction: rtl;
+}
+
+html[lang="ar"] .expertise-cards {
+    direction: rtl;
+}
+
+html[lang="ar"] .form-grid {
+    direction: rtl;
+}
+
+html[lang="ar"] .btn,
+html[lang="ar"] .cta-button {
+    direction: rtl;
 }
 
 /* Enhanced Animations */
@@ -2965,6 +3081,55 @@ body[data-theme="light"] .mode-icon.light {
     
     html[lang="ar"] .ar {
         display: inline !important;
+    }
+    
+    /* Fix RTL horizontal overflow in mobile */
+    html[lang="ar"] {
+        overflow-x: hidden !important;
+    }
+    
+    html[lang="ar"] body {
+        overflow-x: hidden !important;
+        position: relative !important;
+    }
+    
+    html[lang="ar"] .hero-section,
+    html[lang="ar"] .section {
+        overflow-x: hidden !important;
+    }
+    
+    html[lang="ar"] * {
+        max-width: 100% !important;
+    }
+    
+    /* Fix hero content margin in RTL mobile */
+    html[lang="ar"] .hero-content {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 0 15px 50px 15px !important;
+    }
+    
+    /* Fix typewriter container in RTL mobile */
+    html[lang="ar"] .typewriter-container {
+        min-width: 220px !important;
+        width: 220px !important;
+        max-width: 220px !important;
+        text-align: right !important;
+        direction: rtl !important;
+        display: inline-block !important;
+        overflow: visible !important;
+    }
+    
+    /* Fix nav links in RTL mobile */
+    html[lang="ar"] .nav-links {
+        right: auto !important;
+        left: -100% !important;
+        transform: translateX(100%) !important;
+    }
+    
+    html[lang="ar"] .nav-links.active {
+        left: 0 !important;
+        transform: translateX(0) !important;
     }
     
     body {
@@ -4081,3 +4246,114 @@ body[data-theme="light"] .mode-icon.light {
     }
 }
 EOF < /dev/null
+
+
+/* FINAL RTL OVERFLOW FIX - DO NOT REMOVE */
+html[lang="ar"] {
+    overflow-x: hidden \!important;
+    width: 100% \!important;
+}
+
+html[lang="ar"] body {
+    overflow-x: hidden \!important;
+    width: 100% \!important;
+    max-width: 100% \!important;
+    margin: 0 \!important;
+    padding: 0 \!important;
+}
+
+html[lang="ar"] .container,
+html[lang="ar"] .hero-section,
+html[lang="ar"] .section,
+html[lang="ar"] header,
+html[lang="ar"] footer,
+html[lang="ar"] main {
+    overflow-x: hidden \!important;
+    max-width: 100% \!important;
+}
+
+/* Remove all horizontal transforms in RTL */
+html[lang="ar"] * {
+    animation: none \!important;
+}
+
+/* Fix specific problematic elements */
+html[lang="ar"] .hero-content {
+    margin: 0 \!important;
+    padding: 0 20px \!important;
+    max-width: 100% \!important;
+}
+
+html[lang="ar"] .info-card {
+    margin-left: 0 \!important;
+    margin-right: 0 \!important;
+}
+
+html[lang="ar"] .typewriter-container,
+html[lang="ar"] #typewriter-text-ar {
+    min-width: 250px !important;
+    width: 250px !important;
+    max-width: 250px !important;
+    text-align: right !important;
+    direction: rtl !important;
+    display: inline-block !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+}
+
+html[lang="ar"] #typewriter-text-ar {
+    width: 100% !important;
+    display: inline !important;
+    text-align: right !important;
+    direction: rtl !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+}
+
+html[lang="ar"] .typewriter-cursor {
+    margin-left: 0 !important;
+    margin-right: 2px !important;
+}
+
+/* Stabilize hero title layout in RTL */
+html[lang="ar"] .hero-title {
+    text-align: right !important;
+    direction: rtl !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+html[lang="ar"] .hero-title .highlight {
+    display: inline-block !important;
+    vertical-align: baseline !important;
+    width: auto !important;
+    max-width: none !important;
+}
+
+/* Prevent any layout shifts in hero content */
+html[lang="ar"] .hero-content {
+    position: relative !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Ensure no element can cause overflow */
+html[lang="ar"] *:not(html):not(body) {
+    max-width: 100% \!important;
+    overflow-x: hidden \!important;
+}
+
+/* Fix floating controls position in RTL */
+html[lang="ar"] .floating-controls {
+    left: 20px \!important;
+    right: auto \!important;
+}
+
+/* Disable problematic animations in RTL */
+html[lang="ar"] .scroll-reveal-left,
+html[lang="ar"] .scroll-reveal-right {
+    transform: none \!important;
+    opacity: 1 \!important;
+}

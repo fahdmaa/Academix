@@ -16,7 +16,8 @@
       "Bash(/usr/local/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n -A 8 \"function resetDropdownState\" script.js)",
       "WebFetch(domain:color.adobe.com)",
       "Bash(python:*)",
-      "Bash(npx serve:*)"
+      "Bash(npx serve:*)",
+      "Bash(awk:*)"
     ],
     "deny": []
   },

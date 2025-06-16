@@ -788,7 +788,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set minimum width based on longest word to prevent layout shifts
         const longestWord = words.reduce((a, b) => a.length > b.length ? a : b);
         const container = element.parentElement;
-        if (container && container.classList.contains('typewriter-container')) {
+        
+        // Skip dynamic width calculation for Arabic RTL to prevent layout shifts
+        const isArabic = document.documentElement.lang === 'ar';
+        
+        if (container && container.classList.contains('typewriter-container') && !isArabic) {
             // Create a temporary element to measure text width
             const measurer = document.createElement('span');
             measurer.style.cssText = `
@@ -814,6 +818,12 @@ document.addEventListener('DOMContentLoaded', function() {
             container.style.display = 'inline-block';
             
             document.body.removeChild(measurer);
+        } else if (isArabic && container && container.classList.contains('typewriter-container')) {
+            // For Arabic, use fixed width and let CSS handle the layout
+            container.style.minWidth = '';
+            container.style.width = '';
+            container.style.maxWidth = '';
+            container.style.display = 'inline-block';
         }
         
         let currentWordIndex = 0;
