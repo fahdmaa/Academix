@@ -1795,14 +1795,18 @@ html[lang="ar"] .ar-option {
 
 /* Contrôles flottants (thème et langue) - Enhanced */
 .floating-controls {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    z-index: 999999;
-    pointer-events: none;
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    z-index: 999999 !important;
+    pointer-events: none !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
 }
 
 .floating-controls * {
@@ -3739,9 +3743,14 @@ body[data-theme="light"] .mode-icon.light {
     
     /* Floating Controls Mobile */
     .floating-controls {
+        position: fixed !important;
         bottom: 20px !important;
         right: 15px !important;
         gap: 10px !important;
+        z-index: 1000000 !important;
+        transform: translateZ(0) !important;
+        -webkit-transform: translateZ(0) !important;
+        will-change: auto !important;
     }
     
     .control-btn {
@@ -4006,8 +4015,12 @@ body[data-theme="light"] .mode-icon.light {
     }
     
     .floating-controls {
+        position: fixed !important;
         right: 10px !important;
         bottom: 15px !important;
+        z-index: 1000000 !important;
+        transform: translateZ(0) !important;
+        -webkit-transform: translateZ(0) !important;
     }
     
     .control-btn {
@@ -4347,8 +4360,13 @@ html[lang="ar"] *:not(html):not(body) {
 
 /* Fix floating controls position in RTL */
 html[lang="ar"] .floating-controls {
-    left: 20px \!important;
-    right: auto \!important;
+    position: fixed !important;
+    left: 20px !important;
+    right: auto !important;
+    bottom: 20px !important;
+    z-index: 1000000 !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
 }
 
 /* Disable problematic animations in RTL */
