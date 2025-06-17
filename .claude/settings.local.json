@@ -17,7 +17,8 @@
       "WebFetch(domain:color.adobe.com)",
       "Bash(python:*)",
       "Bash(npx serve:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   },

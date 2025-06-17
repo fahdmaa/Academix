@@ -1,0 +1,10 @@
+{
+  "name": "ouiiprof",
+  "version": "1.0.0",
+  "description": "OUIIPROF - Cours Particuliers de Finance",
+  "scripts": {
+    "start": "python -m http.server 8080",
+    "serve": "npx http-server -p 8080 -o",
+    "live": "npx live-server --port=8080"
+  }
+}

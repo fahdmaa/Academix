@@ -46,6 +46,11 @@
                 <span class="en">Subjects</span>
                 <span class="ar">المواد</span>
             </a>
+            <a href="#pricing" class="nav-link">
+                <span class="fr">Tarifs</span>
+                <span class="en">Pricing</span>
+                <span class="ar">الأسعار</span>
+            </a>
             <a href="#appointment" class="nav-link">
                 <span class="fr">Rendez-vous</span>
                 <span class="en">Appointments</span>
@@ -589,8 +594,324 @@
     </div>
 </div>
 
+<!-- Modern Pricing Section -->
+<section id="pricing" class="pricing-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-subtitle">
+                <span class="fr">Tarifs</span>
+                <span class="en">Pricing</span>
+                <span class="ar">الأسعار</span>
+            </div>
+            <h2 class="section-title">
+                <span class="fr">Plans flexibles pour tous les étudiants</span>
+                <span class="en">Flexible Plans for Every Student</span>
+                <span class="ar">خطط مرنة لجميع الطلاب</span>
+            </h2>
+        </div>
+
+
+        <!-- Integrated Pricing Module -->
+        <div class="pricing-calculator">
+            <div class="calculator-header">
+                <h3>
+                    <span class="fr">Choisissez votre pack</span>
+                    <span class="en">Choose your package</span>
+                    <span class="ar">اختر باقتك</span>
+                </h3>
+                <p>
+                    <span class="fr">Ajustez le nombre d'heures pour découvrir votre tarif</span>
+                    <span class="en">Adjust the hours to discover your rate</span>
+                    <span class="ar">اضبط عدد الساعات لاكتشاف سعرك</span>
+                </p>
+            </div>
+            
+            <div class="hours-selector">
+                <div class="range-container">
+                    <input type="range" id="hours-range" min="1" max="30" value="10" class="modern-range">
+                    <div class="range-track"></div>
+                    <div class="range-progress" id="range-progress"></div>
+                </div>
+                
+                <div class="range-labels">
+                    <span>1h</span>
+                    <span>30h</span>
+                </div>
+                
+                <div class="hours-display">
+                    <div class="hours-counter">
+                        <span id="selected-hours">10</span>
+                        <span class="hours-unit">
+                            <span class="fr">heures</span>
+                            <span class="en">hours</span>
+                            <span class="ar">ساعات</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Price Display -->
+            <div class="price-display" aria-live="polite">
+                <div class="price-card">
+                    <div class="tier-badge" id="tier-badge">
+                        <span id="tier-name">Progress</span>
+                    </div>
+                    
+                    <div class="price-main">
+                        <div class="price-amount">
+                            <span class="currency">MAD</span>
+                            <span class="amount" id="total-mad">2000</span>
+                        </div>
+                        <div class="price-period">
+                            <span class="fr">pour le pack complet</span>
+                            <span class="en">for the complete pack</span>
+                            <span class="ar">للحزمة الكاملة</span>
+                        </div>
+                    </div>
+                    
+                    <div class="price-breakdown">
+                        <div class="breakdown-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="breakdown-label">
+                                <span class="fr">Prix/heure</span>
+                                <span class="en">Price/hour</span>
+                                <span class="ar">السعر/ساعة</span>
+                            </span>
+                            <span class="breakdown-value" id="mad-per-hour">200 MAD</span>
+                        </div>
+                        
+                        <div class="breakdown-item bonus" id="bonus-item">
+                            <i class="fas fa-gift"></i>
+                            <span class="breakdown-label">
+                                <span class="fr">Heures bonus</span>
+                                <span class="en">Bonus hours</span>
+                                <span class="ar">ساعات مجانية</span>
+                            </span>
+                            <span class="breakdown-value" id="free-hours">+1h</span>
+                        </div>
+                        
+                        <div class="breakdown-item effective">
+                            <i class="fas fa-calculator"></i>
+                            <span class="breakdown-label">
+                                <span class="fr">Tarif effectif</span>
+                                <span class="en">Effective rate</span>
+                                <span class="ar">السعر الفعلي</span>
+                            </span>
+                            <span class="breakdown-value" id="effective-mad">182 MAD/h</span>
+                        </div>
+                    </div>
+                    
+                    <button id="book-pack-btn" class="cta-button" style="width: 100%; margin-top: 1.5rem;">
+                        <span class="fr">Réserver ce pack</span>
+                        <span class="en">Book this pack</span>
+                        <span class="ar">احجز هذه الباقة</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modern Pricing Tiers -->
+        <div class="pricing-tiers" style="display: none;">
+            <div class="tier-card basic">
+                <div class="tier-header">
+                    <h4>Flex</h4>
+                    <p class="tier-subtitle">
+                        <span class="fr">Pour commencer</span>
+                        <span class="en">To get started</span>
+                        <span class="ar">للبدء</span>
+                    </p>
+                </div>
+                
+                <div class="tier-price">
+                    <span class="price-number">$19</span>
+                </div>
+                
+                <div class="tier-features">
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Jusqu'à 5 projets</span>
+                        <span class="en">Up to 5 projects</span>
+                        <span class="ar">حتى 5 مشاريع</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Support par email</span>
+                        <span class="en">Email support</span>
+                        <span class="ar">دعم البريد الإلكتروني</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Stockage 10GB</span>
+                        <span class="en">10GB storage</span>
+                        <span class="ar">تخزين 10 جيجابايت</span>
+                    </div>
+                </div>
+                
+                <button class="tier-button" onclick="document.getElementById('appointment-form').scrollIntoView({behavior: 'smooth'});">
+                    <span class="fr">Commencer</span>
+                    <span class="en">Get Started</span>
+                    <span class="ar">ابدأ</span>
+                </button>
+            </div>
+
+            <div class="tier-card popular">
+                <div class="popular-badge">
+                    <span class="fr">Plus populaire</span>
+                    <span class="en">Most Popular</span>
+                    <span class="ar">الأكثر شعبية</span>
+                </div>
+                
+                <div class="tier-header">
+                    <h4>Starter</h4>
+                    <p class="tier-subtitle">
+                        <span class="fr">Le plus populaire</span>
+                        <span class="en">Most popular</span>
+                        <span class="ar">الأكثر شعبية</span>
+                    </p>
+                </div>
+                
+                <div class="tier-price">
+                    <span class="price-number">$49</span>
+                </div>
+                
+                <div class="tier-features">
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Jusqu'à 20 projets</span>
+                        <span class="en">Up to 20 projects</span>
+                        <span class="ar">حتى 20 مشروع</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Support prioritaire</span>
+                        <span class="en">Priority support</span>
+                        <span class="ar">دعم أولوي</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Stockage 50GB</span>
+                        <span class="en">50GB storage</span>
+                        <span class="ar">تخزين 50 جيجابايت</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Intégrations avancées</span>
+                        <span class="en">Advanced integrations</span>
+                        <span class="ar">تكامل متقدم</span>
+                    </div>
+                </div>
+                
+                <button class="tier-button" onclick="document.getElementById('appointment-form').scrollIntoView({behavior: 'smooth'});">
+                    <span class="fr">Commencer</span>
+                    <span class="en">Get Started</span>
+                    <span class="ar">ابدأ</span>
+                </button>
+            </div>
+
+            <div class="tier-card premium">
+                <div class="tier-header">
+                    <h4>Progress</h4>
+                    <p class="tier-subtitle">
+                        <span class="fr">Pour les équipes</span>
+                        <span class="en">For teams</span>
+                        <span class="ar">للفرق</span>
+                    </p>
+                </div>
+                
+                <div class="tier-price">
+                    <span class="price-number">$99</span>
+                </div>
+                
+                <div class="tier-features">
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Projets illimités</span>
+                        <span class="en">Unlimited projects</span>
+                        <span class="ar">مشاريع غير محدودة</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Support 24/7</span>
+                        <span class="en">24/7 support</span>
+                        <span class="ar">دعم 24/7</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Stockage 200GB</span>
+                        <span class="en">200GB storage</span>
+                        <span class="ar">تخزين 200 جيجابايت</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Analytics avancées</span>
+                        <span class="en">Advanced analytics</span>
+                        <span class="ar">تحليلات متقدمة</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">API complète</span>
+                        <span class="en">Full API access</span>
+                        <span class="ar">وصول كامل للAPI</span>
+                    </div>
+                </div>
+                
+                <button class="tier-button" onclick="document.getElementById('appointment-form').scrollIntoView({behavior: 'smooth'});">
+                    <span class="fr">Commencer</span>
+                    <span class="en">Get Started</span>
+                    <span class="ar">ابدأ</span>
+                </button>
+            </div>
+
+            <div class="tier-card enterprise">
+                <div class="tier-header">
+                    <h4>Custom</h4>
+                    <p class="tier-subtitle">
+                        <span class="fr">Sur mesure</span>
+                        <span class="en">Custom made</span>
+                        <span class="ar">مخصص</span>
+                    </p>
+                </div>
+                
+                <div class="tier-price">
+                    <span class="price-number">Contact</span>
+                    <span class="price-currency">nous</span>
+                </div>
+                
+                <div class="tier-features">
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Solutions personnalisées</span>
+                        <span class="en">Custom solutions</span>
+                        <span class="ar">حلول مرنة</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Support premium</span>
+                        <span class="en">Premium support</span>
+                        <span class="ar">دعم مميز</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span class="fr">Consultation gratuite</span>
+                        <span class="en">Free consultation</span>
+                        <span class="ar">استشارة مجانية</span>
+                    </div>
+                </div>
+                
+                <button class="tier-button" onclick="document.getElementById('appointment-form').scrollIntoView({behavior: 'smooth'});">
+                    <span class="fr">Nous contacter</span>
+                    <span class="en">Contact Us</span>
+                    <span class="ar">اتصل بنا</span>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
 <!-- Appointment Section -->
-<section id="appointment" class="appointment-section">
+<section id="appointment" class="appointment-section" style="display: none;">
     <div class="container">
         <div class="appointment-container">
             <div class="section-header">

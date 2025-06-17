@@ -2325,4 +2325,163 @@ preloadImages();
     window.addEventListener('orientationchange', () => {
         setTimeout(setViewportHeight, 100);
     }, { passive: true });
+
+    // === PRICING CALCULATOR FUNCTIONALITY ===
+    
+    // Pricing tiers configuration
+    const PRICING_TIERS = [
+        { name: 'Flex', minHours: 1, maxHours: 4, madPerHour: 250, freeHours: 0 },
+        { name: 'Starter', minHours: 5, maxHours: 9, madPerHour: 225, freeHours: 0 },
+        { name: 'Progress', minHours: 10, maxHours: 10, madPerHour: 200, freeHours: 1 },
+        { name: 'Intensive', minHours: 11, maxHours: 20, madPerHour: 200, freeHours: 2 },
+        { name: 'Bootcamp', minHours: 21, maxHours: 30, madPerHour: 200, freeHours: 3 }
+    ];
+
+    /**
+     * Calculate pricing based on requested hours
+     * @param {number} hoursRequested - Number of hours requested (1-30)
+     * @returns {Object} Pricing breakdown
+     */
+    function calculatePrice(hoursRequested) {
+        // Input validation
+        if (hoursRequested < 1) {
+            throw new Error('Le minimum est 1 heure');
+        }
+        if (hoursRequested > 30) {
+            throw new Error('Maximum 30 heures - contactez-nous pour plus');
+        }
+
+        // Find matching tier
+        let selectedTier = null;
+        
+        if (hoursRequested <= 10) {
+            // For 1-10 hours, find exact tier match
+            selectedTier = PRICING_TIERS.find(tier => 
+                hoursRequested >= tier.minHours && hoursRequested <= tier.maxHours
+            );
+        } else {
+            // For 11+ hours, determine tier based on ranges
+            if (hoursRequested <= 20) {
+                selectedTier = PRICING_TIERS.find(tier => tier.name === 'Intensive');
+            } else {
+                selectedTier = PRICING_TIERS.find(tier => tier.name === 'Bootcamp');
+            }
+        }
+
+        if (!selectedTier) {
+            throw new Error('Tier non trouvé pour cette durée');
+        }
+
+        // Calculate pricing
+        const totalMad = hoursRequested * selectedTier.madPerHour;
+        const totalHours = hoursRequested + selectedTier.freeHours;
+        const effectiveMad = Math.round(totalMad / totalHours);
+
+        return {
+            tier: selectedTier.name,
+            madPerHour: selectedTier.madPerHour,
+            freeHours: selectedTier.freeHours,
+            totalMad: totalMad,
+            effectiveMad: effectiveMad,
+            paidHours: hoursRequested,
+            totalHours: totalHours
+        };
+    }
+
+    /**
+     * Update the UI with new pricing information
+     * @param {number} hours - Selected hours
+     */
+    function updatePricingDisplay(hours) {
+        try {
+            const pricing = calculatePrice(hours);
+            
+            // Update display elements
+            const tierName = document.getElementById('tier-name');
+            const madPerHour = document.getElementById('mad-per-hour');
+            const totalMad = document.getElementById('total-mad');
+            const effectiveRate = document.getElementById('effective-mad');
+            const selectedHours = document.getElementById('selected-hours');
+            
+            if (tierName) tierName.textContent = pricing.tier;
+            if (madPerHour) madPerHour.textContent = `${pricing.madPerHour} MAD`;
+            if (totalMad) totalMad.textContent = `${pricing.totalMad}`;
+            if (effectiveRate) effectiveRate.textContent = `${pricing.effectiveMad} MAD/h`;
+            if (selectedHours) selectedHours.textContent = hours;
+            
+            // Update free hours display
+            const freeHoursElement = document.getElementById('free-hours');
+            if (freeHoursElement) {
+                if (pricing.freeHours > 0) {
+                    freeHoursElement.textContent = `+${pricing.freeHours}h`;
+                    freeHoursElement.parentElement.parentElement.style.display = 'flex';
+                } else {
+                    freeHoursElement.parentElement.parentElement.style.display = 'none';
+                }
+            }
+            
+            // Update progress bar
+            const progress = document.getElementById('range-progress');
+            if (progress) {
+                const percentage = ((hours - 1) / 29) * 100;
+                progress.style.width = `${percentage}%`;
+            }
+
+        } catch (error) {
+            console.error('Erreur de calcul:', error.message);
+        }
+    }
+
+    /**
+     * Initialize the pricing calculator
+     */
+    function initPricingCalculator() {
+        const hoursRange = document.getElementById('hours-range');
+        const bookPackBtn = document.getElementById('book-pack-btn');
+        
+        if (hoursRange) {
+            // Update display when slider changes
+            hoursRange.addEventListener('input', function() {
+                const hours = parseInt(this.value);
+                updatePricingDisplay(hours);
+            });
+            
+            // Initialize display
+            updatePricingDisplay(10);
+        }
+        
+        // Handle book pack button click
+        if (bookPackBtn) {
+            bookPackBtn.addEventListener('click', function() {
+                const hours = hoursRange ? parseInt(hoursRange.value) : 10;
+                const pricing = calculatePrice(hours);
+                
+                // Show appointment form
+                const appointmentSection = document.querySelector('.appointment-section');
+                if (appointmentSection) {
+                    appointmentSection.style.display = 'block';
+                    
+                    // Pre-fill hours field
+                    const hoursField = document.getElementById('hours');
+                    if (hoursField) {
+                        hoursField.value = `${hours} heures - Pack ${pricing.tier}`;
+                    }
+                    
+                    // Scroll to form
+                    appointmentSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+    }
+    
+    // Initialize pricing calculator when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initPricingCalculator);
+    } else {
+        initPricingCalculator();
+    }
+    
+    // Expose functions globally if needed
+    window.calculatePrice = calculatePrice;
+
 })();
