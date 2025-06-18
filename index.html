@@ -59,6 +59,7 @@
                 <div class="nav-links" id="nav-links">
                     <a href="#home" class="nav-link active" data-en="Home" data-ar="الرئيسية">Accueil</a>
                     <a href="#services" class="nav-link" data-en="Services" data-ar="الخدمات">Services</a>
+                    <a href="#pricing" class="nav-link" data-en="Pricing" data-ar="الأسعار">Tarifs</a>
                     <a href="#subjects" class="nav-link" data-en="Subjects" data-ar="المواد">Matières</a>
                     <a href="#about" class="nav-link" data-en="About" data-ar="من نحن">À propos</a>
                     <a href="#contact" class="nav-link" data-en="Contact" data-ar="تواصل">Contact</a>
@@ -236,6 +237,230 @@
                         <li data-en="Recording available" data-ar="تسجيل متاح">Enregistrement disponible</li>
                     </ul>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">
+                    <i class="fas fa-tags"></i>
+                    <span data-en="Pricing Plans" data-ar="خطط الأسعار">Nos Packs</span>
+                </div>
+                <h2 class="section-title" data-en="Coaching & Consulting Packages" data-ar="حزم التدريب والاستشارة">
+                    Packs de Coaching & Consulting
+                </h2>
+                <p class="section-description" data-en="Flexible pricing options designed to fit your learning needs and budget. The more you commit, the better your hourly rate." data-ar="خيارات تسعير مرنة مصممة لتناسب احتياجات التعلم والميزانية الخاصة بك. كلما زاد التزامك، كان معدلك بالساعة أفضل.">
+                    Options tarifaires flexibles conçues pour s'adapter à vos besoins d'apprentissage et votre budget. Plus vous vous engagez, meilleur est votre tarif horaire.
+                </p>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Flex Pack -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <div class="pack-name">
+                            <h3 data-en="Flex" data-ar="مرن">Flex</h3>
+                            <div class="pack-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="pack-price">
+                            <span class="price-amount">250</span>
+                            <span class="price-currency">MAD</span>
+                            <span class="price-period" data-en="/ hour" data-ar="/ ساعة">/ heure</span>
+                        </div>
+                        <div class="pack-duration" data-en="1 - 4 hours, at your pace" data-ar="1 - 4 ساعات، بوتيرتك">
+                            1 – 4 heures, à votre rythme
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-body">
+                        <div class="pack-ideal">
+                            <h4 data-en="Ideal for:" data-ar="مثالي لـ:">Idéal pour :</h4>
+                            <ul>
+                                <li data-en="One-time needs (CV review, mock interview, chapter clarification)" data-ar="الاحتياجات لمرة واحدة (مراجعة السيرة الذاتية، مقابلة وهمية، توضيح فصل)">Un besoin ponctuel (révision d'un CV, mock-interview, éclaircissement d'un chapitre)</li>
+                                <li data-en="Testing our services before committing" data-ar="اختبار خدماتنا قبل الالتزام">Tester nos services avant de s'engager</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="pack-features">
+                            <h4 data-en="Advantages:" data-ar="المزايا:">Avantages :</h4>
+                            <ul>
+                                <li data-en="Zero commitment" data-ar="لا التزام">Zéro engagement</li>
+                                <li data-en="Pay only for booked sessions" data-ar="ادفع فقط للجلسات المحجوزة">Vous payez uniquement la/les séance(s) réservée(s)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-footer">
+                        <button class="pack-btn" onclick="selectPack('flex')" data-en="Choose Flex" data-ar="اختر مرن">
+                            Choisir Flex
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Starter Pack -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <div class="pack-name">
+                            <h3 data-en="Starter" data-ar="البداية">Starter</h3>
+                            <div class="pack-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                        </div>
+                        <div class="pack-price">
+                            <span class="price-amount">225</span>
+                            <span class="price-currency">MAD</span>
+                            <span class="price-period" data-en="/ hour" data-ar="/ ساعة">/ heure</span>
+                        </div>
+                        <div class="pack-duration" data-en="5 - 9 hours, use within 60 days" data-ar="5 - 9 ساعات، استخدم خلال 60 يوماً">
+                            5 – 9 heures, à utiliser dans les 60 jours
+                        </div>
+                        <div class="pack-discount" data-en="10% savings" data-ar="توفير 10%">– 10 % de remise</div>
+                    </div>
+                    
+                    <div class="pricing-body">
+                        <div class="pack-ideal">
+                            <h4 data-en="Ideal for:" data-ar="مثالي لـ:">Idéal pour :</h4>
+                            <ul>
+                                <li data-en="Regular follow-up over a semester or well-defined professional project" data-ar="متابعة منتظمة خلال فصل دراسي أو مشروع مهني محدد جيداً">Un suivi régulier sur un semestre universitaire ou un projet professionnel bien cadré</li>
+                                <li data-en="Clients who want to book multiple slots in advance" data-ar="العملاء الذين يريدون حجز عدة فترات مسبقاً">Les clients qui veulent bloquer plusieurs créneaux à l'avance</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="pack-features">
+                            <h4 data-en="Advantages:" data-ar="المزايا:">Avantages :</h4>
+                            <ul>
+                                <li data-en="Priority on evening/weekend slots" data-ar="أولوية في فترات المساء/نهاية الأسبوع">Priorité sur les créneaux en soirée/week-end</li>
+                                <li data-en="Free monthly progress report (PDF summary)" data-ar="تقرير تقدم شهري مجاني (ملخص PDF)">Rapport de progression mensuel offert (PDF récapitulatif)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-footer">
+                        <button class="pack-btn" onclick="selectPack('starter')" data-en="Choose Starter" data-ar="اختر البداية">
+                            Choisir Starter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Pack -->
+                <div class="pricing-card featured">
+                    <div class="pack-badge">
+                        <span data-en="Best Value" data-ar="أفضل قيمة">Meilleure Valeur</span>
+                    </div>
+                    <div class="pricing-header">
+                        <div class="pack-name">
+                            <h3 data-en="Progress" data-ar="التقدم">Progress</h3>
+                            <div class="pack-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                        </div>
+                        <div class="pack-price">
+                            <span class="price-amount">200</span>
+                            <span class="price-currency">MAD</span>
+                            <span class="price-period" data-en="/ hour" data-ar="/ ساعة">/ heure</span>
+                        </div>
+                        <div class="pack-duration" data-en="10 paid hours + 2 bonus hours = 12 total hours" data-ar="10 ساعات مدفوعة + 2 ساعة إضافية = 12 ساعة إجمالية">
+                            10 heures payées + 2 heures bonus = 12 heures totales
+                        </div>
+                        <div class="pack-discount" data-en="20% savings + Bonus Hours" data-ar="توفير 20% + ساعات إضافية">– 20 % de remise + Heures Bonus</div>
+                    </div>
+                    
+                    <div class="pricing-body">
+                        <div class="pack-bonus">
+                            <div class="bonus-highlight">
+                                <i class="fas fa-gift"></i>
+                                <span data-en="+1 free hour for every 5 paid hours" data-ar="+1 ساعة مجانية لكل 5 ساعات مدفوعة">+1 heure gratuite pour chaque tranche de 5 heures payées</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pack-ideal">
+                            <h4 data-en="Ideal for:" data-ar="مثالي لـ:">Idéal pour :</h4>
+                            <ul>
+                                <li data-en="Complete preparation for exams or job interviews" data-ar="إعداد كامل للامتحانات أو مقابلات العمل">Préparation complète d'un concours ou d'un entretien d'embauche</li>
+                                <li data-en="Career coaching over a full quarter" data-ar="تدريب مهني خلال ربع كامل">Coaching carrière sur un trimestre entier</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="pack-features">
+                            <h4 data-en="Advantages:" data-ar="المزايا:">Avantages :</h4>
+                            <ul>
+                                <li data-en="Personalized roadmap adjusted mid-way" data-ar="خريطة طريق شخصية معدلة في منتصف الطريق">Feuille de route personnalisée et réajustée à mi-parcours</li>
+                                <li data-en="Email/WhatsApp support between sessions" data-ar="دعم البريد الإلكتروني/واتساب بين الجلسات">Assistance par e-mail/WhatsApp entre les sessions</li>
+                                <li data-en="Valid for 90 days" data-ar="صالح لمدة 90 يوماً">Valable 90 jours</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-footer">
+                        <button class="pack-btn featured-btn" onclick="selectPack('progress')" data-en="Choose Progress" data-ar="اختر التقدم">
+                            Choisir Progress
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Comparison Table -->
+            <div class="pricing-comparison">
+                <div class="comparison-header">
+                    <h3 data-en="Why These Packages?" data-ar="لماذا هذه الحزم؟">Pourquoi ces packs ?</h3>
+                    <p data-en="Compare the value and see how much you save with larger packages" data-ar="قارن القيمة وانظر كم توفر مع الحزم الأكبر">Comparez la valeur et voyez combien vous économisez avec les packs plus importants</p>
+                </div>
+                
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th data-en="Pack" data-ar="الحزمة">Pack</th>
+                                <th data-en="Total Hours (bonus included)" data-ar="إجمالي الساعات (مع الإضافي)">Heures totales (bonus inclus)</th>
+                                <th data-en="Total Cost (MAD)" data-ar="التكلفة الإجمالية (درهم)">Coût total (MAD)</th>
+                                <th data-en="Real Cost / Hour" data-ar="التكلفة الحقيقية / ساعة">Coût réel / h</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Flex (4 h)</td>
+                                <td>4 h</td>
+                                <td>1 000</td>
+                                <td>250 MAD</td>
+                            </tr>
+                            <tr>
+                                <td>Starter (8 h moy.)</td>
+                                <td>8 h</td>
+                                <td>1 800</td>
+                                <td>225 MAD</td>
+                            </tr>
+                            <tr class="featured-row">
+                                <td>Progress (10 + 2)</td>
+                                <td>12 h</td>
+                                <td>2 000</td>
+                                <td>≈ 167 MAD</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="comparison-note">
+                    <i class="fas fa-lightbulb"></i>
+                    <p data-en="The more you commit, the lower your hourly rate — and free hours give you extra flexibility at no additional cost." data-ar="كلما زاد التزامك، انخفض معدلك بالساعة — والساعات المجانية تمنحك مرونة إضافية دون تكلفة إضافية.">
+                        Plus vous vous engagez, plus votre tarif horaire baisse — et les heures gratuites vous donnent de la flexibilité supplémentaire sans surcoût.
+                    </p>
+                </div>
+            </div>
+
+            <div class="pricing-cta">
+                <h3 data-en="Ready to Book?" data-ar="مستعد للحجز؟">Prêt·e à réserver ?</h3>
+                <p data-en="Choose your pack, book your slots, and let's move forward together towards your goals!" data-ar="اختر حزمتك، احجز فتراتك، ولنتقدم معاً نحو أهدافك!">
+                    Choisissez votre pack, bloquez vos créneaux, et avançons ensemble vers vos objectifs !
+                </p>
+                <a href="#appointment" class="btn btn-primary btn-large">
+                    <span data-en="Book Your Session Now" data-ar="احجز جلستك الآن">Réserver Ma Séance Maintenant</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
         </div>
     </section>
@@ -509,6 +734,16 @@
                         
                         <div class="form-row">
                             <div class="form-group">
+                                <label for="pack" data-en="Package" data-ar="الحزمة">Pack</label>
+                                <select id="pack" name="pack" required>
+                                    <option value="" data-en="Select a package" data-ar="اختر حزمة">Choisir un pack</option>
+                                    <option value="flex" data-en="Flex (250 MAD/h)" data-ar="مرن (250 درهم/ساعة)">Flex (250 MAD/h)</option>
+                                    <option value="starter" data-en="Starter (225 MAD/h)" data-ar="البداية (225 درهم/ساعة)">Starter (225 MAD/h)</option>
+                                    <option value="progress" data-en="Progress (200 MAD/h + bonus)" data-ar="التقدم (200 درهم/ساعة + إضافي)">Progress (200 MAD/h + bonus)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
                                 <label for="subject" data-en="Subject" data-ar="الموضوع">Matière</label>
                                 <select id="subject" name="subject" required>
                                     <option value="" data-en="Select a subject" data-ar="اختر موضوعاً">Choisir une matière</option>
@@ -518,7 +753,9 @@
                                     <option value="coaching" data-en="Coaching" data-ar="التدريب">Coaching</option>
                                 </select>
                             </div>
-                            
+                        </div>
+                        
+                        <div class="form-row">
                             <div class="form-group">
                                 <label for="level" data-en="Level" data-ar="المستوى">Niveau</label>
                                 <select id="level" name="level" required>
@@ -526,6 +763,16 @@
                                     <option value="beginner" data-en="Beginner" data-ar="مبتدئ">Débutant</option>
                                     <option value="intermediate" data-en="Intermediate" data-ar="متوسط">Intermédiaire</option>
                                     <option value="advanced" data-en="Advanced" data-ar="متقدم">Avancé</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="hours" data-en="Desired Hours" data-ar="الساعات المرغوبة">Heures Souhaitées</label>
+                                <select id="hours" name="hours" required>
+                                    <option value="" data-en="Select hours" data-ar="اختر الساعات">Choisir les heures</option>
+                                    <option value="1-4" data-en="1-4 hours" data-ar="1-4 ساعات">1-4 heures</option>
+                                    <option value="5-9" data-en="5-9 hours" data-ar="5-9 ساعات">5-9 heures</option>
+                                    <option value="10+" data-en="10+ hours" data-ar="10+ ساعات">10+ heures</option>
                                 </select>
                             </div>
                         </div>
@@ -578,6 +825,7 @@
                     <ul class="footer-links">
                         <li><a href="#home" data-en="Home" data-ar="الرئيسية">Accueil</a></li>
                         <li><a href="#services" data-en="Services" data-ar="الخدمات">Services</a></li>
+                        <li><a href="#pricing" data-en="Pricing" data-ar="الأسعار">Tarifs</a></li>
                         <li><a href="#subjects" data-en="Subjects" data-ar="المواد">Matières</a></li>
                         <li><a href="#about" data-en="About" data-ar="من نحن">À propos</a></li>
                         <li><a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a></li>
