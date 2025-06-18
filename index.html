@@ -124,7 +124,7 @@
                     
                     <h1 class="hero-title">
                         <span class="title-line" data-en="Master Finance &" data-ar="إتقان المالية و">Maîtrisez la Finance &</span>
-                        <span class="title-line gradient-text" data-en="Accounting" data-ar="المحاسبة">Comptabilité</span>
+                        <span class="title-line gradient-text typewriter" data-en="Accounting" data-ar="المحاسبة">Comptabilité</span>
                         <span class="title-line" data-en="with Expert Guidance" data-ar="مع إرشاد خبير">avec un Expert</span>
                     </h1>
                     
@@ -134,7 +134,7 @@
                     
                     <div class="hero-stats">
                         <div class="stat-item">
-                            <span class="stat-number" data-count="500">0</span>
+                            <span class="stat-number" data-count="72">0</span>
                             <span class="stat-label" data-en="Students Helped" data-ar="طالب مساعد">Étudiants Aidés</span>
                         </div>
                         <div class="stat-item">
@@ -204,7 +204,10 @@
             </div>
 
             <div class="services-grid">
-                <div class="service-card">
+                <div class="service-card featured">
+                    <div class="service-badge">
+                        <span data-en="Most Popular" data-ar="الأكثر شعبية">Le Plus Populaire</span>
+                    </div>
                     <div class="service-icon">
                         <i class="fas fa-user-graduate"></i>
                     </div>
@@ -216,24 +219,6 @@
                         <li data-en="Customized curriculum" data-ar="منهج مخصص">Programme personnalisé</li>
                         <li data-en="Flexible scheduling" data-ar="جدولة مرنة">Horaires flexibles</li>
                         <li data-en="Progress tracking" data-ar="تتبع التقدم">Suivi des progrès</li>
-                    </ul>
-                </div>
-
-                <div class="service-card featured">
-                    <div class="service-badge">
-                        <span data-en="Most Popular" data-ar="الأكثر شعبية">Le Plus Populaire</span>
-                    </div>
-                    <div class="service-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3 class="service-title" data-en="Group Sessions" data-ar="جلسات جماعية">Séances de Groupe</h3>
-                    <p class="service-description" data-en="Interactive group learning with collaborative problem-solving and peer support." data-ar="تعلم جماعي تفاعلي مع حل المشكلات التعاونية ودعم الأقران.">
-                        Apprentissage en groupe interactif avec résolution collaborative de problèmes et soutien entre pairs.
-                    </p>
-                    <ul class="service-features">
-                        <li data-en="Small group sizes" data-ar="مجموعات صغيرة">Petits groupes</li>
-                        <li data-en="Interactive discussions" data-ar="مناقشات تفاعلية">Discussions interactives</li>
-                        <li data-en="Cost-effective" data-ar="فعال من حيث التكلفة">Économique</li>
                     </ul>
                 </div>
 
@@ -284,6 +269,10 @@
                     <button class="subject-tab" data-subject="analysis">
                         <i class="fas fa-chart-bar"></i>
                         <span data-en="Analysis" data-ar="التحليل">Analyse</span>
+                    </button>
+                    <button class="subject-tab" data-subject="coaching">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span data-en="Coaching" data-ar="التدريب">Coaching</span>
                     </button>
                 </div>
 
@@ -371,6 +360,34 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="subject-panel" id="coaching-panel">
+                        <div class="subject-grid">
+                            <div class="subject-card" onclick="openSubjectModal('career-coaching')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                                <h3 data-en="Career Coaching" data-ar="التدريب المهني">Coaching Carrière</h3>
+                                <p data-en="Professional development, interview preparation, career guidance" data-ar="التطوير المهني، تحضير المقابلات، التوجيه المهني">Développement professionnel, préparation d'entretiens, orientation de carrière</p>
+                            </div>
+
+                            <div class="subject-card" onclick="openSubjectModal('exam-preparation')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <h3 data-en="Exam Preparation" data-ar="إعداد الامتحانات">Préparation aux Examens</h3>
+                                <p data-en="CPA, CFA, ACCA exam preparation and study strategies" data-ar="إعداد امتحانات CPA، CFA، ACCA واستراتيجيات الدراسة">Préparation aux examens CPA, CFA, ACCA et stratégies d'étude</p>
+                            </div>
+
+                            <div class="subject-card" onclick="openSubjectModal('academic-support')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <h3 data-en="Academic Support" data-ar="الدعم الأكاديمي">Soutien Académique</h3>
+                                <p data-en="Thesis guidance, research methodology, academic writing" data-ar="توجيه الأطروحة، منهجية البحث، الكتابة الأكاديمية">Accompagnement mémoire, méthodologie de recherche, rédaction académique</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -427,7 +444,7 @@
                 
                 <div class="about-visual">
                     <div class="about-image-container">
-                        <img src="images/student-avatar.jpg" alt="Student Success" class="about-image">
+                        <img src="images/1738230957358.jpg" alt="Professor OOUI" class="about-image">
                         <div class="about-decoration">
                             <div class="decoration-element element-1"></div>
                             <div class="decoration-element element-2"></div>
@@ -456,16 +473,6 @@
                     </p>
                     
                     <div class="contact-info">
-                        <div class="contact-item">
-                            <div class="contact-icon">
-                                <i class="fas fa-phone"></i>
-                            </div>
-                            <div class="contact-text">
-                                <h4 data-en="Phone" data-ar="الهاتف">Téléphone</h4>
-                                <p>+212 123 456 789</p>
-                            </div>
-                        </div>
-                        
                         <div class="contact-item">
                             <div class="contact-icon">
                                 <i class="fas fa-envelope"></i>
@@ -500,11 +507,6 @@
                             <input type="email" id="email" name="email" required>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="phone" data-en="Phone Number" data-ar="رقم الهاتف">Numéro de Téléphone</label>
-                            <input type="tel" id="phone" name="phone" required>
-                        </div>
-                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="subject" data-en="Subject" data-ar="الموضوع">Matière</label>
@@ -513,6 +515,7 @@
                                     <option value="finance" data-en="Finance" data-ar="المالية">Finance</option>
                                     <option value="accounting" data-en="Accounting" data-ar="المحاسبة">Comptabilité</option>
                                     <option value="analysis" data-en="Financial Analysis" data-ar="التحليل المالي">Analyse Financière</option>
+                                    <option value="coaching" data-en="Coaching" data-ar="التدريب">Coaching</option>
                                 </select>
                             </div>
                             
@@ -587,17 +590,13 @@
                         <li><a href="#" data-en="Corporate Finance" data-ar="المالية الشركات">Finance d'Entreprise</a></li>
                         <li><a href="#" data-en="Investment" data-ar="الاستثمار">Investissement</a></li>
                         <li><a href="#" data-en="Accounting" data-ar="المحاسبة">Comptabilité</a></li>
-                        <li><a href="#" data-en="Financial Analysis" data-ar="التحليل المالي">Analyse Financière</a></li>
+                        <li><a href="#" data-en="Coaching" data-ar="التدريب">Coaching</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-section">
                     <h4 class="footer-title" data-en="Contact Info" data-ar="معلومات الاتصال">Informations de Contact</h4>
                     <div class="footer-contact">
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <span>+212 123 456 789</span>
-                        </div>
                         <div class="contact-item">
                             <i class="fas fa-envelope"></i>
                             <span>contact@ouiiprof.me</span>

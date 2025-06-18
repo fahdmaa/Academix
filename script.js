@@ -8,273 +8,6 @@ let isLoading = true;
 let scrollPosition = 0;
 let animationObserver = null;
 
-// === TRANSLATIONS ===
-const translations = {
-    fr: {
-        // Navigation
-        'nav-home': 'Accueil',
-        'nav-services': 'Services',
-        'nav-subjects': 'Matières',
-        'nav-about': 'À propos',
-        'nav-contact': 'Contact',
-        'nav-book': 'Réserver',
-        
-        // Hero Section
-        'hero-badge': 'Cours d\'excellence',
-        'hero-title-1': 'Maîtrisez la Finance &',
-        'hero-title-2': 'Comptabilité',
-        'hero-title-3': 'avec un Expert',
-        'hero-description': 'Cours particuliers personnalisés conçus pour vous aider à exceller dans vos études et votre carrière professionnelle avec des méthodes d\'enseignement modernes et efficaces.',
-        'hero-stats-1': 'Étudiants Aidés',
-        'hero-stats-2': 'Années d\'Expérience',
-        'hero-stats-3': 'Taux de Réussite %',
-        'hero-btn-1': 'Réserver une Séance',
-        'hero-btn-2': 'En Savoir Plus',
-        
-        // Services
-        'services-badge': 'Nos Services',
-        'services-title': 'Solutions d\'Apprentissage Complètes',
-        'services-description': 'Services de tutorat sur mesure conçus pour répondre à vos besoins académiques et professionnels spécifiques.',
-        'service-1-title': 'Cours Particuliers',
-        'service-1-desc': 'Séances personnalisées en tête-à-tête adaptées à votre rythme et style d\'apprentissage.',
-        'service-2-title': 'Séances de Groupe',
-        'service-2-desc': 'Apprentissage en groupe interactif avec résolution collaborative de problèmes et soutien entre pairs.',
-        'service-3-title': 'Apprentissage en Ligne',
-        'service-3-desc': 'Séances en ligne pratiques avec ressources numériques et tableaux blancs virtuels.',
-        'service-popular': 'Le Plus Populaire',
-        
-        // Subjects
-        'subjects-badge': 'Matières',
-        'subjects-title': 'Matières Enseignées',
-        'subjects-description': 'Couverture complète des sujets de finance et comptabilité, du niveau débutant au niveau avancé.',
-        'subjects-finance': 'Finance',
-        'subjects-accounting': 'Comptabilité',
-        'subjects-analysis': 'Analyse',
-        
-        // About
-        'about-badge': 'À Propos',
-        'about-title': 'Rencontrez Votre Expert en Finance',
-        'about-description': 'Avec plus de 5 ans d\'expérience dans l\'enseignement de la finance et de la comptabilité, je suis passionné par l\'aide aux étudiants pour atteindre leurs objectifs académiques et professionnels grâce à des méthodes d\'enseignement personnalisées et efficaces.',
-        'about-achievement-1': 'Expert Certifié',
-        'about-achievement-2': 'Résultats Prouvés',
-        'about-achievement-3': 'Centré sur l\'Étudiant',
-        
-        // Appointment
-        'appointment-badge': 'Réserver',
-        'appointment-title': 'Réservez Votre Séance d\'Apprentissage',
-        'appointment-description': 'Prêt à commencer votre voyage vers l\'excellence académique ? Réservez votre séance de tutorat personnalisée dès aujourd\'hui.',
-        'appointment-phone': 'Téléphone',
-        'appointment-email': 'Email',
-        'appointment-availability': 'Disponibilité',
-        'appointment-hours': 'Lun-Ven: 9h-18h',
-        'form-name': 'Nom Complet',
-        'form-email': 'Adresse Email',
-        'form-phone': 'Numéro de Téléphone',
-        'form-subject': 'Matière',
-        'form-level': 'Niveau',
-        'form-message': 'Message (Optionnel)',
-        'form-submit': 'Réserver la Séance',
-        'form-select-subject': 'Choisir une matière',
-        'form-select-level': 'Choisir le niveau',
-        'form-level-beginner': 'Débutant',
-        'form-level-intermediate': 'Intermédiaire',
-        'form-level-advanced': 'Avancé',
-        
-        // Success
-        'success-title': 'Réservation Confirmée !',
-        'success-message': 'Merci pour votre réservation. Nous vous contacterons bientôt pour confirmer les détails de votre séance.',
-        
-        // Footer
-        'footer-description': 'Permettre aux étudiants d\'atteindre l\'excellence en finance et comptabilité grâce à un tutorat personnalisé et expert.',
-        'footer-links': 'Liens Rapides',
-        'footer-subjects': 'Matières',
-        'footer-contact': 'Informations de Contact',
-        'footer-copyright': 'Tous droits réservés.',
-        'footer-privacy': 'Politique de Confidentialité',
-        'footer-terms': 'Conditions d\'Utilisation',
-        'footer-location': 'Casablanca, Maroc',
-        
-        // Loading
-        'loading-text': 'Chargement...'
-    },
-    
-    en: {
-        // Navigation
-        'nav-home': 'Home',
-        'nav-services': 'Services',
-        'nav-subjects': 'Subjects',
-        'nav-about': 'About',
-        'nav-contact': 'Contact',
-        'nav-book': 'Book Now',
-        
-        // Hero Section
-        'hero-badge': 'Expert Tutoring',
-        'hero-title-1': 'Master Finance &',
-        'hero-title-2': 'Accounting',
-        'hero-title-3': 'with Expert Guidance',
-        'hero-description': 'Personalized tutoring sessions designed to help you excel in your studies and professional career with modern and effective teaching methods.',
-        'hero-stats-1': 'Students Helped',
-        'hero-stats-2': 'Years Experience',
-        'hero-stats-3': 'Success Rate %',
-        'hero-btn-1': 'Book a Session',
-        'hero-btn-2': 'Learn More',
-        
-        // Services
-        'services-badge': 'Our Services',
-        'services-title': 'Comprehensive Learning Solutions',
-        'services-description': 'Tailored tutoring services designed to meet your specific academic and professional needs.',
-        'service-1-title': 'Individual Tutoring',
-        'service-1-desc': 'One-on-one personalized sessions tailored to your learning pace and style.',
-        'service-2-title': 'Group Sessions',
-        'service-2-desc': 'Interactive group learning with collaborative problem-solving and peer support.',
-        'service-3-title': 'Online Learning',
-        'service-3-desc': 'Convenient online sessions with digital resources and virtual whiteboards.',
-        'service-popular': 'Most Popular',
-        
-        // Subjects
-        'subjects-badge': 'Subjects',
-        'subjects-title': 'Subjects We Teach',
-        'subjects-description': 'Comprehensive coverage of finance and accounting topics from basic to advanced levels.',
-        'subjects-finance': 'Finance',
-        'subjects-accounting': 'Accounting',
-        'subjects-analysis': 'Analysis',
-        
-        // About
-        'about-badge': 'About Me',
-        'about-title': 'Meet Your Finance Expert',
-        'about-description': 'With over 5 years of experience in finance and accounting education, I\'m passionate about helping students achieve their academic and professional goals through personalized, effective teaching methods.',
-        'about-achievement-1': 'Certified Expert',
-        'about-achievement-2': 'Proven Results',
-        'about-achievement-3': 'Student-Centered',
-        
-        // Appointment
-        'appointment-badge': 'Book Session',
-        'appointment-title': 'Book Your Learning Session',
-        'appointment-description': 'Ready to start your journey to academic excellence? Book your personalized tutoring session today.',
-        'appointment-phone': 'Phone',
-        'appointment-email': 'Email',
-        'appointment-availability': 'Availability',
-        'appointment-hours': 'Mon-Fri: 9AM-6PM',
-        'form-name': 'Full Name',
-        'form-email': 'Email Address',
-        'form-phone': 'Phone Number',
-        'form-subject': 'Subject',
-        'form-level': 'Level',
-        'form-message': 'Message (Optional)',
-        'form-submit': 'Book Session',
-        'form-select-subject': 'Select a subject',
-        'form-select-level': 'Select level',
-        'form-level-beginner': 'Beginner',
-        'form-level-intermediate': 'Intermediate',
-        'form-level-advanced': 'Advanced',
-        
-        // Success
-        'success-title': 'Booking Confirmed!',
-        'success-message': 'Thank you for your booking. We\'ll contact you soon to confirm your session details.',
-        
-        // Footer
-        'footer-description': 'Empowering students to achieve excellence in finance and accounting through personalized, expert tutoring.',
-        'footer-links': 'Quick Links',
-        'footer-subjects': 'Subjects',
-        'footer-contact': 'Contact Info',
-        'footer-copyright': 'All rights reserved.',
-        'footer-privacy': 'Privacy Policy',
-        'footer-terms': 'Terms of Service',
-        'footer-location': 'Casablanca, Morocco',
-        
-        // Loading
-        'loading-text': 'Loading...'
-    },
-    
-    ar: {
-        // Navigation
-        'nav-home': 'الرئيسية',
-        'nav-services': 'الخدمات',
-        'nav-subjects': 'المواد',
-        'nav-about': 'من نحن',
-        'nav-contact': 'تواصل',
-        'nav-book': 'احجز الآن',
-        
-        // Hero Section
-        'hero-badge': 'دروس متخصصة',
-        'hero-title-1': 'إتقان المالية و',
-        'hero-title-2': 'المحاسبة',
-        'hero-title-3': 'مع إرشاد خبير',
-        'hero-description': 'دروس مخصصة مصممة لمساعدتك على التفوق في دراستك وحياتك المهنية مع أساليب تعليمية حديثة وفعالة.',
-        'hero-stats-1': 'طالب مساعد',
-        'hero-stats-2': 'سنوات خبرة',
-        'hero-stats-3': 'معدل النجاح %',
-        'hero-btn-1': 'احجز جلسة',
-        'hero-btn-2': 'اعرف المزيد',
-        
-        // Services
-        'services-badge': 'خدماتنا',
-        'services-title': 'حلول تعليمية شاملة',
-        'services-description': 'خدمات تدريس مخصصة مصممة لتلبية احتياجاتك الأكاديمية والمهنية المحددة.',
-        'service-1-title': 'دروس فردية',
-        'service-1-desc': 'جلسات شخصية واحد لواحد مخصصة لوتيرة التعلم والأسلوب الخاص بك.',
-        'service-2-title': 'جلسات جماعية',
-        'service-2-desc': 'تعلم جماعي تفاعلي مع حل المشكلات التعاونية ودعم الأقران.',
-        'service-3-title': 'التعلم عبر الإنترنت',
-        'service-3-desc': 'جلسات مريحة عبر الإنترنت مع موارد رقمية وألواح بيضاء افتراضية.',
-        'service-popular': 'الأكثر شعبية',
-        
-        // Subjects
-        'subjects-badge': 'المواد',
-        'subjects-title': 'المواد التي ندرسها',
-        'subjects-description': 'تغطية شاملة لموضوعات المالية والمحاسبة من المستويات الأساسية إلى المتقدمة.',
-        'subjects-finance': 'المالية',
-        'subjects-accounting': 'المحاسبة',
-        'subjects-analysis': 'التحليل',
-        
-        // About
-        'about-badge': 'من أنا',
-        'about-title': 'تعرف على خبير المالية الخاص بك',
-        'about-description': 'مع أكثر من 5 سنوات من الخبرة في تعليم المالية والمحاسبة، أنا متحمس لمساعدة الطلاب على تحقيق أهدافهم الأكاديمية والمهنية من خلال أساليب تدريس شخصية وفعالة.',
-        'about-achievement-1': 'خبير معتمد',
-        'about-achievement-2': 'نتائج مثبتة',
-        'about-achievement-3': 'محور الطالب',
-        
-        // Appointment
-        'appointment-badge': 'احجز جلسة',
-        'appointment-title': 'احجز جلسة التعلم الخاصة بك',
-        'appointment-description': 'مستعد لبدء رحلتك نحو التميز الأكاديمي؟ احجز جلسة التدريس الشخصية اليوم.',
-        'appointment-phone': 'الهاتف',
-        'appointment-email': 'البريد الإلكتروني',
-        'appointment-availability': 'التوفر',
-        'appointment-hours': 'الإثنين-الجمعة: 9ص-6م',
-        'form-name': 'الاسم الكامل',
-        'form-email': 'عنوان البريد الإلكتروني',
-        'form-phone': 'رقم الهاتف',
-        'form-subject': 'الموضوع',
-        'form-level': 'المستوى',
-        'form-message': 'رسالة (اختيارية)',
-        'form-submit': 'احجز جلسة',
-        'form-select-subject': 'اختر موضوعاً',
-        'form-select-level': 'اختر المستوى',
-        'form-level-beginner': 'مبتدئ',
-        'form-level-intermediate': 'متوسط',
-        'form-level-advanced': 'متقدم',
-        
-        // Success
-        'success-title': 'تم تأكيد الحجز!',
-        'success-message': 'شكراً لك على الحجز. سنتواصل معك قريباً لتأكيد تفاصيل الجلسة.',
-        
-        // Footer
-        'footer-description': 'تمكين الطلاب من تحقيق التميز في المالية والمحاسبة من خلال التدريس الشخصي والخبير.',
-        'footer-links': 'روابط سريعة',
-        'footer-subjects': 'المواد',
-        'footer-contact': 'معلومات الاتصال',
-        'footer-copyright': 'جميع الحقوق محفوظة.',
-        'footer-privacy': 'سياسة الخصوصية',
-        'footer-terms': 'شروط الخدمة',
-        'footer-location': 'الدار البيضاء، المغرب',
-        
-        // Loading
-        'loading-text': 'جاري التحميل...'
-    }
-};
-
 // === SUBJECT MODAL DATA ===
 const subjectModalData = {
     'corporate-finance': {
@@ -843,6 +576,195 @@ const subjectModalData = {
                 </div>
             `
         }
+    },
+    'career-coaching': {
+        title: {
+            fr: 'Coaching Carrière',
+            en: 'Career Coaching',
+            ar: 'التدريب المهني'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Développer un plan de carrière personnalisé</li>
+                        <li>Améliorer les compétences en entretien d'embauche</li>
+                        <li>Optimiser le CV et la lettre de motivation</li>
+                        <li>Développer les compétences professionnelles</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Évaluation des compétences et des intérêts</li>
+                        <li>Stratégies de recherche d'emploi</li>
+                        <li>Techniques d'entretien et négociation salariale</li>
+                        <li>Développement du leadership et communication</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Develop a personalized career plan</li>
+                        <li>Improve job interview skills</li>
+                        <li>Optimize resume and cover letter</li>
+                        <li>Develop professional skills</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Skills and interests assessment</li>
+                        <li>Job search strategies</li>
+                        <li>Interview techniques and salary negotiation</li>
+                        <li>Leadership development and communication</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>تطوير خطة مهنية شخصية</li>
+                        <li>تحسين مهارات المقابلة الوظيفية</li>
+                        <li>تحسين السيرة الذاتية وخطاب التغطية</li>
+                        <li>تطوير المهارات المهنية</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>تقييم المهارات والاهتمامات</li>
+                        <li>استراتيجيات البحث عن عمل</li>
+                        <li>تقنيات المقابلة والتفاوض على الراتب</li>
+                        <li>تطوير القيادة والتواصل</li>
+                    </ul>
+                </div>
+            `
+        }
+    },
+    'exam-preparation': {
+        title: {
+            fr: 'Préparation aux Examens',
+            en: 'Exam Preparation',
+            ar: 'إعداد الامتحانات'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Maîtriser les stratégies d'étude efficaces</li>
+                        <li>Se préparer aux examens professionnels (CPA, CFA, ACCA)</li>
+                        <li>Développer des techniques de gestion du stress</li>
+                        <li>Optimiser les performances aux examens</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Planification et organisation des révisions</li>
+                        <li>Techniques de mémorisation et de compréhension</li>
+                        <li>Simulation d'examens et correction</li>
+                        <li>Gestion du temps et du stress</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Master effective study strategies</li>
+                        <li>Prepare for professional exams (CPA, CFA, ACCA)</li>
+                        <li>Develop stress management techniques</li>
+                        <li>Optimize exam performance</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Revision planning and organization</li>
+                        <li>Memorization and comprehension techniques</li>
+                        <li>Exam simulation and correction</li>
+                        <li>Time and stress management</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>إتقان استراتيجيات الدراسة الفعالة</li>
+                        <li>التحضير للامتحانات المهنية (CPA، CFA، ACCA)</li>
+                        <li>تطوير تقنيات إدارة الضغط</li>
+                        <li>تحسين الأداء في الامتحانات</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>تخطيط وتنظيم المراجعات</li>
+                        <li>تقنيات الحفظ والفهم</li>
+                        <li>محاكاة الامتحانات والتصحيح</li>
+                        <li>إدارة الوقت والضغط</li>
+                    </ul>
+                </div>
+            `
+        }
+    },
+    'academic-support': {
+        title: {
+            fr: 'Soutien Académique',
+            en: 'Academic Support',
+            ar: 'الدعم الأكاديمي'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Accompagner la rédaction de mémoires et thèses</li>
+                        <li>Maîtriser la méthodologie de recherche</li>
+                        <li>Développer les compétences en rédaction académique</li>
+                        <li>Structurer et présenter les travaux de recherche</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Choix et formulation du sujet de recherche</li>
+                        <li>Revue de littérature et sources académiques</li>
+                        <li>Méthodologie quantitative et qualitative</li>
+                        <li>Rédaction, citation et présentation</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Support thesis and dissertation writing</li>
+                        <li>Master research methodology</li>
+                        <li>Develop academic writing skills</li>
+                        <li>Structure and present research work</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Research topic selection and formulation</li>
+                        <li>Literature review and academic sources</li>
+                        <li>Quantitative and qualitative methodology</li>
+                        <li>Writing, citation, and presentation</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>دعم كتابة الأطروحات والرسائل</li>
+                        <li>إتقان منهجية البحث</li>
+                        <li>تطوير مهارات الكتابة الأكاديمية</li>
+                        <li>هيكلة وعرض أعمال البحث</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>اختيار وصياغة موضوع البحث</li>
+                        <li>مراجعة الأدبيات والمصادر الأكاديمية</li>
+                        <li>المنهجية الكمية والنوعية</li>
+                        <li>الكتابة والاستشهاد والعرض</li>
+                    </ul>
+                </div>
+            `
+        }
     }
 };
 
@@ -862,6 +784,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize counters
     initializeCounters();
+    
+    // Initialize typewriter effect
+    initializeTypewriter();
     
     // Hide loading screen
     setTimeout(() => {
@@ -913,7 +838,7 @@ function initializeLanguage() {
 }
 
 function changeLanguage(lang) {
-    if (!translations[lang]) {
+    if (!['fr', 'en', 'ar'].includes(lang)) {
         console.error('Language not supported:', lang);
         return;
     }
@@ -937,6 +862,9 @@ function changeLanguage(lang) {
     // Update form placeholders
     updateFormPlaceholders();
     
+    // Update typewriter effect
+    updateTypewriterText();
+    
     // Close language dropdown
     const dropdown = document.getElementById('language-dropdown');
     if (dropdown) {
@@ -957,8 +885,8 @@ function updateTranslations() {
         } else if (currentLanguage === 'ar' && element.dataset.ar) {
             text = element.dataset.ar;
         } else {
-            // Default to original French text
-            text = element.textContent;
+            // Keep original French text if no translation available
+            return;
         }
         
         if (text && text !== element.textContent) {
@@ -977,6 +905,36 @@ function updateFormPlaceholders() {
         };
         messageTextarea.placeholder = placeholders[currentLanguage] || placeholders.fr;
     }
+}
+
+// === TYPEWRITER EFFECT ===
+function initializeTypewriter() {
+    const typewriterElement = document.querySelector('.typewriter');
+    if (typewriterElement) {
+        updateTypewriterText();
+    }
+}
+
+function updateTypewriterText() {
+    const typewriterElement = document.querySelector('.typewriter');
+    if (!typewriterElement) return;
+    
+    const texts = {
+        fr: 'Comptabilité',
+        en: 'Accounting',
+        ar: 'المحاسبة'
+    };
+    
+    const newText = texts[currentLanguage] || texts.fr;
+    
+    // Reset animation
+    typewriterElement.style.animation = 'none';
+    typewriterElement.textContent = newText;
+    
+    // Restart animation
+    setTimeout(() => {
+        typewriterElement.style.animation = 'typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite';
+    }, 10);
 }
 
 // === EVENT LISTENERS ===
@@ -1057,8 +1015,6 @@ function setupEventListeners() {
     
     // Resize events
     window.addEventListener('resize', handleResize);
-    
-    // Form submission (handled by existing handleSubmit function)
     
     console.log('📝 Event listeners setup complete');
 }
@@ -1401,12 +1357,10 @@ window.handleSubmit = handleSubmit;
 // === ERROR HANDLING ===
 window.addEventListener('error', (e) => {
     console.error('🚨 JavaScript Error:', e.error);
-    // Could send error to analytics service here
 });
 
 window.addEventListener('unhandledrejection', (e) => {
     console.error('🚨 Unhandled Promise Rejection:', e.reason);
-    // Could send error to analytics service here
 });
 
 console.log('🎉 OOUI PROF - Script loaded successfully');
