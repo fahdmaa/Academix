@@ -2,1160 +2,662 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#1a73e8">
-    <title>OOUI PROF - Cours Particuliers de Finance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOUI PROF - Cours Particuliers de Finance et Comptabilité</title>
+    <meta name="description" content="Cours particuliers de finance et comptabilité avec un professeur expérimenté. Méthodes d'enseignement modernes et personnalisées.">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="images/favicon/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="images/logo-dark.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
     <link rel="manifest" href="images/favicon/site.webmanifest">
     
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Azure backend integration -->
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<!-- Header Navigation -->
-<header id="header">
-    <div class="container nav-container">
-        <a href="#" class="logo">
-            <img src="images/logo-dark.svg" alt="OOUI PROF Logo" class="logo-img logo-dark">
-            <img src="images/logo-light.svg" alt="OOUI PROF Logo" class="logo-img logo-light">
-        </a>
-
-        <nav class="nav-links" id="nav-links">
-            <a href="#home" class="nav-link">
-                <span class="fr">Accueil</span>
-                <span class="en">Home</span>
-                <span class="ar">الرئيسية</span>
-            </a>
-            <a href="#services" class="nav-link">
-                <span class="fr">Services</span>
-                <span class="en">Services</span>
-                <span class="ar">الخدمات</span>
-            </a>
-            <a href="#subjects" class="nav-link">
-                <span class="fr">Matières</span>
-                <span class="en">Subjects</span>
-                <span class="ar">المواد</span>
-            </a>
-            <a href="#pricing" class="nav-link">
-                <span class="fr">Tarifs</span>
-                <span class="en">Pricing</span>
-                <span class="ar">الأسعار</span>
-            </a>
-            <a href="#appointment" class="nav-link">
-                <span class="fr">Rendez-vous</span>
-                <span class="en">Appointments</span>
-                <span class="ar">المواعيد</span>
-            </a>
-        </nav>
-
-        <a href="#appointment" class="cta-button">
-            <span class="fr">Prendre RDV</span>
-            <span class="en">Book Now</span>
-            <span class="ar">احجز الآن</span>
-        </a>
-
-        <button class="burger-menu" id="burger-menu" aria-label="Menu" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+    <!-- Floating Shapes Background -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+        <div class="shape shape-6"></div>
     </div>
-</header>
 
-<!-- Hero Section -->
-<section id="home" class="hero-section">
-    <div class="container">
-        <div class="hero-content">
-            <div class="hero-label">
-                <span class="fr">VOTRE SUCCÈS ACADÉMIQUE</span>
-                <span class="en">YOUR ACADEMIC SUCCESS</span>
-                <span class="ar">نجاحك الأكاديمي</span>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <img src="images/logo-dark.svg" alt="OOUI PROF">
             </div>
-
-            <h1 class="hero-title">
-                <span class="fr">
-                    Cours particuliers de <span class="highlight typewriter-container">
-                        <span id="typewriter-text-fr">Finance</span>
-                        <span class="typewriter-cursor">|</span>
-                    </span>
-                </span>
-                <span class="en">
-                    Private lessons in: <span class="highlight typewriter-container">
-                        <span id="typewriter-text-en">Finance</span>
-                        <span class="typewriter-cursor">|</span>
-                    </span>
-                </span>
-                <span class="ar">
-                    دروس خصوصية في: <span class="highlight typewriter-container">
-                        <span id="typewriter-text-ar">المالية</span>
-                        <span class="typewriter-cursor">|</span>
-                    </span>
-                </span>
-            </h1>
-
-            <p class="hero-description">
-                <span class="fr">Des cours personnalisés pour exceller dans vos études et votre carrière avec une approche pédagogique moderne et efficace.</span>
-                <span class="en">Personalized courses to excel in your studies and career with a modern and effective pedagogical approach.</span>
-                <span class="ar">دروس مخصصة للتفوق في دراستك وحياتك المهنية مع نهج تعليمي حديث وفعال.</span>
-            </p>
-
-            <a href="#appointment" class="cta-button book-btn">
-                <span class="fr">Réserver un cours</span>
-                <span class="en">Book a lesson</span>
-                <span class="ar">احجز درسًا</span>
-            </a>
-
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <div class="stat-number" data-value="12">0+</div>
-                    <div class="stat-label">
-                        <span class="fr">Matières</span>
-                        <span class="en">Subjects</span>
-                        <span class="ar">المواد</span>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-value="100%">0</div>
-                    <div class="stat-label">
-                        <span class="fr">Personnalisé</span>
-                        <span class="en">Personalized</span>
-                        <span class="ar">مخصص</span>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">
-                        <span class="fr">Support</span>
-                        <span class="en">Support</span>
-                        <span class="ar">الدعم</span>
-                    </div>
-                </div>
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
             </div>
-        </div>
-
-        <div class="hero-cards">
-            <div class="achievements-grid">
-                <div class="achievement-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="achievement-icon">
-                        <i class="fas fa-chart-line achievement-icon-svg"></i>
-                    </div>
-                    <div class="achievement-content">
-                        <div class="achievement-stats">
-                            <span class="achievement-number" data-target="92">0</span>
-                            <span class="achievement-unit">%</span>
-                        </div>
-                        <h4 class="achievement-title">
-                            <span class="fr">Amélioration</span>
-                            <span class="en">Improvement</span>
-                            <span class="ar">تحسن</span>
-                        </h4>
-                        <p class="achievement-description">
-                            <span class="fr">Notes améliorées</span>
-                            <span class="en">Better grades</span>
-                            <span class="ar">درجات أفضل</span>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="achievement-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="achievement-icon">
-                        <i class="fas fa-users achievement-icon-svg"></i>
-                    </div>
-                    <div class="achievement-content">
-                        <div class="achievement-stats">
-                            <span class="achievement-number" data-target="500">0</span>
-                            <span class="achievement-unit">+</span>
-                        </div>
-                        <h4 class="achievement-title">
-                            <span class="fr">Étudiants</span>
-                            <span class="en">Students</span>
-                            <span class="ar">طلاب</span>
-                        </h4>
-                        <p class="achievement-description">
-                            <span class="fr">Accompagnés</span>
-                            <span class="en">Guided</span>
-                            <span class="ar">مرافقين</span>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="achievement-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="achievement-icon">
-                        <i class="fas fa-trophy achievement-icon-svg"></i>
-                    </div>
-                    <div class="achievement-content">
-                        <div class="achievement-stats">
-                            <span class="achievement-number" data-target="8">0</span>
-                            <span class="achievement-unit">
-                                <span class="fr">ans</span>
-                                <span class="en">yrs</span>
-                                <span class="ar">سنوات</span>
-                            </span>
-                        </div>
-                        <h4 class="achievement-title">
-                            <span class="fr">Expérience</span>
-                            <span class="en">Experience</span>
-                            <span class="ar">خبرة</span>
-                        </h4>
-                        <p class="achievement-description">
-                            <span class="fr">Enseignement</span>
-                            <span class="en">Teaching</span>
-                            <span class="ar">تدريس</span>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="achievement-card" data-aos="fade-up" data-aos-delay="400">
-                    <div class="achievement-icon">
-                        <i class="fas fa-star achievement-icon-svg"></i>
-                    </div>
-                    <div class="achievement-content">
-                        <div class="achievement-stats">
-                            <span class="achievement-number" data-target="98">0</span>
-                            <span class="achievement-unit">%</span>
-                        </div>
-                        <h4 class="achievement-title">
-                            <span class="fr">Satisfaction</span>
-                            <span class="en">Satisfaction</span>
-                            <span class="ar">رضا</span>
-                        </h4>
-                        <p class="achievement-description">
-                            <span class="fr">Recommandations</span>
-                            <span class="en">Recommendations</span>
-                            <span class="ar">توصيات</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Services Section -->
-<section id="services" class="services-section">
-    <div class="container">
-        <div class="section-header">
-            <div class="section-subtitle">
-                <span class="fr">Nos Services</span>
-                <span class="en">Our Services</span>
-                <span class="ar">خدماتنا</span>
-            </div>
-            <h2 class="section-title">
-                <span class="fr">Des services adaptés à vos besoins</span>
-                <span class="en">Services tailored to your needs</span>
-                <span class="ar">خدمات مصممة لتلبية احتياجاتك</span>
-            </h2>
-            <p class="section-description">
-                <span class="fr">Excellence académique personnalisée pour vous aider à atteindre vos objectifs professionnels</span>
-                <span class="en">Personalized academic excellence to help you achieve your professional goals</span>
-                <span class="ar">التميز الأكاديمي المخصص لمساعدتك على تحقيق أهدافك المهنية</span>
-            </p>
-        </div>
-
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-book-open icon-lg"></i>
-                </div>
-                <h3 class="service-title">
-                    <span class="fr">Révision</span>
-                    <span class="en">Revision</span>
-                    <span class="ar">المراجعة</span>
-                </h3>
-                <p class="service-description">
-                    <span class="fr">Consolidez vos connaissances avec des séances de révision ciblées et efficaces, adaptées à votre rythme d'apprentissage.</span>
-                    <span class="en">Consolidate your knowledge with targeted and effective revision sessions, adapted to your learning pace.</span>
-                    <span class="ar">عزز معرفتك من خلال جلسات مراجعة مستهدفة وفعالة، تتكيف مع وتيرة تعلمك.</span>
-                </p>
-            </div>
-
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-bullseye icon-lg"></i>
-                </div>
-                <h3 class="service-title">
-                    <span class="fr">Préparation aux examens</span>
-                    <span class="en">Exam Preparation</span>
-                    <span class="ar">التحضير للامتحانات</span>
-                </h3>
-                <p class="service-description">
-                    <span class="fr">Préparez-vous aux examens avec confiance grâce à notre approche méthodique et nos techniques éprouvées.</span>
-                    <span class="en">Prepare for exams with confidence thanks to our methodical approach and proven techniques.</span>
-                    <span class="ar">استعد للامتحانات بثقة بفضل نهجنا المنهجي وتقنياتنا المثبتة.</span>
-                </p>
-            </div>
-
-            <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-user-friends icon-lg"></i>
-                </div>
-                <h3 class="service-title">
-                    <span class="fr">Accompagnement personnel</span>
-                    <span class="en">Personal Coaching</span>
-                    <span class="ar">التوجيه الشخصي</span>
-                </h3>
-                <p class="service-description">
-                    <span class="fr">Bénéficiez d'un suivi personnalisé adapté à vos objectifs, difficultés et ambitions professionnelles.</span>
-                    <span class="en">Benefit from personalized guidance adapted to your goals, challenges, and professional ambitions.</span>
-                    <span class="ar">استفد من التوجيه المخصص المكيف مع أهدافك وتحدياتك وطموحاتك المهنية.</span>
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Subjects Section -->
-<section id="subjects" class="subjects-section">
-    <div class="container">
-        <div class="section-header">
-            <div class="section-subtitle">
-                <span class="fr">Matières Enseignées</span>
-                <span class="en">Subjects Taught</span>
-                <span class="ar">المواد المُدرَّسة</span>
-            </div>
-            <h2 class="section-title">
-                <span class="fr">Domaines d'expertise</span>
-                <span class="en">Areas of Expertise</span>
-                <span class="ar">مجالات الخبرة</span>
-            </h2>
-            <p class="section-description">
-                <span class="fr">Découvrez notre large éventail de matières financières et comptables</span>
-                <span class="en">Discover our wide range of financial and accounting subjects</span>
-                <span class="ar">اكتشف مجموعتنا الواسعة من المواد المالية والمحاسبية</span>
-            </p>
-        </div>
-
-        <div class="expertise-grid">
-            <div class="expertise-card" data-expertise="finance">
-                <div class="expertise-icon">
-                    <i class="fas fa-chart-line icon-lg"></i>
-                </div>
-                <h3 class="expertise-title">
-                    <span class="fr">Finance</span>
-                    <span class="en">Finance</span>
-                    <span class="ar">التمويل</span>
-                </h3>
-                <p class="expertise-description">
-                    <span class="fr">Tout ce qui concerne les flux financiers, les marchés et la valeur</span>
-                    <span class="en">Everything related to financial flows, markets, and value</span>
-                    <span class="ar">كل ما يتعلق بالتدفقات المالية والأسواق والقيمة</span>
-                </p>
-                <span class="expertise-more">
-                        <span class="fr">Voir les matières</span>
-                        <span class="en">View subjects</span>
-                        <span class="ar">عرض المواد</span>
-                    </span>
-            </div>
-
-            <div class="expertise-card" data-expertise="comptabilite">
-                <div class="expertise-icon">
-                    <i class="fas fa-chart-bar icon-lg"></i>
-                </div>
-                <h3 class="expertise-title">
-                    <span class="fr">Comptabilité</span>
-                    <span class="en">Accounting</span>
-                    <span class="ar">المحاسبة</span>
-                </h3>
-                <p class="expertise-description">
-                    <span class="fr">Enregistrement, analyse et interprétation des données financières</span>
-                    <span class="en">Recording, analyzing, and interpreting financial data</span>
-                    <span class="ar">تسجيل وتحليل وتفسير البيانات المالية</span>
-                </p>
-                <span class="expertise-more">
-                        <span class="fr">Voir les matières</span>
-                        <span class="en">View subjects</span>
-                        <span class="ar">عرض المواد</span>
-                    </span>
-            </div>
-
-            <div class="expertise-card" data-expertise="gestion">
-                <div class="expertise-icon">
-                    <i class="fas fa-sliders-h icon-lg"></i>
-                </div>
-                <h3 class="expertise-title">
-                    <span class="fr">Contrôle & Gestion</span>
-                    <span class="en">Control & Management</span>
-                    <span class="ar">الرقابة والإدارة</span>
-                </h3>
-                <p class="expertise-description">
-                    <span class="fr">Outils et méthodes pour piloter la performance d'une organisation</span>
-                    <span class="en">Tools and methods to drive an organization's performance</span>
-                    <span class="ar">أدوات وطرق لقيادة أداء المؤسسة</span>
-                </p>
-                <span class="expertise-more">
-                        <span class="fr">Voir les matières</span>
-                        <span class="en">View subjects</span>
-                        <span class="ar">عرض المواد</span>
-                    </span>
-            </div>
-
-            <div class="expertise-card" data-expertise="encadrement">
-                <div class="expertise-icon">
-                    <i class="fas fa-graduation-cap icon-lg"></i>
-                </div>
-                <h3 class="expertise-title">
-                    <span class="fr">Encadrement</span>
-                    <span class="en">Guidance</span>
-                    <span class="ar">التوجيه</span>
-                </h3>
-                <p class="expertise-description">
-                    <span class="fr">Domaines spécifiques et accompagnement de projets académiques</span>
-                    <span class="en">Specific areas and academic project support</span>
-                    <span class="ar">المجالات المحددة ودعم المشاريع الأكاديمية</span>
-                </p>
-                <span class="expertise-more">
-                        <span class="fr">Voir les matières</span>
-                        <span class="en">View subjects</span>
-                        <span class="ar">عرض المواد</span>
-                    </span>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Détails des matières par expertise -->
-<div class="subjects-details-container">
-    <!-- Finance -->
-    <div class="subjects-details" id="finance-details">
-        <div class="details-header">
-            <h3>
-                <span class="fr">Finance</span>
-                <span class="en">Finance</span>
-                <span class="ar">التمويل</span>
-            </h3>
-            <button class="close-details">×</button>
-        </div>
-        <div class="subjects-grid">
-            <div class="subject-card" data-subject="math-fin">
-                <div class="subject-icon">🧮</div>
-                <h4 class="subject-title">
-                    <span class="fr">Mathématiques financières</span>
-                    <span class="en">Financial Mathematics</span>
-                    <span class="ar">الرياضيات المالية</span>
-                </h4>
-            </div>
-            <div class="subject-card" data-subject="finance-ent">
-                <div class="subject-icon">🏢</div>
-                <h4 class="subject-title">
-                    <span class="fr">Finance d'entreprise</span>
-                    <span class="en">Corporate Finance</span>
-                    <span class="ar">تمويل الشركات</span>
-                </h4>
-            </div>
-            <div class="subject-card" data-subject="finance-marche">
-                <div class="subject-icon">💹</div>
-                <h4 class="subject-title">
-                    <span class="fr">Finance de marché</span>
-                    <span class="en">Market Finance</span>
-                    <span class="ar">تمويل السوق</span>
-                </h4>
-            </div>
-            <div class="subject-card" data-subject="ingenierie-fin">
-                <div class="subject-icon">⚙️</div>
-                <h4 class="subject-title">
-                    <span class="fr">Ingénierie financière</span>
-                    <span class="en">Financial Engineering</span>
-                    <span class="ar">الهندسة المالية</span>
-                </h4>
-            </div>
-            <div class="subject-card" data-subject="analyse-fin">
-                <div class="subject-icon">📋</div>
-                <h4 class="subject-title">
-                    <span class="fr">Analyse financière</span>
-                    <span class="en">Financial Analysis</span>
-                    <span class="ar">التحليل المالي</span>
-                </h4>
-            </div>
+            <p class="loading-text">Chargement...</p>
         </div>
     </div>
 
-    <!-- Comptabilité -->
-    <div class="subjects-details" id="comptabilite-details">
-        <div class="details-header">
-            <h3>
-                <span class="fr">Comptabilité</span>
-                <span class="en">Accounting</span>
-                <span class="ar">المحاسبة</span>
-            </h3>
-            <button class="close-details">×</button>
-        </div>
-        <div class="subjects-grid">
-            <div class="subject-card" data-subject="compta-gen">
-                <div class="subject-icon">📊</div>
-                <h4 class="subject-title">
-                    <span class="fr">Comptabilité générale</span>
-                    <span class="en">General Accounting</span>
-                    <span class="ar">المحاسبة العامة</span>
-                </h4>
-            </div>
-            <div class="subject-card" data-subject="compta-ana">
-                <div class="subject-icon">📈</div>
-                <h4 class="subject-title">
-                    <span class="fr">Comptabilité analytique</span>
-                    <span class="en">Cost Accounting</span>
-                    <span class="ar">محاسبة التكاليف</span>
-                </h4>
-            </div>
-            <div class="subject-card" data-subject="compta-approf">
-                <div class="subject-icon">📚</div>
-                <h4 class="subject-title">
-                    <span class="fr">Comptabilité approfondie</span>
-                    <span class="en">Advanced Accounting</span>
-                    <span class="ar">المحاسبة المتقدمة</span>
-                </h4>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contrôle & Gestion -->
-    <div class="subjects-details" id="gestion-details">
-        <div class="details-header">
-            <h3>
-                <span class="fr">Contrôle & Gestion</span>
-                <span class="en">Control & Management</span>
-                <span class="ar">الرقابة والإدارة</span>
-            </h3>
-            <button class="close-details">×</button>
-        </div>
-        <div class="subjects-grid">
-            <div class="subject-card" data-subject="controle-gestion">
-                <div class="subject-icon">🎛️</div>
-                <h4 class="subject-title">
-                    <span class="fr">Contrôle de gestion</span>
-                    <span class="en">Management Control</span>
-                    <span class="ar">مراقبة الإدارة</span>
-                </h4>
-            </div>
-            <div class="subject-card" data-subject="evaluation-ent">
-                <div class="subject-icon">🏆</div>
-                <h4 class="subject-title">
-                    <span class="fr">Évaluation d'entreprises</span>
-                    <span class="en">Business Valuation</span>
-                    <span class="ar">تقييم الأعمال</span>
-                </h4>
-            </div>
-            <div class="subject-card" data-subject="risk-mgmt">
-                <div class="subject-icon">🛡️</div>
-                <h4 class="subject-title">
-                    <span class="fr">Risk management</span>
-                    <span class="en">Risk Management</span>
-                    <span class="ar">إدارة المخاطر</span>
-                </h4>
-            </div>
-        </div>
-    </div>
-
-    <!-- Encadrement -->
-    <div class="subjects-details" id="encadrement-details">
-        <div class="details-header">
-            <h3>
-                <span class="fr">Encadrement</span>
-                <span class="en">Guidance</span>
-                <span class="ar">التوجيه</span>
-            </h3>
-            <button class="close-details">×</button>
-        </div>
-        <div class="subjects-grid">
-            <div class="subject-card" data-subject="memoire">
-                <div class="subject-icon">🎓</div>
-                <h4 class="subject-title">
-                    <span class="fr">Mémoire de fin d'études</span>
-                    <span class="en">Thesis Support</span>
-                    <span class="ar">دعم الأطروحة</span>
-                </h4>
-            </div>
-            <div class="subject-card" data-subject="certification">
-                <div class="subject-icon">📜</div>
-                <h4 class="subject-title">
-                    <span class="fr">Préparation aux concours</span>
-                    <span class="en">Exam Preparation</span>
-                    <span class="ar">التحضير للاختبارات</span>
-                </h4>
-            </div>
-            <div class="subject-card" data-subject="projets">
-                <div class="subject-icon">📝</div>
-                <h4 class="subject-title">
-                    <span class="fr">Projets académiques</span>
-                    <span class="en">Academic Projects</span>
-                    <span class="ar">المشاريع الأكاديمية</span>
-                </h4>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modern Pricing Section -->
-<section id="pricing" class="pricing-section">
-    <div class="container">
-        <div class="section-header">
-            <div class="section-subtitle">
-                <span class="fr">Tarifs</span>
-                <span class="en">Pricing</span>
-                <span class="ar">الأسعار</span>
-            </div>
-            <h2 class="section-title">
-                <span class="fr">Plans flexibles pour tous les étudiants</span>
-                <span class="en">Flexible Plans for Every Student</span>
-                <span class="ar">خطط مرنة لجميع الطلاب</span>
-            </h2>
-        </div>
-
-
-        <!-- Integrated Pricing Module -->
-        <div class="pricing-calculator">
-            <div class="calculator-header">
-                <h3>
-                    <span class="fr">Choisissez votre pack</span>
-                    <span class="en">Choose your package</span>
-                    <span class="ar">اختر باقتك</span>
-                </h3>
-                <p>
-                    <span class="fr">Ajustez le nombre d'heures pour découvrir votre tarif</span>
-                    <span class="en">Adjust the hours to discover your rate</span>
-                    <span class="ar">اضبط عدد الساعات لاكتشاف سعرك</span>
-                </p>
-            </div>
-            
-            <div class="hours-selector">
-                <div class="range-container">
-                    <input type="range" id="hours-range" min="1" max="30" value="10" class="modern-range">
-                    <div class="range-track"></div>
-                    <div class="range-progress" id="range-progress"></div>
-                </div>
+    <!-- Header -->
+    <header id="header" class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="#home" class="logo">
+                    <img src="images/logo-dark.svg" alt="OOUI PROF Logo" class="logo-img logo-dark">
+                    <img src="images/logo-light.svg" alt="OOUI PROF Logo" class="logo-img logo-light">
+                    <span class="logo-text">OOUI PROF</span>
+                </a>
                 
-                <div class="range-labels">
-                    <span>1h</span>
-                    <span>30h</span>
+                <div class="nav-links" id="nav-links">
+                    <a href="#home" class="nav-link active" data-en="Home" data-ar="الرئيسية">Accueil</a>
+                    <a href="#services" class="nav-link" data-en="Services" data-ar="الخدمات">Services</a>
+                    <a href="#subjects" class="nav-link" data-en="Subjects" data-ar="المواد">Matières</a>
+                    <a href="#about" class="nav-link" data-en="About" data-ar="من نحن">À propos</a>
+                    <a href="#contact" class="nav-link" data-en="Contact" data-ar="تواصل">Contact</a>
                 </div>
-                
-                <div class="hours-display">
-                    <div class="hours-counter">
-                        <span id="selected-hours">10</span>
-                        <span class="hours-unit">
-                            <span class="fr">heures</span>
-                            <span class="en">hours</span>
-                            <span class="ar">ساعات</span>
-                        </span>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Dynamic Price Display -->
-            <div class="price-display" aria-live="polite">
-                <div class="price-card">
-                    <div class="tier-badge" id="tier-badge">
-                        <span id="tier-name">Progress</span>
-                    </div>
-                    
-                    <div class="price-main">
-                        <div class="price-amount">
-                            <span class="currency">MAD</span>
-                            <span class="amount" id="total-mad">2000</span>
-                        </div>
-                        <div class="price-period">
-                            <span class="fr">pour le pack complet</span>
-                            <span class="en">for the complete pack</span>
-                            <span class="ar">للحزمة الكاملة</span>
-                        </div>
-                    </div>
-                    
-                    <div class="price-breakdown">
-                        <div class="breakdown-item">
-                            <i class="fas fa-clock"></i>
-                            <span class="breakdown-label">
-                                <span class="fr">Prix/heure</span>
-                                <span class="en">Price/hour</span>
-                                <span class="ar">السعر/ساعة</span>
-                            </span>
-                            <span class="breakdown-value" id="mad-per-hour">200 MAD</span>
-                        </div>
-                        
-                        <div class="breakdown-item bonus" id="bonus-item">
-                            <i class="fas fa-gift"></i>
-                            <span class="breakdown-label">
-                                <span class="fr">Heures bonus</span>
-                                <span class="en">Bonus hours</span>
-                                <span class="ar">ساعات مجانية</span>
-                            </span>
-                            <span class="breakdown-value" id="free-hours">+1h</span>
-                        </div>
-                        
-                        <div class="breakdown-item effective">
-                            <i class="fas fa-calculator"></i>
-                            <span class="breakdown-label">
-                                <span class="fr">Tarif effectif</span>
-                                <span class="en">Effective rate</span>
-                                <span class="ar">السعر الفعلي</span>
-                            </span>
-                            <span class="breakdown-value" id="effective-mad">182 MAD/h</span>
+                <div class="header-controls">
+                    <div class="language-selector">
+                        <button class="language-btn" id="language-btn">
+                            <i class="fas fa-globe"></i>
+                            <span class="lang-text">FR</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="language-dropdown" id="language-dropdown">
+                            <a href="#" class="language-option" data-lang="fr">
+                                <span class="flag-icon">🇫🇷</span>
+                                Français
+                            </a>
+                            <a href="#" class="language-option" data-lang="en">
+                                <span class="flag-icon">🇬🇧</span>
+                                English
+                            </a>
+                            <a href="#" class="language-option" data-lang="ar">
+                                <span class="flag-icon">🇲🇦</span>
+                                العربية
+                            </a>
                         </div>
                     </div>
                     
-                    <button id="book-pack-btn" class="cta-button" style="width: 100%; margin-top: 1.5rem;">
-                        <span class="fr">Réserver ce pack</span>
-                        <span class="en">Book this pack</span>
-                        <span class="ar">احجز هذه الباقة</span>
+                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-sun sun-icon"></i>
+                        <i class="fas fa-moon moon-icon"></i>
                     </button>
+                    
+                    <a href="#appointment" class="cta-button" data-en="Book Now" data-ar="احجز الآن">
+                        <span>Réserver</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-bg">
+            <div class="hero-gradient"></div>
+            <div class="hero-pattern"></div>
+        </div>
+        
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="hero-badge">
+                        <i class="fas fa-star"></i>
+                        <span data-en="Expert Tutoring" data-ar="دروس متخصصة">Cours d'excellence</span>
+                    </div>
+                    
+                    <h1 class="hero-title">
+                        <span class="title-line" data-en="Master Finance &" data-ar="إتقان المالية و">Maîtrisez la Finance &</span>
+                        <span class="title-line gradient-text" data-en="Accounting" data-ar="المحاسبة">Comptabilité</span>
+                        <span class="title-line" data-en="with Expert Guidance" data-ar="مع إرشاد خبير">avec un Expert</span>
+                    </h1>
+                    
+                    <p class="hero-description" data-en="Personalized tutoring sessions designed to help you excel in your studies and professional career with modern and effective teaching methods." data-ar="دروس مخصصة مصممة لمساعدتك على التفوق في دراستك وحياتك المهنية مع أساليب تعليمية حديثة وفعالة.">
+                        Cours particuliers personnalisés conçus pour vous aider à exceller dans vos études et votre carrière professionnelle avec des méthodes d'enseignement modernes et efficaces.
+                    </p>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" data-count="500">0</span>
+                            <span class="stat-label" data-en="Students Helped" data-ar="طالب مساعد">Étudiants Aidés</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" data-count="5">0</span>
+                            <span class="stat-label" data-en="Years Experience" data-ar="سنوات خبرة">Années d'Expérience</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" data-count="98">0</span>
+                            <span class="stat-label" data-en="Success Rate %" data-ar="معدل النجاح %">Taux de Réussite %</span>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-buttons">
+                        <a href="#appointment" class="btn btn-primary" data-en="Book a Session" data-ar="احجز جلسة">
+                            <span>Réserver une Séance</span>
+                            <i class="fas fa-calendar-alt"></i>
+                        </a>
+                        <button class="btn btn-secondary" onclick="scrollToSection('about')" data-en="Learn More" data-ar="اعرف المزيد">
+                            <span>En Savoir Plus</span>
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="hero-visual">
+                    <div class="hero-image-container">
+                        <div class="hero-image-bg"></div>
+                        <img src="images/professor.jpg" alt="Professor OOUI" class="hero-image">
+                        <div class="hero-decoration">
+                            <div class="decoration-card card-1">
+                                <i class="fas fa-chart-line"></i>
+                                <span data-en="Financial Analysis" data-ar="التحليل المالي">Analyse Financière</span>
+                            </div>
+                            <div class="decoration-card card-2">
+                                <i class="fas fa-calculator"></i>
+                                <span data-en="Accounting" data-ar="المحاسبة">Comptabilité</span>
+                            </div>
+                            <div class="decoration-card card-3">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span data-en="Expert Teaching" data-ar="تدريس خبير">Enseignement Expert</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <!-- Modern Pricing Tiers -->
-        <div class="pricing-tiers" style="display: none;">
-            <div class="tier-card basic">
-                <div class="tier-header">
-                    <h4>Flex</h4>
-                    <p class="tier-subtitle">
-                        <span class="fr">Pour commencer</span>
-                        <span class="en">To get started</span>
-                        <span class="ar">للبدء</span>
-                    </p>
-                </div>
-                
-                <div class="tier-price">
-                    <span class="price-number">$19</span>
-                </div>
-                
-                <div class="tier-features">
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Jusqu'à 5 projets</span>
-                        <span class="en">Up to 5 projects</span>
-                        <span class="ar">حتى 5 مشاريع</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Support par email</span>
-                        <span class="en">Email support</span>
-                        <span class="ar">دعم البريد الإلكتروني</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Stockage 10GB</span>
-                        <span class="en">10GB storage</span>
-                        <span class="ar">تخزين 10 جيجابايت</span>
-                    </div>
-                </div>
-                
-                <button class="tier-button" onclick="document.getElementById('appointment-form').scrollIntoView({behavior: 'smooth'});">
-                    <span class="fr">Commencer</span>
-                    <span class="en">Get Started</span>
-                    <span class="ar">ابدأ</span>
-                </button>
-            </div>
-
-            <div class="tier-card popular">
-                <div class="popular-badge">
-                    <span class="fr">Plus populaire</span>
-                    <span class="en">Most Popular</span>
-                    <span class="ar">الأكثر شعبية</span>
-                </div>
-                
-                <div class="tier-header">
-                    <h4>Starter</h4>
-                    <p class="tier-subtitle">
-                        <span class="fr">Le plus populaire</span>
-                        <span class="en">Most popular</span>
-                        <span class="ar">الأكثر شعبية</span>
-                    </p>
-                </div>
-                
-                <div class="tier-price">
-                    <span class="price-number">$49</span>
-                </div>
-                
-                <div class="tier-features">
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Jusqu'à 20 projets</span>
-                        <span class="en">Up to 20 projects</span>
-                        <span class="ar">حتى 20 مشروع</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Support prioritaire</span>
-                        <span class="en">Priority support</span>
-                        <span class="ar">دعم أولوي</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Stockage 50GB</span>
-                        <span class="en">50GB storage</span>
-                        <span class="ar">تخزين 50 جيجابايت</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Intégrations avancées</span>
-                        <span class="en">Advanced integrations</span>
-                        <span class="ar">تكامل متقدم</span>
-                    </div>
-                </div>
-                
-                <button class="tier-button" onclick="document.getElementById('appointment-form').scrollIntoView({behavior: 'smooth'});">
-                    <span class="fr">Commencer</span>
-                    <span class="en">Get Started</span>
-                    <span class="ar">ابدأ</span>
-                </button>
-            </div>
-
-            <div class="tier-card premium">
-                <div class="tier-header">
-                    <h4>Progress</h4>
-                    <p class="tier-subtitle">
-                        <span class="fr">Pour les équipes</span>
-                        <span class="en">For teams</span>
-                        <span class="ar">للفرق</span>
-                    </p>
-                </div>
-                
-                <div class="tier-price">
-                    <span class="price-number">$99</span>
-                </div>
-                
-                <div class="tier-features">
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Projets illimités</span>
-                        <span class="en">Unlimited projects</span>
-                        <span class="ar">مشاريع غير محدودة</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Support 24/7</span>
-                        <span class="en">24/7 support</span>
-                        <span class="ar">دعم 24/7</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Stockage 200GB</span>
-                        <span class="en">200GB storage</span>
-                        <span class="ar">تخزين 200 جيجابايت</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Analytics avancées</span>
-                        <span class="en">Advanced analytics</span>
-                        <span class="ar">تحليلات متقدمة</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">API complète</span>
-                        <span class="en">Full API access</span>
-                        <span class="ar">وصول كامل للAPI</span>
-                    </div>
-                </div>
-                
-                <button class="tier-button" onclick="document.getElementById('appointment-form').scrollIntoView({behavior: 'smooth'});">
-                    <span class="fr">Commencer</span>
-                    <span class="en">Get Started</span>
-                    <span class="ar">ابدأ</span>
-                </button>
-            </div>
-
-            <div class="tier-card enterprise">
-                <div class="tier-header">
-                    <h4>Custom</h4>
-                    <p class="tier-subtitle">
-                        <span class="fr">Sur mesure</span>
-                        <span class="en">Custom made</span>
-                        <span class="ar">مخصص</span>
-                    </p>
-                </div>
-                
-                <div class="tier-price">
-                    <span class="price-number">Contact</span>
-                    <span class="price-currency">nous</span>
-                </div>
-                
-                <div class="tier-features">
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Solutions personnalisées</span>
-                        <span class="en">Custom solutions</span>
-                        <span class="ar">حلول مرنة</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Support premium</span>
-                        <span class="en">Premium support</span>
-                        <span class="ar">دعم مميز</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check"></i>
-                        <span class="fr">Consultation gratuite</span>
-                        <span class="en">Free consultation</span>
-                        <span class="ar">استشارة مجانية</span>
-                    </div>
-                </div>
-                
-                <button class="tier-button" onclick="document.getElementById('appointment-form').scrollIntoView({behavior: 'smooth'});">
-                    <span class="fr">Nous contacter</span>
-                    <span class="en">Contact Us</span>
-                    <span class="ar">اتصل بنا</span>
-                </button>
-            </div>
-
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
         </div>
+    </section>
 
-    </div>
-</section>
-
-<!-- Appointment Section -->
-<section id="appointment" class="appointment-section" style="display: none;">
-    <div class="container">
-        <div class="appointment-container">
+    <!-- Services Section -->
+    <section id="services" class="services-section">
+        <div class="container">
             <div class="section-header">
-                <div class="section-subtitle">
-                    <span class="fr">Prendre Rendez-vous</span>
-                    <span class="en">Book an Appointment</span>
-                    <span class="ar">حجز موعد</span>
+                <div class="section-badge">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span data-en="Our Services" data-ar="خدماتنا">Nos Services</span>
                 </div>
-                <h2 class="section-title">
-                    <span class="fr">Ça commence ici</span>
-                    <span class="en">It starts here</span>
-                    <span class="ar">يبدأ من هنا</span>
+                <h2 class="section-title" data-en="Comprehensive Learning Solutions" data-ar="حلول تعليمية شاملة">
+                    Solutions d'Apprentissage Complètes
                 </h2>
-                <p class="section-description">
-                    <span class="fr">Réservez une séance personnalisée adaptée à vos besoins</span>
-                    <span class="en">Book a personalized session adapted to your needs</span>
-                    <span class="ar">احجز جلسة مخصصة تتناسب مع احتياجاتك</span>
+                <p class="section-description" data-en="Tailored tutoring services designed to meet your specific academic and professional needs." data-ar="خدمات تدريس مخصصة مصممة لتلبية احتياجاتك الأكاديمية والمهنية المحددة.">
+                    Services de tutorat sur mesure conçus pour répondre à vos besoins académiques et professionnels spécifiques.
                 </p>
             </div>
 
-            <form id="appointment-form" class="appointment-form">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="fullName">
-                            <span class="fr">Nom complet *</span>
-                            <span class="en">Full Name *</span>
-                            <span class="ar">الاسم الكامل *</span>
-                        </label>
-                        <input type="text" id="fullName" name="fullName" class="form-control" required>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-user-graduate"></i>
                     </div>
+                    <h3 class="service-title" data-en="Individual Tutoring" data-ar="دروس فردية">Cours Particuliers</h3>
+                    <p class="service-description" data-en="One-on-one personalized sessions tailored to your learning pace and style." data-ar="جلسات شخصية واحد لواحد مخصصة لوتيرة التعلم والأسلوب الخاص بك.">
+                        Séances personnalisées en tête-à-tête adaptées à votre rythme et style d'apprentissage.
+                    </p>
+                    <ul class="service-features">
+                        <li data-en="Customized curriculum" data-ar="منهج مخصص">Programme personnalisé</li>
+                        <li data-en="Flexible scheduling" data-ar="جدولة مرنة">Horaires flexibles</li>
+                        <li data-en="Progress tracking" data-ar="تتبع التقدم">Suivi des progrès</li>
+                    </ul>
+                </div>
 
-                    <div class="form-group">
-                        <label for="email">
-                            <span class="fr">Adresse e-mail *</span>
-                            <span class="en">Email Address *</span>
-                            <span class="ar">البريد الإلكتروني *</span>
-                        </label>
-                        <input type="email" id="email" name="email" class="form-control" required>
+                <div class="service-card featured">
+                    <div class="service-badge">
+                        <span data-en="Most Popular" data-ar="الأكثر شعبية">Le Plus Populaire</span>
                     </div>
-
-                    <div class="form-group">
-                        <label for="phone">
-                            <span class="fr">Numéro de téléphone</span>
-                            <span class="en">Phone Number</span>
-                            <span class="ar">رقم الهاتف</span>
-                        </label>
-                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="+212 6XX-XXXXXX">
+                    <div class="service-icon">
+                        <i class="fas fa-users"></i>
                     </div>
+                    <h3 class="service-title" data-en="Group Sessions" data-ar="جلسات جماعية">Séances de Groupe</h3>
+                    <p class="service-description" data-en="Interactive group learning with collaborative problem-solving and peer support." data-ar="تعلم جماعي تفاعلي مع حل المشكلات التعاونية ودعم الأقران.">
+                        Apprentissage en groupe interactif avec résolution collaborative de problèmes et soutien entre pairs.
+                    </p>
+                    <ul class="service-features">
+                        <li data-en="Small group sizes" data-ar="مجموعات صغيرة">Petits groupes</li>
+                        <li data-en="Interactive discussions" data-ar="مناقشات تفاعلية">Discussions interactives</li>
+                        <li data-en="Cost-effective" data-ar="فعال من حيث التكلفة">Économique</li>
+                    </ul>
+                </div>
 
-                    <div class="form-group">
-                        <label for="city">
-                            <span class="fr">Ville</span>
-                            <span class="en">City</span>
-                            <span class="ar">المدينة</span>
-                        </label>
-                        <input type="text" id="city" name="city" class="form-control" placeholder="Ex: Casablanca, Rabat...">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-laptop"></i>
                     </div>
+                    <h3 class="service-title" data-en="Online Learning" data-ar="التعلم عبر الإنترنت">Apprentissage en Ligne</h3>
+                    <p class="service-description" data-en="Convenient online sessions with digital resources and virtual whiteboards." data-ar="جلسات مريحة عبر الإنترنت مع موارد رقمية وألواح بيضاء افتراضية.">
+                        Séances en ligne pratiques avec ressources numériques et tableaux blancs virtuels.
+                    </p>
+                    <ul class="service-features">
+                        <li data-en="Digital resources" data-ar="موارد رقمية">Ressources numériques</li>
+                        <li data-en="Screen sharing" data-ar="مشاركة الشاشة">Partage d'écran</li>
+                        <li data-en="Recording available" data-ar="تسجيل متاح">Enregistrement disponible</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    <div class="form-group">
-                        <label for="method">
-                            <span class="fr">Méthode de contact préférée</span>
-                            <span class="en">Preferred Contact Method</span>
-                            <span class="ar">طريقة الاتصال المفضلة</span>
-                        </label>
-                        <select id="method" name="method" class="form-control">
-                            <option value="">
-                                <span class="fr">Choisissez une option</span>
-                                <span class="en">Choose an option</span>
-                                <span class="ar">اختر خيارًا</span>
-                            </option>
-                            <option value="Email">Email</option>
-                            <option value="Phone">
-                                <span class="fr">Téléphone</span>
-                                <span class="en">Phone</span>
-                                <span class="ar">الهاتف</span>
-                            </option>
-                            <option value="WhatsApp">WhatsApp</option>
-                        </select>
-                    </div>
+    <!-- Subjects Section -->
+    <section id="subjects" class="subjects-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">
+                    <i class="fas fa-book"></i>
+                    <span data-en="Subjects" data-ar="المواد">Matières</span>
+                </div>
+                <h2 class="section-title" data-en="Subjects We Teach" data-ar="المواد التي ندرسها">
+                    Matières Enseignées
+                </h2>
+                <p class="section-description" data-en="Comprehensive coverage of finance and accounting topics from basic to advanced levels." data-ar="تغطية شاملة لموضوعات المالية والمحاسبة من المستويات الأساسية إلى المتقدمة.">
+                    Couverture complète des sujets de finance et comptabilité, du niveau débutant au niveau avancé.
+                </p>
+            </div>
 
-                    <div class="form-group">
-                        <label for="hours">
-                            <span class="fr">Nombre d'heures souhaitées</span>
-                            <span class="en">Desired Hours</span>
-                            <span class="ar">عدد الساعات المطلوبة</span>
-                        </label>
-                        <input type="text" id="hours" name="hours" class="form-control" placeholder="Ex: Lundi-Vendredi 18h-20h">
-                    </div>
+            <div class="subjects-container">
+                <div class="subjects-tabs">
+                    <button class="subject-tab active" data-subject="finance">
+                        <i class="fas fa-chart-line"></i>
+                        <span data-en="Finance" data-ar="المالية">Finance</span>
+                    </button>
+                    <button class="subject-tab" data-subject="accounting">
+                        <i class="fas fa-calculator"></i>
+                        <span data-en="Accounting" data-ar="المحاسبة">Comptabilité</span>
+                    </button>
+                    <button class="subject-tab" data-subject="analysis">
+                        <i class="fas fa-chart-bar"></i>
+                        <span data-en="Analysis" data-ar="التحليل">Analyse</span>
+                    </button>
+                </div>
 
-                    <div class="form-group full-width">
-                        <label>
-                            <span class="fr">Matières d'intérêt</span>
-                            <span class="en">Subjects of Interest</span>
-                            <span class="ar">المواد ذات الاهتمام</span>
-                        </label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="subjects" value="Finance">
-                                <span class="fr">Finance</span>
-                                <span class="en">Finance</span>
-                                <span class="ar">التمويل</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="subjects" value="Comptabilité">
-                                <span class="fr">Comptabilité</span>
-                                <span class="en">Accounting</span>
-                                <span class="ar">المحاسبة</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="subjects" value="Contrôle & Gestion">
-                                <span class="fr">Contrôle & Gestion</span>
-                                <span class="en">Control & Management</span>
-                                <span class="ar">الرقابة والإدارة</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="subjects" value="Encadrement">
-                                <span class="fr">Encadrement</span>
-                                <span class="en">Guidance</span>
-                                <span class="ar">التوجيه</span>
-                            </label>
+                <div class="subjects-content">
+                    <div class="subject-panel active" id="finance-panel">
+                        <div class="subject-grid">
+                            <div class="subject-card" onclick="openSubjectModal('corporate-finance')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <h3 data-en="Corporate Finance" data-ar="المالية الشركات">Finance d'Entreprise</h3>
+                                <p data-en="Capital structure, investment decisions, financial planning" data-ar="هيكل رأس المال، قرارات الاستثمار، التخطيط المالي">Structure du capital, décisions d'investissement, planification financière</p>
+                            </div>
+
+                            <div class="subject-card" onclick="openSubjectModal('investment')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <h3 data-en="Investment" data-ar="الاستثمار">Investissement</h3>
+                                <p data-en="Portfolio management, risk assessment, market analysis" data-ar="إدارة المحافظ، تقييم المخاطر، تحليل السوق">Gestion de portefeuille, évaluation des risques, analyse de marché</p>
+                            </div>
+
+                            <div class="subject-card" onclick="openSubjectModal('banking')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <h3 data-en="Banking" data-ar="المصرفية">Banque</h3>
+                                <p data-en="Banking operations, credit analysis, financial services" data-ar="العمليات المصرفية، تحليل الائتمان، الخدمات المالية">Opérations bancaires, analyse de crédit, services financiers</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-group full-width">
-                        <label for="message">
-                            <span class="fr">Message *</span>
-                            <span class="en">Message *</span>
-                            <span class="ar">الرسالة *</span>
-                        </label>
-                        <textarea id="message" name="message" class="form-control" rows="5" required placeholder="Décrivez vos besoins..."></textarea>
+                    <div class="subject-panel" id="accounting-panel">
+                        <div class="subject-grid">
+                            <div class="subject-card" onclick="openSubjectModal('financial-accounting')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </div>
+                                <h3 data-en="Financial Accounting" data-ar="المحاسبة المالية">Comptabilité Financière</h3>
+                                <p data-en="Financial statements, GAAP, international standards" data-ar="البيانات المالية، مبادئ المحاسبة، المعايير الدولية">États financiers, principes comptables, normes internationales</p>
+                            </div>
+
+                            <div class="subject-card" onclick="openSubjectModal('management-accounting')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-chart-pie"></i>
+                                </div>
+                                <h3 data-en="Management Accounting" data-ar="محاسبة إدارية">Comptabilité de Gestion</h3>
+                                <p data-en="Cost accounting, budgeting, performance measurement" data-ar="محاسبة التكاليف، الميزانية، قياس الأداء">Comptabilité analytique, budgétisation, mesure de performance</p>
+                            </div>
+
+                            <div class="subject-card" onclick="openSubjectModal('tax-accounting')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-receipt"></i>
+                                </div>
+                                <h3 data-en="Tax Accounting" data-ar="المحاسبة الضريبية">Comptabilité Fiscale</h3>
+                                <p data-en="Tax planning, compliance, regulations" data-ar="التخطيط الضريبي، الامتثال، اللوائح">Planification fiscale, conformité, réglementations</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject-panel" id="analysis-panel">
+                        <div class="subject-grid">
+                            <div class="subject-card" onclick="openSubjectModal('financial-analysis')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-analytics"></i>
+                                </div>
+                                <h3 data-en="Financial Analysis" data-ar="التحليل المالي">Analyse Financière</h3>
+                                <p data-en="Ratio analysis, trend analysis, financial modeling" data-ar="تحليل النسب، تحليل الاتجاهات، النمذجة المالية">Analyse des ratios, analyse des tendances, modélisation financière</p>
+                            </div>
+
+                            <div class="subject-card" onclick="openSubjectModal('risk-analysis')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h3 data-en="Risk Analysis" data-ar="تحليل المخاطر">Analyse des Risques</h3>
+                                <p data-en="Risk assessment, mitigation strategies, compliance" data-ar="تقييم المخاطر، استراتيجيات التخفيف، الامتثال">Évaluation des risques, stratégies d'atténuation, conformité</p>
+                            </div>
+
+                            <div class="subject-card" onclick="openSubjectModal('market-analysis')">
+                                <div class="subject-icon">
+                                    <i class="fas fa-chart-area"></i>
+                                </div>
+                                <h3 data-en="Market Analysis" data-ar="تحليل السوق">Analyse de Marché</h3>
+                                <p data-en="Market research, competitive analysis, forecasting" data-ar="بحث السوق، التحليل التنافسي، التنبؤ">Étude de marché, analyse concurrentielle, prévisions</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
 
-                <button type="submit" class="submit-btn">
-                    <span class="fr">Envoyer ma demande</span>
-                    <span class="en">Send my request</span>
-                    <span class="ar">إرسال طلبي</span>
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <div class="section-badge">
+                        <i class="fas fa-user-tie"></i>
+                        <span data-en="About Me" data-ar="من أنا">À Propos</span>
+                    </div>
+                    <h2 class="section-title" data-en="Meet Your Finance Expert" data-ar="تعرف على خبير المالية الخاص بك">
+                        Rencontrez Votre Expert en Finance
+                    </h2>
+                    <p class="about-description" data-en="With over 5 years of experience in finance and accounting education, I'm passionate about helping students achieve their academic and professional goals through personalized, effective teaching methods." data-ar="مع أكثر من 5 سنوات من الخبرة في تعليم المالية والمحاسبة، أنا متحمس لمساعدة الطلاب على تحقيق أهدافهم الأكاديمية والمهنية من خلال أساليب تدريس شخصية وفعالة.">
+                        Avec plus de 5 ans d'expérience dans l'enseignement de la finance et de la comptabilité, je suis passionné par l'aide aux étudiants pour atteindre leurs objectifs académiques et professionnels grâce à des méthodes d'enseignement personnalisées et efficaces.
+                    </p>
+                    
+                    <div class="achievements">
+                        <div class="achievement-item">
+                            <div class="achievement-icon">
+                                <i class="fas fa-medal"></i>
+                            </div>
+                            <div class="achievement-text">
+                                <h4 data-en="Certified Expert" data-ar="خبير معتمد">Expert Certifié</h4>
+                                <p data-en="Advanced certifications in Finance and Accounting" data-ar="شهادات متقدمة في المالية والمحاسبة">Certifications avancées en Finance et Comptabilité</p>
+                            </div>
+                        </div>
+                        
+                        <div class="achievement-item">
+                            <div class="achievement-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="achievement-text">
+                                <h4 data-en="Proven Results" data-ar="نتائج مثبتة">Résultats Prouvés</h4>
+                                <p data-en="98% success rate with satisfied students" data-ar="معدل نجاح 98% مع طلاب راضون">Taux de réussite de 98% avec des étudiants satisfaits</p>
+                            </div>
+                        </div>
+                        
+                        <div class="achievement-item">
+                            <div class="achievement-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="achievement-text">
+                                <h4 data-en="Student-Centered" data-ar="محور الطالب">Centré sur l'Étudiant</h4>
+                                <p data-en="Personalized approach for every student" data-ar="نهج شخصي لكل طالب">Approche personnalisée pour chaque étudiant</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-visual">
+                    <div class="about-image-container">
+                        <img src="images/student-avatar.jpg" alt="Student Success" class="about-image">
+                        <div class="about-decoration">
+                            <div class="decoration-element element-1"></div>
+                            <div class="decoration-element element-2"></div>
+                            <div class="decoration-element element-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appointment Section -->
+    <section id="appointment" class="appointment-section">
+        <div class="container">
+            <div class="appointment-content">
+                <div class="appointment-info">
+                    <div class="section-badge">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span data-en="Book Session" data-ar="احجز جلسة">Réserver</span>
+                    </div>
+                    <h2 class="section-title" data-en="Book Your Learning Session" data-ar="احجز جلسة التعلم الخاصة بك">
+                        Réservez Votre Séance d'Apprentissage
+                    </h2>
+                    <p class="section-description" data-en="Ready to start your journey to academic excellence? Book your personalized tutoring session today." data-ar="مستعد لبدء رحلتك نحو التميز الأكاديمي؟ احجز جلسة التدريس الشخصية اليوم.">
+                        Prêt à commencer votre voyage vers l'excellence académique ? Réservez votre séance de tutorat personnalisée dès aujourd'hui.
+                    </p>
+                    
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4 data-en="Phone" data-ar="الهاتف">Téléphone</h4>
+                                <p>+212 123 456 789</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4 data-en="Email" data-ar="البريد الإلكتروني">Email</h4>
+                                <p>contact@ouiiprof.me</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4 data-en="Availability" data-ar="التوفر">Disponibilité</h4>
+                                <p data-en="Mon-Fri: 9AM-6PM" data-ar="الإثنين-الجمعة: 9ص-6م">Lun-Ven: 9h-18h</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="appointment-form-container">
+                    <form id="appointment-form" class="appointment-form" onsubmit="handleSubmit(event)">
+                        <div class="form-group">
+                            <label for="name" data-en="Full Name" data-ar="الاسم الكامل">Nom Complet</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" data-en="Email Address" data-ar="عنوان البريد الإلكتروني">Adresse Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone" data-en="Phone Number" data-ar="رقم الهاتف">Numéro de Téléphone</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="subject" data-en="Subject" data-ar="الموضوع">Matière</label>
+                                <select id="subject" name="subject" required>
+                                    <option value="" data-en="Select a subject" data-ar="اختر موضوعاً">Choisir une matière</option>
+                                    <option value="finance" data-en="Finance" data-ar="المالية">Finance</option>
+                                    <option value="accounting" data-en="Accounting" data-ar="المحاسبة">Comptabilité</option>
+                                    <option value="analysis" data-en="Financial Analysis" data-ar="التحليل المالي">Analyse Financière</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="level" data-en="Level" data-ar="المستوى">Niveau</label>
+                                <select id="level" name="level" required>
+                                    <option value="" data-en="Select level" data-ar="اختر المستوى">Choisir le niveau</option>
+                                    <option value="beginner" data-en="Beginner" data-ar="مبتدئ">Débutant</option>
+                                    <option value="intermediate" data-en="Intermediate" data-ar="متوسط">Intermédiaire</option>
+                                    <option value="advanced" data-en="Advanced" data-ar="متقدم">Avancé</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message" data-en="Message (Optional)" data-ar="رسالة (اختيارية)">Message (Optionnel)</label>
+                            <textarea id="message" name="message" rows="4" placeholder="Décrivez vos besoins spécifiques..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">
+                            <span data-en="Book Session" data-ar="احجز جلسة">Réserver la Séance</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="images/logo-light.svg" alt="OOUI PROF Logo" class="footer-logo-img">
+                        <span class="footer-logo-text">OOUI PROF</span>
+                    </div>
+                    <p class="footer-description" data-en="Empowering students to achieve excellence in finance and accounting through personalized, expert tutoring." data-ar="تمكين الطلاب من تحقيق التميز في المالية والمحاسبة من خلال التدريس الشخصي والخبير.">
+                        Permettre aux étudiants d'atteindre l'excellence en finance et comptabilité grâce à un tutorat personnalisé et expert.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title" data-en="Quick Links" data-ar="روابط سريعة">Liens Rapides</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home" data-en="Home" data-ar="الرئيسية">Accueil</a></li>
+                        <li><a href="#services" data-en="Services" data-ar="الخدمات">Services</a></li>
+                        <li><a href="#subjects" data-en="Subjects" data-ar="المواد">Matières</a></li>
+                        <li><a href="#about" data-en="About" data-ar="من نحن">À propos</a></li>
+                        <li><a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title" data-en="Subjects" data-ar="المواد">Matières</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" data-en="Corporate Finance" data-ar="المالية الشركات">Finance d'Entreprise</a></li>
+                        <li><a href="#" data-en="Investment" data-ar="الاستثمار">Investissement</a></li>
+                        <li><a href="#" data-en="Accounting" data-ar="المحاسبة">Comptabilité</a></li>
+                        <li><a href="#" data-en="Financial Analysis" data-ar="التحليل المالي">Analyse Financière</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title" data-en="Contact Info" data-ar="معلومات الاتصال">Informations de Contact</h4>
+                    <div class="footer-contact">
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+212 123 456 789</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>contact@ouiiprof.me</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span data-en="Casablanca, Morocco" data-ar="الدار البيضاء، المغرب">Casablanca, Maroc</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="footer-copyright">
+                    &copy; 2024 OOUI PROF. 
+                    <span data-en="All rights reserved." data-ar="جميع الحقوق محفوظة.">Tous droits réservés.</span>
+                </p>
+                <div class="footer-bottom-links">
+                    <a href="#" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Politique de Confidentialité</a>
+                    <a href="#" data-en="Terms of Service" data-ar="شروط الخدمة">Conditions d'Utilisation</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Subject Modal -->
+    <div id="subject-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Subject Details</h3>
+                <button class="modal-close" onclick="closeSubjectModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-content">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeSubjectModal(); scrollToSection('appointment')">
+                    <span data-en="Book Session" data-ar="احجز جلسة">Réserver une Séance</span>
                 </button>
-            </form>
+            </div>
         </div>
     </div>
-</section>
 
-<!-- Footer -->
-<footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>OOUI PROF</h3>
-                <p>
-                    <span class="fr">Excellence académique en finance et comptabilité</span>
-                    <span class="en">Academic excellence in finance and accounting</span>
-                    <span class="ar">التميز الأكاديمي في المالية والمحاسبة</span>
-                </p>
+    <!-- Success Message -->
+    <div id="success-message" class="success-message">
+        <div class="success-content">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
             </div>
-            <div class="footer-section">
-                <h3>
-                    <span class="fr">Contact</span>
-                    <span class="en">Contact</span>
-                    <span class="ar">اتصل بنا</span>
-                </h3>
-                <p>
-                    <span class="fr">Disponible 24/7 pour vos questions:</span>
-                    <span class="en">Available 24/7 for your questions:</span>
-                    <span class="ar">متاح على مدار الساعة لاستفساراتك:</span>
-                </p>
-                <p class="contact-email">
-                    <span class="fr">Email: contact@ouiiprof.ma</span>
-                    <span class="en">Email: contact@ouiiprof.ma</span>
-                    <span class="ar">البريد الإلكتروني: contact@ouiiprof.ma</span>
-                </p>
-                <p class="contact-phone">
-                    <span class="fr">Téléphone: +212 701-122487</span>
-                    <span class="en">Phone: +212 701-122487</span>
-                    <span class="ar">الهاتف: +212 701-122487</span>
-                </p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 OOUI PROF.
-                <span class="fr">Tous droits réservés</span>
-                <span class="en">All rights reserved</span>
-                <span class="ar">جميع الحقوق محفوظة</span>
-            </p>
-            <p style="margin-top: 10px;">
-                <a href="#" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;" onclick="alert('Espace admin en construction');">
-                    <span class="fr">Espace Admin</span>
-                    <span class="en">Admin Area</span>
-                    <span class="ar">منطقة الإدارة</span>
-                </a>
+            <h3 data-en="Booking Confirmed!" data-ar="تم تأكيد الحجز!">Réservation Confirmée !</h3>
+            <p data-en="Thank you for your booking. We'll contact you soon to confirm your session details." data-ar="شكراً لك على الحجز. سنتواصل معك قريباً لتأكيد تفاصيل الجلسة.">
+                Merci pour votre réservation. Nous vous contacterons bientôt pour confirmer les détails de votre séance.
             </p>
         </div>
     </div>
-</footer>
 
-<!-- Success Message -->
-<div id="success-message" class="success-message">
-    <div class="success-content">
-        <div class="success-icon">✅</div>
-        <h3>
-            <span class="fr">Message envoyé avec succès !</span>
-            <span class="en">Message sent successfully!</span>
-            <span class="ar">تم إرسال الرسالة بنجاح!</span>
-        </h3>
-        <p>
-            <span class="fr">Nous vous contacterons bientôt.</span>
-            <span class="en">We will contact you soon.</span>
-            <span class="ar">سنتصل بك قريبًا.</span>
-        </p>
-    </div>
-</div>
-
-<!-- Contrôles flottants (thème et langue) -->
-<div class="floating-controls">
-    <!-- Bouton de thème -->
-    <button id="theme-toggle" class="control-btn theme-btn">
-        <i class="fas fa-moon mode-icon dark"></i>
-        <i class="fas fa-sun mode-icon light"></i>
-    </button>
-
-    <!-- Bouton de langue -->
-    <div class="language-control">
-        <button id="language-toggle" class="control-btn language-btn">
-            <span class="current-lang">FR</span>
-            <i class="fas fa-globe lang-icon"></i>
-        </button>
-        <div class="language-dropdown" id="language-dropdown">
-            <button class="lang-option" data-lang="fr">
-                <span class="lang-flag">🇫🇷</span>
-                <span class="lang-name">Français</span>
-            </button>
-            <button class="lang-option" data-lang="en">
-                <span class="lang-flag">🇬🇧</span>
-                <span class="lang-name">English</span>
-            </button>
-            <button class="lang-option" data-lang="ar">
-                <span class="lang-flag">🇸🇦</span>
-                <span class="lang-name">العربية</span>
-            </button>
-        </div>
-    </div>
-</div>
-
-<script src="script.js"></script>
-<script src="backup-submit.js"></script>
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script src="backup-submit.js"></script>
 </body>
 </html>

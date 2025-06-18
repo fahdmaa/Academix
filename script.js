@@ -1,2487 +1,1412 @@
-// Define constants for local storage
-const STORAGE_KEY = window.STORAGE_KEY || 'ouiiprof_submissions';
-const MAX_STORED_SUBMISSIONS = window.MAX_STORED_SUBMISSIONS || 100;
+// OOUI PROF - Modern JavaScript
+// Enhanced with animations, interactions, and modern features
 
-// DOM Element References (will be initialized when DOM is ready)
-let subjectsSelect = null;
-let subjectsInput = null;
+// === GLOBAL VARIABLES ===
+let currentLanguage = 'fr';
+let currentTheme = 'light';
+let isLoading = true;
+let scrollPosition = 0;
+let animationObserver = null;
 
-// Security functions
-function sanitizeInput(input) {
-    if (typeof input !== 'string') return '';
-    return input
-        .replace(/[<>]/g, '') // Remove angle brackets
-        .replace(/javascript:/gi, '') // Remove javascript: protocol
-        .replace(/on\w+=/gi, '') // Remove event handlers
-        .trim()
-        .substring(0, 1000); // Limit length
-}
-
-// Theme toggle functionality (global scope)
-function toggleTheme() {
-    const currentTheme = document.body.getAttribute('data-theme') || 'light';
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+// === TRANSLATIONS ===
+const translations = {
+    fr: {
+        // Navigation
+        'nav-home': 'Accueil',
+        'nav-services': 'Services',
+        'nav-subjects': 'Matières',
+        'nav-about': 'À propos',
+        'nav-contact': 'Contact',
+        'nav-book': 'Réserver',
+        
+        // Hero Section
+        'hero-badge': 'Cours d\'excellence',
+        'hero-title-1': 'Maîtrisez la Finance &',
+        'hero-title-2': 'Comptabilité',
+        'hero-title-3': 'avec un Expert',
+        'hero-description': 'Cours particuliers personnalisés conçus pour vous aider à exceller dans vos études et votre carrière professionnelle avec des méthodes d\'enseignement modernes et efficaces.',
+        'hero-stats-1': 'Étudiants Aidés',
+        'hero-stats-2': 'Années d\'Expérience',
+        'hero-stats-3': 'Taux de Réussite %',
+        'hero-btn-1': 'Réserver une Séance',
+        'hero-btn-2': 'En Savoir Plus',
+        
+        // Services
+        'services-badge': 'Nos Services',
+        'services-title': 'Solutions d\'Apprentissage Complètes',
+        'services-description': 'Services de tutorat sur mesure conçus pour répondre à vos besoins académiques et professionnels spécifiques.',
+        'service-1-title': 'Cours Particuliers',
+        'service-1-desc': 'Séances personnalisées en tête-à-tête adaptées à votre rythme et style d\'apprentissage.',
+        'service-2-title': 'Séances de Groupe',
+        'service-2-desc': 'Apprentissage en groupe interactif avec résolution collaborative de problèmes et soutien entre pairs.',
+        'service-3-title': 'Apprentissage en Ligne',
+        'service-3-desc': 'Séances en ligne pratiques avec ressources numériques et tableaux blancs virtuels.',
+        'service-popular': 'Le Plus Populaire',
+        
+        // Subjects
+        'subjects-badge': 'Matières',
+        'subjects-title': 'Matières Enseignées',
+        'subjects-description': 'Couverture complète des sujets de finance et comptabilité, du niveau débutant au niveau avancé.',
+        'subjects-finance': 'Finance',
+        'subjects-accounting': 'Comptabilité',
+        'subjects-analysis': 'Analyse',
+        
+        // About
+        'about-badge': 'À Propos',
+        'about-title': 'Rencontrez Votre Expert en Finance',
+        'about-description': 'Avec plus de 5 ans d\'expérience dans l\'enseignement de la finance et de la comptabilité, je suis passionné par l\'aide aux étudiants pour atteindre leurs objectifs académiques et professionnels grâce à des méthodes d\'enseignement personnalisées et efficaces.',
+        'about-achievement-1': 'Expert Certifié',
+        'about-achievement-2': 'Résultats Prouvés',
+        'about-achievement-3': 'Centré sur l\'Étudiant',
+        
+        // Appointment
+        'appointment-badge': 'Réserver',
+        'appointment-title': 'Réservez Votre Séance d\'Apprentissage',
+        'appointment-description': 'Prêt à commencer votre voyage vers l\'excellence académique ? Réservez votre séance de tutorat personnalisée dès aujourd\'hui.',
+        'appointment-phone': 'Téléphone',
+        'appointment-email': 'Email',
+        'appointment-availability': 'Disponibilité',
+        'appointment-hours': 'Lun-Ven: 9h-18h',
+        'form-name': 'Nom Complet',
+        'form-email': 'Adresse Email',
+        'form-phone': 'Numéro de Téléphone',
+        'form-subject': 'Matière',
+        'form-level': 'Niveau',
+        'form-message': 'Message (Optionnel)',
+        'form-submit': 'Réserver la Séance',
+        'form-select-subject': 'Choisir une matière',
+        'form-select-level': 'Choisir le niveau',
+        'form-level-beginner': 'Débutant',
+        'form-level-intermediate': 'Intermédiaire',
+        'form-level-advanced': 'Avancé',
+        
+        // Success
+        'success-title': 'Réservation Confirmée !',
+        'success-message': 'Merci pour votre réservation. Nous vous contacterons bientôt pour confirmer les détails de votre séance.',
+        
+        // Footer
+        'footer-description': 'Permettre aux étudiants d\'atteindre l\'excellence en finance et comptabilité grâce à un tutorat personnalisé et expert.',
+        'footer-links': 'Liens Rapides',
+        'footer-subjects': 'Matières',
+        'footer-contact': 'Informations de Contact',
+        'footer-copyright': 'Tous droits réservés.',
+        'footer-privacy': 'Politique de Confidentialité',
+        'footer-terms': 'Conditions d\'Utilisation',
+        'footer-location': 'Casablanca, Maroc',
+        
+        // Loading
+        'loading-text': 'Chargement...'
+    },
     
-    document.body.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
+    en: {
+        // Navigation
+        'nav-home': 'Home',
+        'nav-services': 'Services',
+        'nav-subjects': 'Subjects',
+        'nav-about': 'About',
+        'nav-contact': 'Contact',
+        'nav-book': 'Book Now',
+        
+        // Hero Section
+        'hero-badge': 'Expert Tutoring',
+        'hero-title-1': 'Master Finance &',
+        'hero-title-2': 'Accounting',
+        'hero-title-3': 'with Expert Guidance',
+        'hero-description': 'Personalized tutoring sessions designed to help you excel in your studies and professional career with modern and effective teaching methods.',
+        'hero-stats-1': 'Students Helped',
+        'hero-stats-2': 'Years Experience',
+        'hero-stats-3': 'Success Rate %',
+        'hero-btn-1': 'Book a Session',
+        'hero-btn-2': 'Learn More',
+        
+        // Services
+        'services-badge': 'Our Services',
+        'services-title': 'Comprehensive Learning Solutions',
+        'services-description': 'Tailored tutoring services designed to meet your specific academic and professional needs.',
+        'service-1-title': 'Individual Tutoring',
+        'service-1-desc': 'One-on-one personalized sessions tailored to your learning pace and style.',
+        'service-2-title': 'Group Sessions',
+        'service-2-desc': 'Interactive group learning with collaborative problem-solving and peer support.',
+        'service-3-title': 'Online Learning',
+        'service-3-desc': 'Convenient online sessions with digital resources and virtual whiteboards.',
+        'service-popular': 'Most Popular',
+        
+        // Subjects
+        'subjects-badge': 'Subjects',
+        'subjects-title': 'Subjects We Teach',
+        'subjects-description': 'Comprehensive coverage of finance and accounting topics from basic to advanced levels.',
+        'subjects-finance': 'Finance',
+        'subjects-accounting': 'Accounting',
+        'subjects-analysis': 'Analysis',
+        
+        // About
+        'about-badge': 'About Me',
+        'about-title': 'Meet Your Finance Expert',
+        'about-description': 'With over 5 years of experience in finance and accounting education, I\'m passionate about helping students achieve their academic and professional goals through personalized, effective teaching methods.',
+        'about-achievement-1': 'Certified Expert',
+        'about-achievement-2': 'Proven Results',
+        'about-achievement-3': 'Student-Centered',
+        
+        // Appointment
+        'appointment-badge': 'Book Session',
+        'appointment-title': 'Book Your Learning Session',
+        'appointment-description': 'Ready to start your journey to academic excellence? Book your personalized tutoring session today.',
+        'appointment-phone': 'Phone',
+        'appointment-email': 'Email',
+        'appointment-availability': 'Availability',
+        'appointment-hours': 'Mon-Fri: 9AM-6PM',
+        'form-name': 'Full Name',
+        'form-email': 'Email Address',
+        'form-phone': 'Phone Number',
+        'form-subject': 'Subject',
+        'form-level': 'Level',
+        'form-message': 'Message (Optional)',
+        'form-submit': 'Book Session',
+        'form-select-subject': 'Select a subject',
+        'form-select-level': 'Select level',
+        'form-level-beginner': 'Beginner',
+        'form-level-intermediate': 'Intermediate',
+        'form-level-advanced': 'Advanced',
+        
+        // Success
+        'success-title': 'Booking Confirmed!',
+        'success-message': 'Thank you for your booking. We\'ll contact you soon to confirm your session details.',
+        
+        // Footer
+        'footer-description': 'Empowering students to achieve excellence in finance and accounting through personalized, expert tutoring.',
+        'footer-links': 'Quick Links',
+        'footer-subjects': 'Subjects',
+        'footer-contact': 'Contact Info',
+        'footer-copyright': 'All rights reserved.',
+        'footer-privacy': 'Privacy Policy',
+        'footer-terms': 'Terms of Service',
+        'footer-location': 'Casablanca, Morocco',
+        
+        // Loading
+        'loading-text': 'Loading...'
+    },
     
-    console.log(`✅ Theme changed to: ${newTheme}`);
-}
-
-// Make toggleTheme available globally
-window.toggleTheme = toggleTheme;
-
-// Attendre que le DOM soit entièrement chargé
-document.addEventListener('DOMContentLoaded', function() {
-    // Debug information
-    console.log('DOM loaded');
-    console.log('Current URL:', window.location.href);
-    
-    // Check Font Awesome icons
-    console.log('✅ Font Awesome icons loaded via CSS');
-    const fontAwesomeIcons = document.querySelectorAll('.fas, .far, .fab');
-    console.log(`📊 Font Awesome icons found: ${fontAwesomeIcons.length}`);
-    
-    // Verify Font Awesome CSS is loaded
-    const fontAwesomeStylesheet = document.querySelector('link[href*="font-awesome"]');
-    if (fontAwesomeStylesheet) {
-        console.log('✅ Font Awesome stylesheet detected');
-    } else {
-        console.warn('⚠️ Font Awesome stylesheet not found');
+    ar: {
+        // Navigation
+        'nav-home': 'الرئيسية',
+        'nav-services': 'الخدمات',
+        'nav-subjects': 'المواد',
+        'nav-about': 'من نحن',
+        'nav-contact': 'تواصل',
+        'nav-book': 'احجز الآن',
+        
+        // Hero Section
+        'hero-badge': 'دروس متخصصة',
+        'hero-title-1': 'إتقان المالية و',
+        'hero-title-2': 'المحاسبة',
+        'hero-title-3': 'مع إرشاد خبير',
+        'hero-description': 'دروس مخصصة مصممة لمساعدتك على التفوق في دراستك وحياتك المهنية مع أساليب تعليمية حديثة وفعالة.',
+        'hero-stats-1': 'طالب مساعد',
+        'hero-stats-2': 'سنوات خبرة',
+        'hero-stats-3': 'معدل النجاح %',
+        'hero-btn-1': 'احجز جلسة',
+        'hero-btn-2': 'اعرف المزيد',
+        
+        // Services
+        'services-badge': 'خدماتنا',
+        'services-title': 'حلول تعليمية شاملة',
+        'services-description': 'خدمات تدريس مخصصة مصممة لتلبية احتياجاتك الأكاديمية والمهنية المحددة.',
+        'service-1-title': 'دروس فردية',
+        'service-1-desc': 'جلسات شخصية واحد لواحد مخصصة لوتيرة التعلم والأسلوب الخاص بك.',
+        'service-2-title': 'جلسات جماعية',
+        'service-2-desc': 'تعلم جماعي تفاعلي مع حل المشكلات التعاونية ودعم الأقران.',
+        'service-3-title': 'التعلم عبر الإنترنت',
+        'service-3-desc': 'جلسات مريحة عبر الإنترنت مع موارد رقمية وألواح بيضاء افتراضية.',
+        'service-popular': 'الأكثر شعبية',
+        
+        // Subjects
+        'subjects-badge': 'المواد',
+        'subjects-title': 'المواد التي ندرسها',
+        'subjects-description': 'تغطية شاملة لموضوعات المالية والمحاسبة من المستويات الأساسية إلى المتقدمة.',
+        'subjects-finance': 'المالية',
+        'subjects-accounting': 'المحاسبة',
+        'subjects-analysis': 'التحليل',
+        
+        // About
+        'about-badge': 'من أنا',
+        'about-title': 'تعرف على خبير المالية الخاص بك',
+        'about-description': 'مع أكثر من 5 سنوات من الخبرة في تعليم المالية والمحاسبة، أنا متحمس لمساعدة الطلاب على تحقيق أهدافهم الأكاديمية والمهنية من خلال أساليب تدريس شخصية وفعالة.',
+        'about-achievement-1': 'خبير معتمد',
+        'about-achievement-2': 'نتائج مثبتة',
+        'about-achievement-3': 'محور الطالب',
+        
+        // Appointment
+        'appointment-badge': 'احجز جلسة',
+        'appointment-title': 'احجز جلسة التعلم الخاصة بك',
+        'appointment-description': 'مستعد لبدء رحلتك نحو التميز الأكاديمي؟ احجز جلسة التدريس الشخصية اليوم.',
+        'appointment-phone': 'الهاتف',
+        'appointment-email': 'البريد الإلكتروني',
+        'appointment-availability': 'التوفر',
+        'appointment-hours': 'الإثنين-الجمعة: 9ص-6م',
+        'form-name': 'الاسم الكامل',
+        'form-email': 'عنوان البريد الإلكتروني',
+        'form-phone': 'رقم الهاتف',
+        'form-subject': 'الموضوع',
+        'form-level': 'المستوى',
+        'form-message': 'رسالة (اختيارية)',
+        'form-submit': 'احجز جلسة',
+        'form-select-subject': 'اختر موضوعاً',
+        'form-select-level': 'اختر المستوى',
+        'form-level-beginner': 'مبتدئ',
+        'form-level-intermediate': 'متوسط',
+        'form-level-advanced': 'متقدم',
+        
+        // Success
+        'success-title': 'تم تأكيد الحجز!',
+        'success-message': 'شكراً لك على الحجز. سنتواصل معك قريباً لتأكيد تفاصيل الجلسة.',
+        
+        // Footer
+        'footer-description': 'تمكين الطلاب من تحقيق التميز في المالية والمحاسبة من خلال التدريس الشخصي والخبير.',
+        'footer-links': 'روابط سريعة',
+        'footer-subjects': 'المواد',
+        'footer-contact': 'معلومات الاتصال',
+        'footer-copyright': 'جميع الحقوق محفوظة.',
+        'footer-privacy': 'سياسة الخصوصية',
+        'footer-terms': 'شروط الخدمة',
+        'footer-location': 'الدار البيضاء، المغرب',
+        
+        // Loading
+        'loading-text': 'جاري التحميل...'
     }
+};
+
+// === SUBJECT MODAL DATA ===
+const subjectModalData = {
+    'corporate-finance': {
+        title: {
+            fr: 'Finance d\'Entreprise',
+            en: 'Corporate Finance',
+            ar: 'المالية الشركات'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Comprendre la structure du capital et les décisions de financement</li>
+                        <li>Analyser les décisions d'investissement et l'évaluation de projets</li>
+                        <li>Maîtriser la planification financière et la budgétisation</li>
+                        <li>Évaluer les stratégies de fusion et acquisition</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Valeur temporelle de l'argent et flux de trésorerie actualisés</li>
+                        <li>Coût du capital et structure optimale du capital</li>
+                        <li>Politique de dividende et rachat d'actions</li>
+                        <li>Gestion du fonds de roulement</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Understand capital structure and financing decisions</li>
+                        <li>Analyze investment decisions and project valuation</li>
+                        <li>Master financial planning and budgeting</li>
+                        <li>Evaluate merger and acquisition strategies</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Time value of money and discounted cash flows</li>
+                        <li>Cost of capital and optimal capital structure</li>
+                        <li>Dividend policy and share repurchases</li>
+                        <li>Working capital management</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>فهم هيكل رأس المال وقرارات التمويل</li>
+                        <li>تحليل قرارات الاستثمار وتقييم المشاريع</li>
+                        <li>إتقان التخطيط المالي وإعداد الميزانيات</li>
+                        <li>تقييم استراتيجيات الاندماج والاستحواذ</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>القيمة الزمنية للمال والتدفقات النقدية المخصومة</li>
+                        <li>تكلفة رأس المال والهيكل الأمثل لرأس المال</li>
+                        <li>سياسة الأرباح وإعادة شراء الأسهم</li>
+                        <li>إدارة رأس المال العامل</li>
+                    </ul>
+                </div>
+            `
+        }
+    },
+    'investment': {
+        title: {
+            fr: 'Investissement',
+            en: 'Investment',
+            ar: 'الاستثمار'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Comprendre les principes fondamentaux de l'investissement</li>
+                        <li>Analyser les différents types d'actifs et leurs caractéristiques</li>
+                        <li>Maîtriser les techniques d'évaluation des investissements</li>
+                        <li>Gérer efficacement un portefeuille d'investissement</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Théorie moderne du portefeuille et diversification</li>
+                        <li>Modèles d'évaluation des actifs (CAPM, APT)</li>
+                        <li>Analyse technique et fondamentale</li>
+                        <li>Gestion des risques et allocation d'actifs</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Understand fundamental principles of investment</li>
+                        <li>Analyze different types of assets and their characteristics</li>
+                        <li>Master investment valuation techniques</li>
+                        <li>Effectively manage an investment portfolio</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Modern portfolio theory and diversification</li>
+                        <li>Asset pricing models (CAPM, APT)</li>
+                        <li>Technical and fundamental analysis</li>
+                        <li>Risk management and asset allocation</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>فهم المبادئ الأساسية للاستثمار</li>
+                        <li>تحليل أنواع الأصول المختلفة وخصائصها</li>
+                        <li>إتقان تقنيات تقييم الاستثمارات</li>
+                        <li>إدارة محفظة استثمارية بفعالية</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>نظرية المحفظة الحديثة والتنويع</li>
+                        <li>نماذج تسعير الأصول (CAPM، APT)</li>
+                        <li>التحليل الفني والأساسي</li>
+                        <li>إدارة المخاطر وتخصيص الأصول</li>
+                    </ul>
+                </div>
+            `
+        }
+    },
+    'banking': {
+        title: {
+            fr: 'Banque',
+            en: 'Banking',
+            ar: 'المصرفية'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Comprendre le système bancaire et ses fonctions</li>
+                        <li>Analyser les opérations bancaires et les services financiers</li>
+                        <li>Maîtriser l'analyse de crédit et la gestion des risques</li>
+                        <li>Évaluer la performance bancaire et la réglementation</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Intermédiation financière et création monétaire</li>
+                        <li>Gestion actif-passif et risque de liquidité</li>
+                        <li>Réglementation bancaire et accords de Bâle</li>
+                        <li>Banque d'investissement et marchés de capitaux</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Understand the banking system and its functions</li>
+                        <li>Analyze banking operations and financial services</li>
+                        <li>Master credit analysis and risk management</li>
+                        <li>Evaluate banking performance and regulation</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Financial intermediation and money creation</li>
+                        <li>Asset-liability management and liquidity risk</li>
+                        <li>Banking regulation and Basel Accords</li>
+                        <li>Investment banking and capital markets</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>فهم النظام المصرفي ووظائفه</li>
+                        <li>تحليل العمليات المصرفية والخدمات المالية</li>
+                        <li>إتقان تحليل الائتمان وإدارة المخاطر</li>
+                        <li>تقييم الأداء المصرفي والتنظيم</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>الوساطة المالية وخلق النقود</li>
+                        <li>إدارة الأصول والخصوم ومخاطر السيولة</li>
+                        <li>التنظيم المصرفي واتفاقيات بازل</li>
+                        <li>المصرفية الاستثمارية وأسواق رؤوس الأموال</li>
+                    </ul>
+                </div>
+            `
+        }
+    },
+    'financial-accounting': {
+        title: {
+            fr: 'Comptabilité Financière',
+            en: 'Financial Accounting',
+            ar: 'المحاسبة المالية'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Maîtriser les principes comptables fondamentaux</li>
+                        <li>Préparer et analyser les états financiers</li>
+                        <li>Comprendre les normes comptables internationales</li>
+                        <li>Appliquer les techniques de consolidation</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Cycle comptable et enregistrement des transactions</li>
+                        <li>Bilan, compte de résultat et tableau de flux de trésorerie</li>
+                        <li>Normes IFRS et US GAAP</li>
+                        <li>Comptabilisation des instruments financiers</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Master fundamental accounting principles</li>
+                        <li>Prepare and analyze financial statements</li>
+                        <li>Understand international accounting standards</li>
+                        <li>Apply consolidation techniques</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Accounting cycle and transaction recording</li>
+                        <li>Balance sheet, income statement, and cash flow statement</li>
+                        <li>IFRS and US GAAP standards</li>
+                        <li>Financial instruments accounting</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>إتقان المبادئ المحاسبية الأساسية</li>
+                        <li>إعداد وتحليل البيانات المالية</li>
+                        <li>فهم معايير المحاسبة الدولية</li>
+                        <li>تطبيق تقنيات التوحيد</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>الدورة المحاسبية وتسجيل المعاملات</li>
+                        <li>الميزانية العمومية وبيان الدخل وبيان التدفق النقدي</li>
+                        <li>معايير IFRS و US GAAP</li>
+                        <li>محاسبة الأدوات المالية</li>
+                    </ul>
+                </div>
+            `
+        }
+    },
+    'management-accounting': {
+        title: {
+            fr: 'Comptabilité de Gestion',
+            en: 'Management Accounting',
+            ar: 'محاسبة إدارية'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Comprendre les systèmes de coûts et leur application</li>
+                        <li>Maîtriser les techniques de budgétisation et contrôle</li>
+                        <li>Analyser la performance et les écarts</li>
+                        <li>Prendre des décisions basées sur l'information comptable</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Comptabilité analytique et calcul des coûts</li>
+                        <li>Budgets et contrôle budgétaire</li>
+                        <li>Tableaux de bord et indicateurs de performance</li>
+                        <li>Analyse coût-volume-profit</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Understand cost systems and their application</li>
+                        <li>Master budgeting and control techniques</li>
+                        <li>Analyze performance and variances</li>
+                        <li>Make decisions based on accounting information</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Cost accounting and cost calculation</li>
+                        <li>Budgets and budgetary control</li>
+                        <li>Dashboards and performance indicators</li>
+                        <li>Cost-volume-profit analysis</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>فهم أنظمة التكاليف وتطبيقها</li>
+                        <li>إتقان تقنيات الميزانية والرقابة</li>
+                        <li>تحليل الأداء والانحرافات</li>
+                        <li>اتخاذ القرارات بناءً على المعلومات المحاسبية</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>المحاسبة التحليلية وحساب التكاليف</li>
+                        <li>الميزانيات والرقابة على الميزانية</li>
+                        <li>لوحات المعلومات ومؤشرات الأداء</li>
+                        <li>تحليل التكلفة-الحجم-الربح</li>
+                    </ul>
+                </div>
+            `
+        }
+    },
+    'tax-accounting': {
+        title: {
+            fr: 'Comptabilité Fiscale',
+            en: 'Tax Accounting',
+            ar: 'المحاسبة الضريبية'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Comprendre le système fiscal et ses implications</li>
+                        <li>Maîtriser le calcul et la déclaration des impôts</li>
+                        <li>Optimiser la charge fiscale légalement</li>
+                        <li>Gérer les contrôles fiscaux et contentieux</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Impôt sur les sociétés et TVA</li>
+                        <li>Fiscalité des particuliers et des entreprises</li>
+                        <li>Planification fiscale et optimisation</li>
+                        <li>Procédures fiscales et contentieux</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Understand the tax system and its implications</li>
+                        <li>Master tax calculation and filing</li>
+                        <li>Optimize tax burden legally</li>
+                        <li>Manage tax audits and disputes</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Corporate tax and VAT</li>
+                        <li>Individual and business taxation</li>
+                        <li>Tax planning and optimization</li>
+                        <li>Tax procedures and disputes</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>فهم النظام الضريبي وآثاره</li>
+                        <li>إتقان حساب وتقديم الضرائب</li>
+                        <li>تحسين العبء الضريبي قانونياً</li>
+                        <li>إدارة المراجعات الضريبية والنزاعات</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>ضريبة الشركات وضريبة القيمة المضافة</li>
+                        <li>ضرائب الأفراد والشركات</li>
+                        <li>التخطيط الضريبي والتحسين</li>
+                        <li>الإجراءات الضريبية والنزاعات</li>
+                    </ul>
+                </div>
+            `
+        }
+    },
+    'financial-analysis': {
+        title: {
+            fr: 'Analyse Financière',
+            en: 'Financial Analysis',
+            ar: 'التحليل المالي'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Maîtriser les techniques d'analyse financière</li>
+                        <li>Interpréter les ratios et indicateurs financiers</li>
+                        <li>Évaluer la performance et la santé financière</li>
+                        <li>Construire des modèles financiers prévisionnels</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Analyse des ratios de liquidité, rentabilité et solvabilité</li>
+                        <li>Analyse horizontale et verticale des états financiers</li>
+                        <li>Modélisation financière et prévisions</li>
+                        <li>Évaluation d'entreprise et méthodes de valorisation</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Master financial analysis techniques</li>
+                        <li>Interpret financial ratios and indicators</li>
+                        <li>Evaluate performance and financial health</li>
+                        <li>Build financial forecasting models</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Analysis of liquidity, profitability, and solvency ratios</li>
+                        <li>Horizontal and vertical analysis of financial statements</li>
+                        <li>Financial modeling and forecasting</li>
+                        <li>Business valuation and valuation methods</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>إتقان تقنيات التحليل المالي</li>
+                        <li>تفسير النسب والمؤشرات المالية</li>
+                        <li>تقييم الأداء والصحة المالية</li>
+                        <li>بناء نماذج التنبؤ المالي</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>تحليل نسب السيولة والربحية والملاءة</li>
+                        <li>التحليل الأفقي والعمودي للبيانات المالية</li>
+                        <li>النمذجة المالية والتنبؤات</li>
+                        <li>تقييم الشركات وطرق التقييم</li>
+                    </ul>
+                </div>
+            `
+        }
+    },
+    'risk-analysis': {
+        title: {
+            fr: 'Analyse des Risques',
+            en: 'Risk Analysis',
+            ar: 'تحليل المخاطر'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Identifier et évaluer les différents types de risques</li>
+                        <li>Développer des stratégies de gestion des risques</li>
+                        <li>Utiliser les outils de mesure et de contrôle des risques</li>
+                        <li>Comprendre la réglementation et la conformité</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Risque de crédit, de marché et opérationnel</li>
+                        <li>Value at Risk (VaR) et stress testing</li>
+                        <li>Instruments de couverture et dérivés</li>
+                        <li>Gouvernance et culture du risque</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Identify and assess different types of risks</li>
+                        <li>Develop risk management strategies</li>
+                        <li>Use risk measurement and control tools</li>
+                        <li>Understand regulation and compliance</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Credit, market, and operational risk</li>
+                        <li>Value at Risk (VaR) and stress testing</li>
+                        <li>Hedging instruments and derivatives</li>
+                        <li>Risk governance and culture</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>تحديد وتقييم أنواع المخاطر المختلفة</li>
+                        <li>تطوير استراتيجيات إدارة المخاطر</li>
+                        <li>استخدام أدوات قياس ومراقبة المخاطر</li>
+                        <li>فهم التنظيم والامتثال</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>مخاطر الائتمان والسوق والتشغيل</li>
+                        <li>القيمة المعرضة للخطر (VaR) واختبار الضغط</li>
+                        <li>أدوات التحوط والمشتقات</li>
+                        <li>حوكمة وثقافة المخاطر</li>
+                    </ul>
+                </div>
+            `
+        }
+    },
+    'market-analysis': {
+        title: {
+            fr: 'Analyse de Marché',
+            en: 'Market Analysis',
+            ar: 'تحليل السوق'
+        },
+        content: {
+            fr: `
+                <div class="modal-subject-content">
+                    <h4>Objectifs d'apprentissage</h4>
+                    <ul>
+                        <li>Comprendre le fonctionnement des marchés financiers</li>
+                        <li>Analyser les tendances et cycles économiques</li>
+                        <li>Évaluer les opportunités d'investissement</li>
+                        <li>Développer des stratégies de trading et d'investissement</li>
+                    </ul>
+                    <h4>Sujets couverts</h4>
+                    <ul>
+                        <li>Analyse macroéconomique et microéconomique</li>
+                        <li>Étude sectorielle et analyse concurrentielle</li>
+                        <li>Indicateurs économiques et leur interprétation</li>
+                        <li>Psychologie des marchés et comportement des investisseurs</li>
+                    </ul>
+                </div>
+            `,
+            en: `
+                <div class="modal-subject-content">
+                    <h4>Learning Objectives</h4>
+                    <ul>
+                        <li>Understand how financial markets work</li>
+                        <li>Analyze trends and economic cycles</li>
+                        <li>Evaluate investment opportunities</li>
+                        <li>Develop trading and investment strategies</li>
+                    </ul>
+                    <h4>Topics Covered</h4>
+                    <ul>
+                        <li>Macroeconomic and microeconomic analysis</li>
+                        <li>Sector studies and competitive analysis</li>
+                        <li>Economic indicators and their interpretation</li>
+                        <li>Market psychology and investor behavior</li>
+                    </ul>
+                </div>
+            `,
+            ar: `
+                <div class="modal-subject-content">
+                    <h4>أهداف التعلم</h4>
+                    <ul>
+                        <li>فهم كيفية عمل الأسواق المالية</li>
+                        <li>تحليل الاتجاهات والدورات الاقتصادية</li>
+                        <li>تقييم الفرص الاستثمارية</li>
+                        <li>تطوير استراتيجيات التداول والاستثمار</li>
+                    </ul>
+                    <h4>الموضوعات المغطاة</h4>
+                    <ul>
+                        <li>التحليل الاقتصادي الكلي والجزئي</li>
+                        <li>الدراسات القطاعية والتحليل التنافسي</li>
+                        <li>المؤشرات الاقتصادية وتفسيرها</li>
+                        <li>علم نفس الأسواق وسلوك المستثمرين</li>
+                    </ul>
+                </div>
+            `
+        }
+    }
+};
+
+// === INITIALIZATION ===
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 OOUI PROF - Initializing...');
     
-    // Éléments DOM
-    const header = document.getElementById('header');
-    const burgerMenu = document.getElementById('burger-menu');
-    const navLinks = document.getElementById('nav-links');
-    const navLinksItems = document.querySelectorAll('.nav-links a');
-    const expertiseCards = document.querySelectorAll('.expertise-card');
-    const subjectsDetailsContainer = document.querySelector('.subjects-details-container');
-    const subjectsDetails = document.querySelectorAll('.subjects-details');
-    const closeDetailsButtons = document.querySelectorAll('.close-details');
-    const subjectCards = document.querySelectorAll('.subject-card');
-    const appointmentForm = document.getElementById('appointment-form');
-    const successMessage = document.getElementById('success-message');
-    const localSubjectsInput = document.getElementById('subjects');
-    const localSubjectsSelect = document.getElementById('subjects-select');
-    
-    // Initialize global variables
-    subjectsInput = localSubjectsInput;
-    subjectsSelect = localSubjectsSelect;
-
-    // Elements des achievements
-    const achievementCards = document.querySelectorAll('.achievement-card');
-
-    // Éléments pour le thème et la langue
-    const themeToggle = document.getElementById('theme-toggle');
-    const languageToggle = document.getElementById('language-toggle');
-    const languageDropdown = document.getElementById('language-dropdown');
-    const languageOptions = document.querySelectorAll('.lang-option');
-    
-    // Debug button selection
-    console.log('🔍 Button selection check:');
-    console.log('Theme toggle:', themeToggle);
-    console.log('Language toggle:', languageToggle);
-    console.log('Language dropdown:', languageDropdown);
-    console.log('Language options:', languageOptions.length);
-
-    // Variables pour les animations
-    // typewriterInterval removed as it's unused
-
-    // CRITICAL: Initialize theme FIRST to ensure proper display
+    // Initialize theme and language from localStorage
     initializeTheme();
-    
-    // CRITICAL: Initialize language IMMEDIATELY before anything else
-    const savedLanguage = localStorage.getItem('language') || 'fr';
-    document.documentElement.lang = savedLanguage;
-    document.documentElement.setAttribute('lang', savedLanguage);
-    console.log('🌐 Language set immediately to:', savedLanguage);
-    
-    // Then initialize language UI
     initializeLanguage();
     
-    // Ensure buttons are properly configured for clicking
+    // Setup event listeners
+    setupEventListeners();
+    
+    // Initialize animations
+    initializeAnimations();
+    
+    // Initialize counters
+    initializeCounters();
+    
+    // Hide loading screen
     setTimeout(() => {
-        // Force recalculation of computed styles
-        if (themeToggle) {
-            themeToggle.style.pointerEvents = 'all';
-            themeToggle.style.zIndex = '10001';
-            console.log('🔧 Theme toggle configured');
-        }
-        
-        if (languageToggle) {
-            languageToggle.style.pointerEvents = 'all';
-            languageToggle.style.zIndex = '10001';
-            console.log('🔧 Language toggle configured');
-        }
-    }, 100);
-
-    // Icons are loaded via CSS (Font Awesome)
+        hideLoadingScreen();
+    }, 1500);
     
-    // Setup global event delegation for floating controls
-    document.addEventListener('click', function(e) {
-        // Theme toggle
-        if (e.target.closest('#theme-toggle')) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('🎨 Theme toggle clicked via delegation!');
-            toggleTheme();
-            return;
-        }
-        
-        // Language toggle - handled by direct addEventListener below
-    });
-
-    
-    // Attendre que la langue soit initialisée avant de configurer le formulaire
-    setTimeout(() => {
-        // Mettre à jour les placeholders du formulaire
-        updateFormLanguage();
-    }, 200);
-
-    // Configurer les animations de scroll (includes achievements)
-    setupScrollAnimations();
-
-    // Démarrer l'effet typewriter
-    startTypewriterEffect();
-
-    // Navigation responsive
-    if (burgerMenu) {
-        burgerMenu.addEventListener('click', function() {
-            this.classList.toggle('active');
-            navLinks.classList.toggle('active');
-            
-            // Update aria-expanded
-            const isExpanded = navLinks.classList.contains('active');
-            this.setAttribute('aria-expanded', isExpanded);
-        });
-    }
-
-    // Fermer le menu après un clic sur un lien
-    navLinksItems.forEach(link => {
-        link.addEventListener('click', function() {
-            if (burgerMenu) {
-                burgerMenu.classList.remove('active');
-                burgerMenu.setAttribute('aria-expanded', 'false');
-            }
-            if (navLinks) navLinks.classList.remove('active');
-        });
-    });
-
-    // Fermer le menu en cliquant en dehors
-    document.addEventListener('click', function(e) {
-        if (navLinks && burgerMenu && !navLinks.contains(e.target) && !burgerMenu.contains(e.target)) {
-            burgerMenu.classList.remove('active');
-            burgerMenu.setAttribute('aria-expanded', 'false');
-            navLinks.classList.remove('active');
-        }
-    });
-
-    // Changer le style du header au scroll
-    window.addEventListener('scroll', function() {
-        if (header) {
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        }
-    });
-
-    // Animation des nombres statistiques
-    animateStatNumbers();
-
-    // Theme handling is now in setupFloatingControls()
-
-    // FIXED: Direct button event handling
-    console.log('🔧 Setting up floating controls...');
-    
-    // Wait for elements to be ready
-    setTimeout(function() {
-        setupFloatingControls();
-    }, 100);
-
-    // Language options handling is now in setupFloatingControls()
-
-    // Outside click handling is now in setupFloatingControls()
-
-    // Achievement animations are now handled in setupScrollAnimations
-
-    // Gestion des clics sur les cartes d'expertise
-    if (expertiseCards.length > 0 && subjectsDetailsContainer) {
-        expertiseCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const expertise = this.getAttribute('data-expertise');
-                const detailsToShow = document.getElementById(`${expertise}-details`);
-                
-                if (detailsToShow) {
-                    subjectsDetailsContainer.style.display = 'flex';
-                    // Hide all details first
-                    subjectsDetails.forEach(detail => {
-                        detail.style.display = 'none';
-                    });
-                    // Show the selected one
-                    detailsToShow.style.display = 'block';
-                }
-            });
-        });
-    }
-    
-    // Fermer les détails
-    if (closeDetailsButtons.length > 0) {
-        closeDetailsButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (subjectsDetailsContainer) {
-                    subjectsDetailsContainer.style.display = 'none';
-                }
-                subjectsDetails.forEach(detail => {
-                    detail.style.display = 'none';
-                });
-            });
-        });
-    }
-    
-    // Fermer en cliquant en dehors
-    if (subjectsDetailsContainer) {
-        subjectsDetailsContainer.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-                subjectsDetails.forEach(detail => {
-                    detail.style.display = 'none';
-                });
-            }
-        });
-    }
-
-    // Configuration des animations de scroll
-    function setupScrollAnimations() {
-        // Detect mobile device
-        const isMobile = window.innerWidth <= 768;
-        
-        if (isMobile) {
-            // On mobile, skip scroll animations to prevent stuttering
-            // Just show all elements immediately and animate numbers
-            const achievementCards = document.querySelectorAll('.achievement-card');
-            achievementCards.forEach(card => {
-                if (!card.hasAttribute('data-animated')) {
-                    card.setAttribute('data-animated', 'true');
-                    animateNumber(card);
-                }
-            });
-            
-            // Show all elements immediately on mobile
-            const elementsToShow = document.querySelectorAll('.section-header, .expertise-card, .achievement-card, .form-section, .footer');
-            elementsToShow.forEach(element => {
-                element.classList.add('revealed');
-                element.style.opacity = '1';
-                element.style.transform = 'none';
-            });
-            return;
-        }
-        
-        // Observer pour les animations de scroll (desktop only)
-        const scrollObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
-                    
-                    // Si c'est une carte achievement, animer le nombre
-                    if (entry.target.classList.contains('achievement-card') && !entry.target.hasAttribute('data-animated')) {
-                        entry.target.setAttribute('data-animated', 'true');
-                        animateNumber(entry.target);
-                    }
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        });
-
-        // Ajouter les classes d'animation aux éléments (desktop only)
-        const elementsToAnimate = [
-            { selector: '.section-header', animation: 'scroll-reveal' },
-            { selector: '.expertise-card', animation: 'scroll-reveal-scale' },
-            { selector: '.achievement-card', animation: 'scroll-reveal-scale' },
-            { selector: '.form-section', animation: 'scroll-reveal' },
-            { selector: '.footer', animation: 'scroll-reveal' }
-        ];
-
-        elementsToAnimate.forEach(({ selector, animation }) => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach((element, index) => {
-                element.classList.add(animation);
-                element.style.transitionDelay = `${index * 0.1}s`;
-                scrollObserver.observe(element);
-            });
-        });
-    }
-
-    // Animer les nombres dans une carte d'achievement
-    function animateNumber(card) {
-        console.log('🔢 Animating achievement number for card:', card);
-        const numberElement = card.querySelector('.achievement-number');
-        if (!numberElement) {
-            console.warn('⚠️ No .achievement-number element found in card');
-            return;
-        }
-
-        // Try both data-target and data-value attributes
-        const target = parseInt(numberElement.getAttribute('data-target') || numberElement.getAttribute('data-value'));
-        console.log(`🎯 Target number: ${target}`);
-        
-        if (isNaN(target)) {
-            console.error('❌ Invalid data-target attribute:', numberElement.getAttribute('data-target'));
-            return;
-        }
-
-        const duration = 2000; // 2 secondes
-        const increment = target / (duration / 16); // 60fps
-        let current = 0;
-
-        numberElement.textContent = '0';
-
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                current = target;
-                clearInterval(timer);
-                console.log(`✅ Animation completed for target: ${target}`);
-            }
-            numberElement.textContent = Math.floor(current);
-        }, 16);
-    }
-
-    // Configuration du select multiple pour les matières  
-    function setupSubjectsSelect() {
-        console.log('setupSubjectsSelect called');
-        
-        if (!subjectsSelect) {
-            console.error('subjectsSelect element not found');
-            return;
-        }
-        
-        console.log('Setting up subjects select...');
-
-        // Liste de toutes les matières organisées par catégorie
-        const subjectsByCategory = {
-            'Finance': {
-                fr: 'Finance',
-                en: 'Finance',
-                ar: 'التمويل',
-                subjects: [
-                    { id: 'math-fin', fr: 'Mathématiques financières', en: 'Financial Mathematics', ar: 'الرياضيات المالية' },
-                    { id: 'finance-ent', fr: 'Finance d\'entreprise', en: 'Corporate Finance', ar: 'تمويل الشركات' },
-                    { id: 'finance-marche', fr: 'Finance de marché', en: 'Market Finance', ar: 'تمويل السوق' },
-                    { id: 'ingenierie-fin', fr: 'Ingénierie financière', en: 'Financial Engineering', ar: 'الهندسة المالية' },
-                    { id: 'analyse-fin', fr: 'Analyse financière', en: 'Financial Analysis', ar: 'التحليل المالي' }
-                ]
-            },
-            'Comptabilite': {
-                fr: 'Comptabilité',
-                en: 'Accounting',
-                ar: 'المحاسبة',
-                subjects: [
-                    { id: 'compta-gen', fr: 'Comptabilité générale', en: 'General Accounting', ar: 'المحاسبة العامة' },
-                    { id: 'compta-ana', fr: 'Comptabilité analytique', en: 'Cost Accounting', ar: 'محاسبة التكاليف' },
-                    { id: 'compta-approf', fr: 'Comptabilité approfondie', en: 'Advanced Accounting', ar: 'المحاسبة المتقدمة' }
-                ]
-            },
-            'Gestion': {
-                fr: 'Contrôle & Gestion',
-                en: 'Control & Management',
-                ar: 'الرقابة والإدارة',
-                subjects: [
-                    { id: 'controle-gestion', fr: 'Contrôle de gestion', en: 'Management Control', ar: 'مراقبة الإدارة' },
-                    { id: 'evaluation-ent', fr: 'Évaluation d\'entreprises', en: 'Business Valuation', ar: 'تقييم الأعمال' },
-                    { id: 'risk-mgmt', fr: 'Risk management', en: 'Risk Management', ar: 'إدارة المخاطر' }
-                ]
-            },
-            'Encadrement': {
-                fr: 'Encadrement',
-                en: 'Guidance',
-                ar: 'التوجيه',
-                subjects: [
-                    { id: 'memoire', fr: 'Mémoire de fin d\'études', en: 'Thesis Support', ar: 'دعم الأطروحة' },
-                    { id: 'certification', fr: 'Préparation aux concours', en: 'Exam Preparation', ar: 'التحضير للاختبارات' },
-                    { id: 'projets', fr: 'Projets académiques', en: 'Academic Projects', ar: 'المشاريع الأكاديمية' }
-                ]
-            }
-        };
-
-        // Initialize custom multiselect
-        // Simple subjects input - no multiselect needed
-        
-        // No complex setup needed for simple text input
-    }
-    
-    // Clear multiselect function for form reset
-    window.clearMultiselect = function() {
-        const multiselectSelected = document.querySelector('.multiselect-selected');
-        const multiselectOptions = document.querySelectorAll('.multiselect-option');
-        const subjectsInput = document.getElementById('subjects');
-        
-        if (multiselectSelected) {
-            multiselectSelected.innerHTML = '';
-        }
-        
-        if (multiselectOptions) {
-            multiselectOptions.forEach(option => {
-                option.classList.remove('selected');
-            });
-        }
-        
-        if (subjectsSelect) {
-            Array.from(subjectsSelect.options).forEach(option => {
-                option.selected = false;
-            });
-        }
-    };
-
-    // Setup custom multiselect dropdown
-    function setupCustomMultiselect(subjectsByCategory) {
-        console.log('setupCustomMultiselect called with:', subjectsByCategory);
-        
-        const multiselectToggle = document.getElementById('multiselect-toggle');
-        const multiselectDropdown = document.getElementById('multiselect-dropdown');
-        const multiselectOptions = document.getElementById('multiselect-options');
-        
-        console.log('Elements found:', {
-            toggle: !!multiselectToggle,
-            dropdown: !!multiselectDropdown,
-            options: !!multiselectOptions
-        });
-        
-        // Check if elements exist
-        if (!multiselectToggle || !multiselectDropdown || !multiselectOptions) {
-            console.error('Multiselect elements not found:', {
-                toggle: multiselectToggle,
-                dropdown: multiselectDropdown,
-                options: multiselectOptions
-            });
-            return;
-        }
-        
-        const multiselectSelected = multiselectToggle.querySelector('.multiselect-selected');
-        const searchInput = multiselectDropdown.querySelector('.multiselect-search-input');
-        
-        if (!multiselectSelected || !searchInput) {
-            console.error('Multiselect child elements not found');
-            return;
-        }
-        
-        const selectedSubjects = new Set();
-
-        // Toggle dropdown
-        multiselectToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Multiselect toggle clicked');
-            
-            const isOpen = multiselectDropdown.classList.contains('show');
-            
-            if (isOpen) {
-                multiselectToggle.classList.remove('active');
-                multiselectDropdown.classList.remove('show');
-                multiselectDropdown.style.display = 'none';
-            } else {
-                multiselectToggle.classList.add('active');
-                multiselectDropdown.classList.add('show');
-                multiselectDropdown.style.display = 'block';
-                setTimeout(() => searchInput.focus(), 100);
-            }
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!multiselectToggle.contains(e.target) && !multiselectDropdown.contains(e.target)) {
-                multiselectToggle.classList.remove('active');
-                multiselectDropdown.classList.remove('show');
-                multiselectDropdown.style.display = 'none';
-            }
-        });
-
-        // Render options
-        function renderOptions(searchTerm = '') {
-            const currentLang = document.documentElement.lang || 'fr';
-            console.log('Rendering options for language:', currentLang);
-            multiselectOptions.innerHTML = '';
-
-            Object.keys(subjectsByCategory).forEach(category => {
-                const categoryData = subjectsByCategory[category];
-                const filteredSubjects = categoryData.subjects.filter(subject => 
-                    subject[currentLang] && subject[currentLang].toLowerCase().includes(searchTerm.toLowerCase())
-                );
-
-                if (filteredSubjects.length > 0) {
-                    // Add category header
-                    const categoryDiv = document.createElement('div');
-                    categoryDiv.className = 'multiselect-category';
-                    categoryDiv.textContent = categoryData[currentLang] || category;
-                    multiselectOptions.appendChild(categoryDiv);
-
-                    // Add subjects
-                    filteredSubjects.forEach(subject => {
-                        const optionDiv = document.createElement('div');
-                        optionDiv.className = 'multiselect-option';
-                        if (selectedSubjects.has(subject.id)) {
-                            optionDiv.classList.add('selected');
-                        }
-                        optionDiv.textContent = subject[currentLang] || subject.id;
-                        optionDiv.dataset.value = subject.id;
-                        optionDiv.dataset.label = subject[currentLang] || subject.id;
-
-                        optionDiv.addEventListener('click', () => {
-                            toggleSubject(subject.id);
-                        });
-
-                        multiselectOptions.appendChild(optionDiv);
-                    });
-                }
-            });
-            
-            console.log('Rendered', multiselectOptions.children.length, 'elements');
-        }
-
-        // Toggle subject selection
-        function toggleSubject(id) {
-            if (selectedSubjects.has(id)) {
-                selectedSubjects.delete(id);
-            } else {
-                selectedSubjects.add(id);
-            }
-            updateSelectedDisplay();
-            updateHiddenSelect();
-            renderOptions(searchInput.value);
-        }
-
-        // Update selected display
-        function updateSelectedDisplay() {
-            multiselectSelected.innerHTML = '';
-            selectedSubjects.forEach(id => {
-                const optionEl = multiselectOptions.querySelector(`[data-value="${id}"]`);
-                if (optionEl) {
-                    const tag = document.createElement('span');
-                    tag.className = 'multiselect-tag';
-                    tag.innerHTML = `
-                        ${optionEl.dataset.label}
-                        <span class="multiselect-tag-remove" data-value="${id}">×</span>
-                    `;
-                    
-                    tag.querySelector('.multiselect-tag-remove').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        toggleSubject(id);
-                    });
-                    
-                    multiselectSelected.appendChild(tag);
-                }
-            });
-        }
-        
-        // Make it accessible globally for form reset
-        window.updateSelectedDisplay = updateSelectedDisplay;
-        window.clearMultiselect = function() {
-            selectedSubjects.clear();
-            updateSelectedDisplay();
-            updateHiddenSelect();
-        };
-
-        // Update hidden select
-        function updateHiddenSelect() {
-            const options = subjectsSelect.options;
-            for (let i = 0; i < options.length; i++) {
-                options[i].selected = selectedSubjects.has(options[i].value);
-            }
-        }
-
-        // Search functionality
-        searchInput.addEventListener('input', (e) => {
-            renderOptions(e.target.value);
-        });
-
-        // Update placeholder text based on language
-        function updateSearchPlaceholder() {
-            const currentLang = document.documentElement.lang || 'fr';
-            const placeholders = {
-                fr: 'Rechercher...',
-                en: 'Search...',
-                ar: 'بحث...'
-            };
-            searchInput.placeholder = placeholders[currentLang];
-        }
-
-        // Initial render and setup
-        console.log('Initializing multiselect dropdown...');
-        renderOptions();
-        updateSearchPlaceholder();
-        
-        // Ensure dropdown is properly styled and positioned
-        multiselectDropdown.style.display = 'none';
-        multiselectDropdown.style.position = 'absolute';
-        multiselectDropdown.style.top = '100%';
-        multiselectDropdown.style.left = '0';
-        multiselectDropdown.style.right = '0';
-        multiselectDropdown.style.zIndex = '1000';
-        
-        // Update when language changes
-        const originalChangeLanguage = window.changeLanguage;
-        if (originalChangeLanguage) {
-            window.changeLanguage = function(lang) {
-                originalChangeLanguage.call(this, lang);
-                setTimeout(() => {
-                    renderOptions(searchInput.value);
-                    updateSearchPlaceholder();
-                    updateSelectedDisplay();
-                }, 50);
-            };
-        }
-        
-        // Also listen for language attribute changes
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'lang') {
-                    const newLang = document.documentElement.lang;
-                    if (newLang && newLang !== currentLang) {
-                        setTimeout(() => {
-                            renderOptions(searchInput.value);
-                            updateSearchPlaceholder();
-                            updateSelectedDisplay();
-                        }, 100);
-                    }
-                }
-            });
-        });
-        
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ['lang']
-        });
-        
-        console.log('Multiselect dropdown initialized successfully');
-    }
-
-    // Update subjects input placeholder based on language
-    function updateSubjectsPlaceholder() {
-        if (!subjectsInput) return;
-        
-        const currentLang = document.documentElement.lang || 'fr';
-        const placeholders = {
-            fr: 'Ex: Finance, Comptabilité, Gestion...',
-            en: 'Ex: Finance, Accounting, Management...',
-            ar: 'مثال: المالية، المحاسبة، الإدارة...'
-        };
-        
-        subjectsInput.placeholder = placeholders[currentLang];
-    }
-
-    // Mettre à jour les options du formulaire en fonction de la langue
-    function updateFormLanguage() {
-        // Update subjects placeholder
-        updateSubjectsPlaceholder();
-        
-        // Mise à jour des options du select "Méthode souhaitée"
-        updateMethodSelectOptions();
-    }
-
-    // Mettre à jour les options du select "Méthode souhaitée"
-    function updateMethodSelectOptions() {
-        const methodSelect = document.getElementById('method');
-        if (!methodSelect) return;
-
-        const currentLang = document.documentElement.lang || 'fr';
-
-        // Options par langue
-        const options = {
-            fr: [
-                { value: '', text: 'Choisissez une option', disabled: true, selected: true },
-                { value: 'Email', text: 'Email' },
-                { value: 'Phone', text: 'Téléphone' },
-                { value: 'WhatsApp', text: 'WhatsApp' }
-            ],
-            en: [
-                { value: '', text: 'Choose an option', disabled: true, selected: true },
-                { value: 'Email', text: 'Email' },
-                { value: 'Phone', text: 'Phone' },
-                { value: 'WhatsApp', text: 'WhatsApp' }
-            ],
-            ar: [
-                { value: '', text: 'اختر خيارًا', disabled: true, selected: true },
-                { value: 'Email', text: 'البريد الإلكتروني' },
-                { value: 'Phone', text: 'الهاتف' },
-                { value: 'WhatsApp', text: 'واتساب' }
-            ]
-        };
-
-        // Vider le select
-        methodSelect.innerHTML = '';
-
-        // Ajouter les options pour la langue actuelle
-        options[currentLang].forEach(opt => {
-            const option = document.createElement('option');
-            option.value = opt.value;
-            option.textContent = opt.text;
-            if (opt.disabled) option.disabled = true;
-            if (opt.selected) option.selected = true;
-            methodSelect.appendChild(option);
-        });
-    }
-
-    // Fonction pour initialiser le thème
-    function initializeTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.body.setAttribute('data-theme', savedTheme);
-    }
-
-    // Fonction pour initialiser la langue
-    function initializeLanguage() {
-        const savedLanguage = localStorage.getItem('language') || 'fr';
-        console.log('Initializing language:', savedLanguage);
-        
-        // Set the language immediately
-        document.documentElement.lang = savedLanguage;
-        document.documentElement.setAttribute('lang', savedLanguage);
-        
-        // Update language display immediately without animation
-        updateLanguageDisplay(savedLanguage);
-        updateLanguageUI(savedLanguage);
-        updateLanguageButton(savedLanguage);
-        updateActiveLanguageOption(savedLanguage);
-        
-        // Don't use animation on initial load
-        changeLanguageWithAnimation(savedLanguage, false);
-    }
-
-    // Font Awesome icons don't need initialization - they work via CSS
-
-    // Fonction pour l'effet typewriter
-    function startTypewriterEffect() {
-        const currentLang = document.documentElement.lang;
-
-        // Clean up any existing animations
-        document.querySelectorAll('[id^="typewriter-text"]').forEach(el => {
-            if (el._typewriterAnimation) {
-                clearTimeout(el._typewriterAnimation);
-                el._typewriterAnimation = null;
-            }
-        });
-
-        // Configuration des mots pour chaque langue
-        const wordsConfig = {
-            'fr': {
-                element: document.getElementById('typewriter-text-fr'),
-                words: ['Finance', 'Comptabilité']
-            },
-            'en': {
-                element: document.getElementById('typewriter-text-en'),
-                words: ['Finance', 'Accounting']
-            },
-            'ar': {
-                element: document.getElementById('typewriter-text-ar'),
-                words: ['المالية', 'المحاسبة']
-            }
-        };
-
-        const config = wordsConfig[currentLang];
-        if (!config || !config.element) return;
-
-        const { element, words } = config;
-        
-        // Set minimum width based on longest word to prevent layout shifts
-        const longestWord = words.reduce((a, b) => a.length > b.length ? a : b);
-        const container = element.parentElement;
-        
-        // Skip dynamic width calculation for Arabic RTL to prevent layout shifts
-        const isArabic = document.documentElement.lang === 'ar';
-        
-        if (container && container.classList.contains('typewriter-container') && !isArabic) {
-            // Create a temporary element to measure text width
-            const measurer = document.createElement('span');
-            measurer.style.cssText = `
-                visibility: hidden;
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
-                white-space: nowrap;
-                pointer-events: none;
-            `;
-            
-            // Copy all font-related styles
-            const elementStyles = window.getComputedStyle(element);
-            ['font-family', 'font-size', 'font-weight', 'font-style', 'letter-spacing'].forEach(prop => {
-                measurer.style[prop] = elementStyles[prop];
-            });
-            
-            measurer.textContent = longestWord;
-            document.body.appendChild(measurer);
-            
-            const minWidth = measurer.offsetWidth;
-            container.style.minWidth = `${minWidth + 30}px`; // Add padding for cursor
-            container.style.display = 'inline-block';
-            
-            document.body.removeChild(measurer);
-        } else if (isArabic && container && container.classList.contains('typewriter-container')) {
-            // For Arabic, use fixed width and let CSS handle the layout
-            container.style.minWidth = '';
-            container.style.width = '';
-            container.style.maxWidth = '';
-            container.style.display = 'inline-block';
-        }
-        
-        let currentWordIndex = 0;
-        let currentCharIndex = 0;
-        let isDeleting = false;
-        let animationId;
-        
-        // Slower speeds for mobile to ensure full word display
-        const typingSpeed = 150;
-        const deletingSpeed = 100;
-        const pauseTime = 2000;
-
-        function typeWriter() {
-            const currentWord = words[currentWordIndex];
-
-            if (isDeleting) {
-                // Suppression des caractères
-                element.textContent = currentWord.substring(0, currentCharIndex - 1);
-                currentCharIndex--;
-
-                if (currentCharIndex === 0) {
-                    isDeleting = false;
-                    currentWordIndex = (currentWordIndex + 1) % words.length;
-                    animationId = setTimeout(typeWriter, 300);
-                    element._typewriterAnimation = animationId;
-                } else {
-                    animationId = setTimeout(typeWriter, deletingSpeed);
-                    element._typewriterAnimation = animationId;
-                }
-            } else {
-                // Ajout des caractères
-                element.textContent = currentWord.substring(0, currentCharIndex + 1);
-                currentCharIndex++;
-
-                if (currentCharIndex === currentWord.length) {
-                    isDeleting = true;
-                    animationId = setTimeout(typeWriter, pauseTime);
-                    element._typewriterAnimation = animationId;
-                } else {
-                    animationId = setTimeout(typeWriter, typingSpeed);
-                    element._typewriterAnimation = animationId;
-                }
-            }
-        }
-
-        // Démarrer l'effet après un petit délai
-        animationId = setTimeout(typeWriter, 1000);
-        
-        // Store animation reference for cleanup
-        element._typewriterAnimation = animationId;
-    }
-
-
-    // Fonction pour basculer le menu déroulant de langue
-    // Function to reset dropdown state completely
-    function resetDropdownState() {
-        const dropdown = document.getElementById('language-dropdown');
-        if (dropdown) {
-            // Clear all classes and inline styles
-            dropdown.className = 'language-dropdown';
-            dropdown.style.cssText = '';
-            console.log('🔄 Dropdown state reset');
-        }
-    }
-    
-    // NEW FUNCTION: Ensure language button remains functional after language changes
-    function ensureLanguageButtonWorks() {
-        const button = document.getElementById('language-toggle');
-        if (!button) {
-            console.error('❌ Language button not found during recovery check');
-            return;
-        }
-        
-        // Verify button is still clickable
-        const computedStyle = getComputedStyle(button);
-        if (computedStyle.pointerEvents === 'none' || button.disabled) {
-            console.log('🔧 Fixing disabled language button...');
-            button.style.pointerEvents = 'auto';
-            button.style.cursor = 'pointer';
-            button.disabled = false;
-        }
-        
-        // Check if event listeners are still attached
-        if (!button._hasEventListeners) {
-            console.log('🔧 Re-attaching language button event listeners...');
-            
-            button.addEventListener('click', function(e) {
-                console.log('🖱️ Language button clicked (recovery handler)');
-                e.preventDefault();
-                e.stopPropagation();
-                toggleLanguageDropdown();
-            });
-            
-            button._hasEventListeners = true;
-        }
-        
-        console.log('✅ Language button functionality verified/restored');
-    }
-    
-    // FLOATING CONTROLS SETUP - Using Event Delegation for Reliability
-    function setupFloatingControls() {
-        console.log('🎛️ Setting up floating controls with event delegation...');
-        
-        // Remove existing delegated listeners to avoid duplicates
-        if (window.floatingControlsSetup) {
-            console.log('🔄 Skipping setup - already configured with delegation');
-            return;
-        }
-        
-        // Use event delegation on document body for reliability
-        document.body.addEventListener('click', function(e) {
-            // Theme Button Handler - now using the centralized toggleTheme function
-            if (e.target.closest('#theme-toggle')) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('🎨 Theme button clicked via setupFloatingControls!');
-                toggleTheme();
-                return;
-            }
-            
-            // Language Button Handler
-            if (e.target.closest('#language-toggle')) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('🌐 Language button clicked via delegation!');
-                
-                const dropdown = document.getElementById('language-dropdown');
-                if (dropdown) {
-                    const isOpen = dropdown.classList.contains('show');
-                    if (isOpen) {
-                        dropdown.classList.remove('show');
-                        console.log('🔒 Language dropdown closed');
-                    } else {
-                        dropdown.classList.add('show');
-                        console.log('🔓 Language dropdown opened');
-                    }
-                } else {
-                    console.error('❌ Language dropdown not found');
-                }
-                return;
-            }
-            
-            // Language Option Handler
-            const langOption = e.target.closest('.lang-option');
-            if (langOption) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const lang = langOption.getAttribute('data-lang');
-                if (lang) {
-                    console.log(`🔄 Switching to language: ${lang}`);
-                    changeLanguage(lang);
-                    updateFormLanguage();
-                    
-                    // Close dropdown
-                    const dropdown = document.getElementById('language-dropdown');
-                    if (dropdown) {
-                        dropdown.classList.remove('show');
-                        console.log('🔒 Language dropdown closed after selection');
-                    }
-                }
-                return;
-            }
-            
-            // Close dropdown when clicking outside
-            const dropdown = document.getElementById('language-dropdown');
-            const langControl = document.querySelector('.language-control');
-            
-            if (dropdown && langControl && !langControl.contains(e.target)) {
-                dropdown.classList.remove('show');
-                console.log('🔒 Language dropdown closed (outside click)');
-            }
-        });
-        
-        // Mark as setup to prevent duplicates
-        window.floatingControlsSetup = true;
-        
-        console.log('✅ Floating controls setup complete with event delegation');
-        
-        // Add visual test indicators
-        addTestIndicators();
-    }
-    
-    // Visual test function to verify button functionality
-    function addTestIndicators() {
-        // Add pulsing animation to buttons for visibility
-        const style = document.createElement('style');
-        style.innerHTML = `
-            .control-btn {
-                animation: buttonPulse 2s infinite ease-in-out;
-            }
-            
-            @keyframes buttonPulse {
-                0%, 100% { 
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 10px var(--primary-glow);
-                }
-                50% { 
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 20px var(--primary-glow);
-                }
-            }
-            
-            /* Light mode pulse animation */
-            body[data-theme="light"] .control-btn {
-                animation: buttonPulseLight 2s infinite ease-in-out;
-            }
-            
-            @keyframes buttonPulseLight {
-                0%, 100% { 
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 10px var(--primary-glow);
-                }
-                50% { 
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 20px var(--primary-glow);
-                }
-            }
-            
-            .control-btn:hover {
-                animation: none;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Add click test visual feedback
-        document.querySelectorAll('.control-btn').forEach(btn => {
-            btn.addEventListener('mousedown', function() {
-                this.style.transform = 'scale(0.95)';
-                this.style.backgroundColor = 'var(--primary-light)';
-            });
-            
-            btn.addEventListener('mouseup', function() {
-                this.style.transform = '';
-                this.style.backgroundColor = '';
-            });
-            
-            btn.addEventListener('mouseleave', function() {
-                this.style.transform = '';
-                this.style.backgroundColor = '';
-            });
-        });
-        
-        console.log('🎯 Test indicators added to buttons');
-    }
-    
-    // Simple toggle function for compatibility
-    window.toggleLanguageDropdown = function() {
-        const dropdown = document.getElementById('language-dropdown');
-        if (dropdown) {
-            dropdown.classList.toggle('show');
-            const isVisible = dropdown.classList.contains('show');
-            console.log(`🌐 Language dropdown ${isVisible ? 'opened' : 'closed'}`);
-        }
-    }
-
-    // Fonction pour changer la langue
-    function changeLanguage(lang) {
-        if (!lang) return;
-        changeLanguageWithAnimation(lang, true);
-    }
-
-    // Fonction pour changer la langue avec animation fluide
-    function changeLanguageWithAnimation(lang, animate = true) {
-        if (!lang) return;
-
-        // Trouver tous les éléments de contenu multilingue
-        const allLangElements = document.querySelectorAll('.fr, .en, .ar');
-
-        if (animate) {
-            // Animation de sortie pour les éléments actuels
-            allLangElements.forEach(element => {
-                if (element.style.display !== 'none') {
-                    element.style.animation = 'fadeOut 0.3s ease';
-                    element.style.opacity = '0';
-                }
-            });
-
-            // Attendre la fin de l'animation de sortie
-            setTimeout(() => {
-                updateLanguageDisplay(lang);
-                updateLanguageUI(lang);
-                updateLanguageButton(lang);
-                updateActiveLanguageOption(lang);
-
-                // Animation d'entrée pour les nouveaux éléments
-                const newLangElements = document.querySelectorAll(`.${lang}`);
-                newLangElements.forEach(element => {
-                    element.style.animation = 'languageSlideIn 0.5s ease';
-                    element.style.opacity = '1';
-                });
-
-                // Redémarrer l'effet typewriter pour la nouvelle langue
-                setTimeout(() => {
-                    startTypewriterEffect();
-                }, 500);
-            }, 300);
-        } else {
-            updateLanguageDisplay(lang);
-            updateLanguageUI(lang);
-            updateLanguageButton(lang);
-            updateActiveLanguageOption(lang);
-
-            // Démarrer l'effet typewriter
-            setTimeout(() => {
-                startTypewriterEffect();
-            }, 100);
-        }
-
-        document.documentElement.lang = lang;
-        localStorage.setItem('language', lang);
-    }
-
-    // Fonction pour mettre à jour l'affichage de la langue
-    function updateLanguageDisplay(lang) {
-        // Masquer tous les éléments de langue
-        const allLangElements = document.querySelectorAll('.fr, .en, .ar');
-        allLangElements.forEach(element => {
-            element.style.display = 'none';
-            element.style.opacity = '0';
-        });
-
-        // Afficher les éléments de la langue sélectionnée
-        const selectedLangElements = document.querySelectorAll(`.${lang}`);
-        selectedLangElements.forEach(element => {
-            element.style.display = 'block';
-            element.style.opacity = '1';
-        });
-    }
-
-    // Update select options based on language
-    function updateSelectOptions(lang) {
-        const methodSelect = document.getElementById('method');
-        if (methodSelect) {
-            const options = {
-                fr: {
-                    placeholder: 'Choisissez une option',
-                    online: 'En ligne',
-                    presential: 'Présentiel'
-                },
-                en: {
-                    placeholder: 'Choose an option',
-                    online: 'Online',
-                    presential: 'In-person'
-                },
-                ar: {
-                    placeholder: 'اختر خيارًا',
-                    online: 'عبر الإنترنت',
-                    presential: 'شخصي'
-                }
-            };
-            
-            // Update placeholder option
-            if (methodSelect.options[0]) {
-                methodSelect.options[0].text = options[lang].placeholder;
-            }
-            // Update online option
-            if (methodSelect.options[1]) {
-                methodSelect.options[1].text = options[lang].online;
-            }
-            // Update presential option
-            if (methodSelect.options[2]) {
-                methodSelect.options[2].text = options[lang].presential;
-            }
-        }
-    }
-
-    // Fonction pour mettre à jour l'interface pour la langue
-    function updateLanguageUI(lang) {
-        updateSelectOptions(lang);
-        if (lang === 'ar') {
-            document.documentElement.dir = 'rtl';
-        } else {
-            document.documentElement.dir = 'ltr';
-        }
-    }
-
-    // Mettre à jour l'apparence du bouton de langue
-    function updateLanguageButton(lang) {
-        // Use fresh query to get current button
-        const langToggle = document.getElementById('language-toggle');
-        if (!langToggle) {
-            console.log('⚠️ Language toggle not found during update');
-            return;
-        }
-
-        const currentLang = langToggle.querySelector('.current-lang');
-        if (currentLang) {
-            currentLang.textContent = lang.toUpperCase();
-            console.log(`✅ Language button updated to: ${lang.toUpperCase()}`);
-        } else {
-            console.log('⚠️ .current-lang element not found');
-        }
-        
-        // Ensure button remains clickable (redundant with delegation but good for safety)
-        langToggle.style.pointerEvents = 'auto';
-        langToggle.style.cursor = 'pointer';
-        langToggle.disabled = false;
-    }
-
-    // Marquer l'option active dans le menu déroulant
-    function updateActiveLanguageOption(lang) {
-        // Use fresh query to get current options
-        const currentLanguageOptions = document.querySelectorAll('.lang-option');
-        if (!currentLanguageOptions || currentLanguageOptions.length === 0) {
-            console.log('⚠️ No language options found during update');
-            return;
-        }
-
-        currentLanguageOptions.forEach(option => {
-            if (option.getAttribute('data-lang') === lang) {
-                option.classList.add('active');
-            } else {
-                option.classList.remove('active');
-            }
-        });
-        
-        console.log(`✅ Active language option updated to: ${lang}`);
-    }
-
-    // Ouvrir les détails d'expertise
-    if (expertiseCards && expertiseCards.length > 0) {
-        expertiseCards.forEach(card => {
-            card.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const expertise = this.getAttribute('data-expertise');
-                if (expertise) {
-                    openExpertiseDetails(expertise);
-                }
-            });
-        });
-    }
-
-    // Fermer les détails d'expertise avec le bouton X
-    if (closeDetailsButtons && closeDetailsButtons.length > 0) {
-        closeDetailsButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                closeExpertiseDetails();
-            });
-        });
-    }
-
-    // Fermer les détails en cliquant en dehors
-    if (subjectsDetailsContainer) {
-        subjectsDetailsContainer.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeExpertiseDetails();
-            }
-        });
-    }
-
-    // Fermer avec la touche Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeExpertiseDetails();
-        }
-    });
-
-    // Fonction pour ouvrir les détails d'une expertise
-    function openExpertiseDetails(expertise) {
-        if (!subjectsDetailsContainer) return;
-
-        // Afficher le conteneur
-        subjectsDetailsContainer.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Empêcher le défilement de la page
-
-        // Masquer tous les détails
-        if (subjectsDetails && subjectsDetails.length > 0) {
-            subjectsDetails.forEach(detail => {
-                detail.classList.remove('active');
-            });
-        }
-
-        // Afficher les détails de l'expertise sélectionnée
-        const selectedDetail = document.getElementById(`${expertise}-details`);
-        if (selectedDetail) {
-            selectedDetail.classList.add('active');
-        }
-    }
-
-    // Fonction pour fermer les détails d'expertise
-    function closeExpertiseDetails() {
-        if (!subjectsDetailsContainer) return;
-
-        subjectsDetailsContainer.style.display = 'none';
-        document.body.style.overflow = ''; // Rétablir le défilement
-
-        // Masquer tous les détails
-        if (subjectsDetails && subjectsDetails.length > 0) {
-            subjectsDetails.forEach(detail => {
-                detail.classList.remove('active');
-            });
-        }
-    }
-
-    // Animation et gestion des cartes de matières
-    if (subjectCards && subjectCards.length > 0) {
-        subjectCards.forEach(card => {
-            card.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const subject = this.getAttribute('data-subject');
-                if (subject) {
-                    selectSubject(subject);
-                }
-            });
-        });
-    }
-
-    // Fonction pour sélectionner une matière
-    function selectSubject(subject) {
-        const subjectsInput = document.getElementById('subjects');
-        if (!subjectsSelect) return;
-
-        // Trouver l'option correspondante
-        const option = Array.from(subjectsSelect.options).find(opt => opt.value === subject);
-        if (!option) return;
-
-        // Sélectionner cette option (en maintenant les autres sélections)
-        option.selected = true;
-
-        // Effet visuel de sélection
-        const card = document.querySelector(`[data-subject="${subject}"]`);
-        if (card) {
-            card.style.borderColor = 'var(--primary)';
-            card.style.boxShadow = '0 10px 30px rgba(204, 255, 0, 0.2)';
-
-            setTimeout(() => {
-                card.style.borderColor = '';
-                card.style.boxShadow = '';
-            }, 1000);
-        }
-
-        // Fermer les détails d'expertise
-        closeExpertiseDetails();
-
-        // Scroll vers le formulaire
-        const appointmentSection = document.getElementById('appointment');
-        if (appointmentSection) {
-            appointmentSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-
-            // Focus sur le select
-            setTimeout(() => {
-                subjectsSelect.focus();
-            }, 800);
-        }
-    }
-
-    // Gestion du formulaire
-    if (appointmentForm) {
-        appointmentForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('📝 Form submitted');
-
-            // Vérification du formulaire
-            const isValid = validateForm();
-            console.log('✅ Form validation result:', isValid);
-            
-            if (isValid) {
-                console.log('📤 Calling submitForm()...');
-                submitForm();
-            } else {
-                console.log('❌ Form validation failed');
-            }
-        });
-    }
-
-    // Validation du formulaire
-    function validateForm() {
-        const requiredFields = ['fullName', 'city', 'method', 'hours', 'email', 'phone'];
-        let isValid = true;
-        const currentLang = document.documentElement.lang || 'fr';
-
-        requiredFields.forEach(field => {
-            const input = document.getElementById(field);
-            if (!input || !input.value.trim()) {
-                if (input) markAsInvalid(input);
-                isValid = false;
-            } else {
-                if (input) markAsValid(input);
-            }
-        });
-
-        // Validation de l'email
-        const emailInput = document.getElementById('email');
-        if (emailInput && emailInput.value) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(emailInput.value)) {
-                markAsInvalid(emailInput);
-                showFieldError(emailInput, {
-                    fr: "Adresse e-mail invalide",
-                    en: "Invalid email address",
-                    ar: "عنوان بريد إلكتروني غير صالح"
-                }[currentLang]);
-                isValid = false;
-            } else {
-                hideFieldError(emailInput);
-            }
-        }
-
-        // Validation du nombre d'heures
-        const hoursInput = document.getElementById('hours');
-        if (hoursInput && hoursInput.value) {
-            const hoursValue = parseFloat(hoursInput.value);
-            if (isNaN(hoursValue) || hoursValue < 1 || hoursValue > 100) {
-                markAsInvalid(hoursInput);
-                showFieldError(hoursInput, {
-                    fr: "Le nombre d'heures doit être entre 1 et 100",
-                    en: "Hours must be between 1 and 100",
-                    ar: "يجب أن تكون الساعات بين 1 و 100"
-                }[currentLang]);
-                isValid = false;
-            } else {
-                hideFieldError(hoursInput);
-            }
-        }
-
-        return isValid;
-    }
-    
-    // Show field error message
-    function showFieldError(input, message) {
-        hideFieldError(input);
-        const errorEl = document.createElement('span');
-        errorEl.className = 'field-error-message';
-        errorEl.textContent = message;
-        errorEl.style.color = '#ff4d4d';
-        errorEl.style.fontSize = '12px';
-        errorEl.style.marginTop = '5px';
-        errorEl.style.display = 'block';
-        input.parentNode.appendChild(errorEl);
-    }
-    
-    // Hide field error message
-    function hideFieldError(input) {
-        const error = input.parentNode.querySelector('.field-error-message');
-        if (error) error.remove();
-    }
-
-    // Marquer un champ comme invalide
-    function markAsInvalid(input) {
-        input.style.borderColor = '#ff4d4d';
-        input.style.boxShadow = '0 0 0 3px rgba(255, 77, 77, 0.2)';
-
-        // Ajouter un effet de secousse
-        input.classList.add('shake');
-        setTimeout(() => {
-            input.classList.remove('shake');
-        }, 500);
-
-        // Rétablir le style au focus
-        input.addEventListener('focus', function() {
-            this.style.borderColor = 'var(--primary)';
-            this.style.boxShadow = '0 0 0 3px rgba(204, 255, 0, 0.2)';
-        });
-    }
-
-    // Marquer un champ comme valide
-    function markAsValid(input) {
-        input.style.borderColor = '';
-        input.style.boxShadow = '';
-        hideFieldError(input);
-    }
-
-    // Soumettre le formulaire
-    function submitForm() {
-        console.log('📋 submitForm() called');
-        
-        if (!appointmentForm || !successMessage) {
-            console.error('❌ Missing form or success message element');
-            return;
-        }
-
-        const submitBtn = appointmentForm.querySelector('.submit-btn');
-        if (!submitBtn) {
-            console.error('❌ Submit button not found');
-            return;
-        }
-
-        // Get form data
-        const formData = new FormData(appointmentForm);
-        
-        // Get selected subjects from checkboxes
-        const selectedSubjects = [];
-        const subjectCheckboxes = appointmentForm.querySelectorAll('input[name="subjects"]:checked');
-        subjectCheckboxes.forEach(checkbox => {
-            selectedSubjects.push(checkbox.value);
-        });
-        const subjects = selectedSubjects.join(', ');
-        
-        // Get message directly from form field
-        const messageField = sanitizeInput(formData.get('message'));
-        
-        // Create a formatted message that includes all form data
-        const message = messageField || `Message depuis le formulaire de contact`;
-        
-        // Prepare data for Azure backend
-        const submissionData = {
-            name: sanitizeInput(formData.get('fullName')),
-            email: sanitizeInput(formData.get('email')),
-            message: message,
-            phone: sanitizeInput(formData.get('phone')) || 'Non fourni',
-            city: sanitizeInput(formData.get('city')) || 'Non fourni',
-            method: sanitizeInput(formData.get('method')) || 'Non spécifié',
-            hours: sanitizeInput(formData.get('hours')) || 'Non spécifié',
-            subjects: subjects || 'Non spécifié',
-            subject: 'Contact depuis le site web'
-        };
-
-        // Store submission locally as backup
-        storeSubmission({
-            fullName: formData.get('fullName'),
-            email: formData.get('email'),
-            phone: formData.get('phone'),
-            city: formData.get('city'),
-            method: formData.get('method'),
-            hours: formData.get('hours'),
-            subjects: subjects,
-            timestamp: new Date().toISOString(),
-            source: window.location.hostname
-        });
-
-        // Loading effect
-        const submitBtnText = submitBtn.innerHTML;
-        const currentLang = document.documentElement.lang || 'fr';
-        const loadingText = {
-            fr: '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...',
-            en: '<i class="fas fa-spinner fa-spin"></i> Sending...',
-            ar: '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...'
-        };
-        submitBtn.innerHTML = loadingText[currentLang];
-        submitBtn.disabled = true;
-
-        // Send to Azure backend (single attempt, no retries)
-        async function sendToAzure() {
-            try {
-                console.log('🚀 Sending form data to Azure backend...');
-                console.log('📤 Data being sent:', submissionData);
-                
-                const response = await fetch('https://ouiiprof-form-handler.azurewebsites.net/api/handleForm?code=OyFN6PKeeoLhT32nPa5tECi-y5wZBIHafl0ygfWfT-amAzFuFhtamQ==', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(submissionData)
-                });
-
-                console.log('📊 Azure Response status:', response.status);
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('❌ Azure API Error Response:', errorText);
-                    throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
-                }
-
-                const result = await response.json();
-                console.log('✅ Azure API Success Response:', result);
-                console.log('📧 Form submitted successfully!');
-                console.log('🌐 From domain:', window.location.hostname);
-                
-                // Update local storage with success flag
-                try {
-                    const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-                    if (submissions.length > 0) {
-                        submissions[0].azureSent = true;
-                        submissions[0].azureResponse = result;
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
-                        console.log('💾 Submission updated with Azure confirmation');
-                    }
-                } catch (storageError) {
-                    console.warn('⚠️ Failed to update submission:', storageError);
-                }
-                
-                // Show appropriate success message based on Azure response
-                if (result.success) {
-                    if (result.emailSent) {
-                        showSuccessMessage('Votre message a été envoyé avec succès!');
-                    } else {
-                        showSuccessMessage('Votre message a été enregistré. Nous vous contacterons bientôt!');
-                    }
-                } else {
-                    showSuccessMessage(); // Default success message
-                }
-                
-                appointmentForm.reset();
-                // Clear subjects checkboxes
-                const checkboxes = appointmentForm.querySelectorAll('input[name="subjects"]:checked');
-                checkboxes.forEach(checkbox => checkbox.checked = false);
-                
-                submitBtn.innerHTML = submitBtnText;
-                submitBtn.disabled = false;
-                
-            } catch (error) {
-                console.error('❌ Azure submission failed:', error);
-                console.error('🔍 Full error:', error.message);
-                console.error('🌐 Current URL:', window.location.href);
-                
-                // Show error message immediately - no retries
-                showErrorMessage();
-                submitBtn.innerHTML = submitBtnText;
-                submitBtn.disabled = false;
-            }
-        }
-        
-        // Start the submission process
-        sendToAzure();
-    }
-
-    // Store submission in localStorage
-    function storeSubmission(data) {
-        try {
-            const submissions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-            const submission = {
-                ...data,
-                timestamp: new Date().toISOString(),
-                id: Date.now().toString()
-            };
-            
-            submissions.unshift(submission);
-            
-            // Keep only the latest MAX_STORED_SUBMISSIONS
-            if (submissions.length > MAX_STORED_SUBMISSIONS) {
-                submissions.splice(MAX_STORED_SUBMISSIONS);
-            }
-            
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
-            console.log('Submission stored locally');
-        } catch (error) {
-            console.error('Error storing submission:', error);
-        }
-    }
-
-    // Show success message
-    function showSuccessMessage(customMessage = null) {
-        if (customMessage) {
-            // Create dynamic success message
-            const currentLang = document.documentElement.lang || 'fr';
-            const translations = {
-                'Votre message a été envoyé avec succès!': {
-                    fr: 'Votre message a été envoyé avec succès!',
-                    en: 'Your message has been sent successfully!',
-                    ar: 'تم إرسال رسالتك بنجاح!'
-                },
-                'Votre message a été enregistré. Nous vous contacterons bientôt!': {
-                    fr: 'Votre message a été enregistré. Nous vous contacterons bientôt!',
-                    en: 'Your message has been saved. We will contact you soon!',
-                    ar: 'تم حفظ رسالتك. سنتواصل معك قريباً!'
-                }
-            };
-            
-            const translatedMessage = translations[customMessage] 
-                ? translations[customMessage][currentLang] 
-                : customMessage;
-            
-            const dynamicSuccessDiv = document.createElement('div');
-            dynamicSuccessDiv.className = 'success-message show';
-            dynamicSuccessDiv.innerHTML = `
-                <div class="success-content">
-                    <div class="success-icon">✅</div>
-                    <h3>${translatedMessage}</h3>
-                    <p>
-                        <span class="fr">Nous vous contacterons bientôt.</span>
-                        <span class="en">We will contact you soon.</span>
-                        <span class="ar">سنتصل بك قريبًا.</span>
-                    </p>
-                </div>
-            `;
-            document.body.appendChild(dynamicSuccessDiv);
-            
-            setTimeout(() => {
-                dynamicSuccessDiv.classList.remove('show');
-                setTimeout(() => dynamicSuccessDiv.remove(), 300);
-            }, 4000);
-        } else {
-            // Use existing success message element
-            successMessage.classList.add('show');
-            setTimeout(() => {
-                successMessage.classList.remove('show');
-            }, 3000);
-        }
-    }
-
-    // Show error message
-    function showErrorMessage(customMessage = null) {
-        const currentLang = document.documentElement.lang || 'fr';
-        const defaultErrorMessages = {
-            fr: 'Une erreur est survenue. Veuillez réessayer.',
-            en: 'An error occurred. Please try again.',
-            ar: 'حدث خطأ. يرجى المحاولة مرة أخرى.'
-        };
-        
-        const message = customMessage || defaultErrorMessages[currentLang];
-        
-        // Create temporary error message
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message show';
-        errorDiv.innerHTML = `
-            <div class="error-content">
-                <div class="error-icon">❌</div>
-                <p>${message}</p>
-            </div>
-        `;
-        document.body.appendChild(errorDiv);
-        
-        setTimeout(() => {
-            errorDiv.classList.remove('show');
-            setTimeout(() => errorDiv.remove(), 300);
-        }, 3000);
-    }
-
-    // Permettre de fermer le message en cliquant dessus
-    if (successMessage) {
-        successMessage.addEventListener('click', () => {
-            successMessage.classList.remove('show');
-        });
-    }
-
-    // Animation des nombres statistiques
-    function animateStatNumbers() {
-        const statNumbers = document.querySelectorAll('.stat-number');
-
-        statNumbers.forEach(stat => {
-            const finalValue = stat.getAttribute('data-value');
-            if (!finalValue) return;
-
-            const value = parseInt(finalValue);
-            if (isNaN(value)) return;
-
-            const isPlus = stat.textContent.includes('+');
-
-            // Commencer à zéro
-            stat.textContent = '0' + (isPlus ? '+' : '');
-
-            // Durée de l'animation en ms
-            const duration = 2000;
-            // Nombre d'étapes
-            const steps = 50;
-            // Incrément par étape
-            const increment = value / steps;
-            // Délai entre les étapes
-            const stepDuration = duration / steps;
-
-            let currentValue = 0;
-            let currentStep = 0;
-
-            const interval = setInterval(() => {
-                currentStep++;
-                currentValue += increment;
-
-                if (currentStep >= steps) {
-                    clearInterval(interval);
-                    stat.textContent = value + (isPlus ? '+' : '');
-                } else {
-                    stat.textContent = Math.round(currentValue) + (isPlus ? '+' : '');
-                }
-            }, stepDuration);
-        });
-    }
-
-    // Smooth scroll pour les liens d'ancrage
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-
-            e.preventDefault();
-
-            const targetElement = document.querySelector(targetId);
-
-            if (targetElement) {
-                // Detect mobile device
-                const isMobile = window.innerWidth <= 768;
-                
-                if (isMobile) {
-                    // Use instant scroll on mobile to prevent stuttering
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'auto'
-                    });
-                } else {
-                    // Use smooth scroll on desktop
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            }
-        });
-    });
-
-    // Ajouter les animations CSS manquantes
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-        
-        .shake {
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-        }
-        
-        @keyframes fadeOut {
-            from { 
-                opacity: 1; 
-                transform: translateY(0);
-            }
-            to { 
-                opacity: 0; 
-                transform: translateY(-10px);
-            }
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // Fix achievement numbers immediately if animation doesn't work
-    setTimeout(() => {
-        document.querySelectorAll('.achievement-number').forEach(el => {
-            const target = parseInt(el.getAttribute('data-target'));
-            if (!isNaN(target) && (el.textContent === '0' || el.textContent.trim() === '')) {
-                el.textContent = target;
-                console.log(`Fixed achievement number: ${target}`);
-            }
-        });
-        
-        // Fix hero stat numbers
-        document.querySelectorAll('.stat-number[data-value]').forEach(el => {
-            const target = parseInt(el.getAttribute('data-value'));
-            if (!isNaN(target)) {
-                const hasPlus = el.textContent.includes('+') || el.textContent === '0+';
-                el.textContent = target + (hasPlus ? '+' : '');
-                console.log(`Fixed stat number: ${target}${hasPlus ? '+' : ''}`);
-            }
-        });
-    }, 1000);
-    
+    console.log('✅ OOUI PROF - Initialized successfully');
 });
 
-// Fonction pour précharger les images
-function preloadImages() {
-    const images = [
-        'images/professor.jpg',
-        'images/student-avatar.jpg'
-    ];
+// === THEME MANAGEMENT ===
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    currentTheme = savedTheme;
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    updateThemeIcon();
+}
 
-    images.forEach(src => {
-        const img = new Image();
-        img.src = src;
+function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    localStorage.setItem('theme', currentTheme);
+    updateThemeIcon();
+    
+    // Add smooth transition effect
+    document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+    setTimeout(() => {
+        document.body.style.transition = '';
+    }, 300);
+}
+
+function updateThemeIcon() {
+    const sunIcon = document.querySelector('.sun-icon');
+    const moonIcon = document.querySelector('.moon-icon');
+    
+    if (currentTheme === 'dark') {
+        sunIcon.style.opacity = '0';
+        moonIcon.style.opacity = '1';
+    } else {
+        sunIcon.style.opacity = '1';
+        moonIcon.style.opacity = '0';
+    }
+}
+
+// === LANGUAGE MANAGEMENT ===
+function initializeLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'fr';
+    currentLanguage = savedLanguage;
+    changeLanguage(currentLanguage);
+}
+
+function changeLanguage(lang) {
+    if (!translations[lang]) {
+        console.error('Language not supported:', lang);
+        return;
+    }
+    
+    currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    
+    // Update HTML attributes
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    
+    // Update language button text
+    const langText = document.querySelector('.lang-text');
+    if (langText) {
+        langText.textContent = lang.toUpperCase();
+    }
+    
+    // Update all translatable elements
+    updateTranslations();
+    
+    // Update form placeholders
+    updateFormPlaceholders();
+    
+    // Close language dropdown
+    const dropdown = document.getElementById('language-dropdown');
+    if (dropdown) {
+        dropdown.classList.remove('show');
+    }
+    
+    console.log('🌐 Language changed to:', lang);
+}
+
+function updateTranslations() {
+    const elements = document.querySelectorAll('[data-en], [data-ar]');
+    
+    elements.forEach(element => {
+        let text = '';
+        
+        if (currentLanguage === 'en' && element.dataset.en) {
+            text = element.dataset.en;
+        } else if (currentLanguage === 'ar' && element.dataset.ar) {
+            text = element.dataset.ar;
+        } else {
+            // Default to original French text
+            text = element.textContent;
+        }
+        
+        if (text && text !== element.textContent) {
+            element.textContent = text;
+        }
     });
 }
 
-// Déclencher le préchargement
-preloadImages();
-
-    
-    // CTA buttons
-    const ctaButtons = document.querySelectorAll('.cta-button, .cta-btn, .book-btn, a[href="#appointment"]');
-    ctaButtons.forEach(btn => {
-        btn.style.cursor = 'pointer';
-        btn.onclick = function(e) {
-            e.preventDefault();
-            const appointmentSection = document.getElementById('appointment');
-            if (appointmentSection) {
-                appointmentSection.scrollIntoView({ behavior: 'smooth' });
-            }
+function updateFormPlaceholders() {
+    const messageTextarea = document.getElementById('message');
+    if (messageTextarea) {
+        const placeholders = {
+            fr: 'Décrivez vos besoins spécifiques...',
+            en: 'Describe your specific needs...',
+            ar: 'صف احتياجاتك المحددة...'
         };
+        messageTextarea.placeholder = placeholders[currentLanguage] || placeholders.fr;
+    }
+}
+
+// === EVENT LISTENERS ===
+function setupEventListeners() {
+    // Theme toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+    
+    // Language selector
+    const languageBtn = document.getElementById('language-btn');
+    const languageDropdown = document.getElementById('language-dropdown');
+    
+    if (languageBtn && languageDropdown) {
+        languageBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
+        });
+        
+        // Language options
+        const languageOptions = document.querySelectorAll('.language-option');
+        languageOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = option.dataset.lang;
+                changeLanguage(lang);
+            });
+        });
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (languageDropdown && !languageDropdown.contains(e.target) && !languageBtn.contains(e.target)) {
+            languageDropdown.classList.remove('show');
+        }
     });
-    if (ctaButtons.length > 0) {
-        console.log('✅ CTA buttons fixed:', ctaButtons.length);
+    
+    // Mobile menu toggle
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const navLinks = document.getElementById('nav-links');
+    
+    if (mobileMenuToggle && navLinks) {
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenuToggle.classList.toggle('active');
+            navLinks.classList.toggle('show');
+        });
     }
     
     // Navigation links
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.style.cursor = 'pointer';
-        const href = link.getAttribute('href');
-        if (href && href.startsWith('#')) {
-            link.onclick = function(e) {
-                e.preventDefault();
-                const targetId = href.substring(1);
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
-                }
-            };
-        }
-    });
-    if (navLinks.length > 0) {
-        console.log('✅ Nav links fixed:', navLinks.length);
-    }
-    
-    // Expertise cards
-    const expertiseCards = document.querySelectorAll('.expertise-card');
-    expertiseCards.forEach(card => {
-        card.style.cursor = 'pointer';
-        card.onclick = function() {
-            const expertise = this.getAttribute('data-expertise');
-            if (expertise) {
-                showExpertiseDetails(expertise);
-            }
-        };
-    });
-    if (expertiseCards.length > 0) {
-        console.log('✅ Expertise cards fixed:', expertiseCards.length);
-    }
-    
-    // Close buttons for expertise details
-    const closeButtons = document.querySelectorAll('.close-details');
-    closeButtons.forEach(btn => {
-        btn.style.cursor = 'pointer';
-        btn.onclick = function() {
-            closeExpertiseDetails();
-        };
-    });
-    if (closeButtons.length > 0) {
-        console.log('✅ Close buttons fixed:', closeButtons.length);
-    }
-    
-    // Burger menu
-    const burgerMenu = document.getElementById('burger-menu');
-    if (burgerMenu) {
-        burgerMenu.style.cursor = 'pointer';
-        burgerMenu.onclick = function() {
-            const navLinks = document.getElementById('nav-links');
-            if (navLinks) {
-                navLinks.classList.toggle('active');
-            }
-            this.classList.toggle('active');
-        };
-        console.log('✅ Burger menu fixed');
-    }
-    
-    
-
-
-// ========================================
-// Mobile Enhancements
-// ========================================
-
-(function() {
-    'use strict';
-    
-    // Detect mobile device
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isSmallScreen = window.innerWidth <= 768;
-    
-    if (isMobile || isSmallScreen) {
-        console.log('📱 Mobile device detected, applying enhancements');
-        
-        // Add mobile class to body
-        document.body.classList.add('mobile-device');
-        
-        // CRITICAL: Fix mobile overflow and scrolling issues
-        document.body.style.overflow = 'auto';
-        document.body.style.overflowX = 'hidden';
-        document.documentElement.style.overflow = 'auto';
-        document.documentElement.style.overflowX = 'hidden';
-        
-        // Remove any transform issues on hero section
-        const heroSection = document.querySelector('.hero-section');
-        if (heroSection) {
-            heroSection.style.transform = 'none';
-            heroSection.style.position = 'relative';
-            heroSection.style.width = '100%';
-            heroSection.style.maxWidth = '100vw';
-        }
-        
-        // Enhanced mobile navigation
-        setupMobileNavigation();
-        
-        // Touch interactions
-        setupTouchInteractions();
-        
-        // Scroll optimizations
-        setupScrollOptimizations();
-        
-        // Form enhancements
-        setupMobileFormEnhancements();
-        
-        // Performance optimizations
-        setupPerformanceOptimizations();
-        
-        // Prevent zoom on input focus (iOS)
-        preventInputZoom();
-        
-        // Setup swipe gestures
-        setupSwipeGestures();
-        
-        // Apply small viewport fixes
-        if (window.innerWidth <= 480) {
-            applySmallViewportFixes();
-        }
-        
-        console.log('✅ Mobile enhancements applied');
-    }
-    
-    function setupMobileNavigation() {
-        const burgerMenu = document.getElementById('burger-menu');
-        const navLinks = document.getElementById('nav-links');
-        const navLinksItems = document.querySelectorAll('.nav-links a');
-        
-        if (burgerMenu && navLinks) {
-            // Remove any existing click handlers
-            const newBurger = burgerMenu.cloneNode(true);
-            burgerMenu.parentNode.replaceChild(newBurger, burgerMenu);
+    const navLinksElements = document.querySelectorAll('.nav-link');
+    navLinksElements.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            scrollToSection(targetId);
             
-            // Toggle mobile menu
-            newBurger.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                newBurger.classList.toggle('active');
-                navLinks.classList.toggle('active');
-                
-                // Update aria-expanded
-                const isExpanded = navLinks.classList.contains('active');
-                newBurger.setAttribute('aria-expanded', isExpanded);
-                
-                // Prevent body scroll when menu is open
-                if (isExpanded) {
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    document.body.style.overflow = '';
-                }
-            });
+            // Close mobile menu
+            if (navLinks) navLinks.classList.remove('show');
+            if (mobileMenuToggle) mobileMenuToggle.classList.remove('active');
             
-            // Close menu when clicking on links
-            navLinksItems.forEach(link => {
-                link.addEventListener('click', () => {
-                    newBurger.classList.remove('active');
-                    navLinks.classList.remove('active');
-                    newBurger.setAttribute('aria-expanded', 'false');
-                    document.body.style.overflow = '';
-                });
-            });
-            
-            // Close menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!newBurger.contains(e.target) && !navLinks.contains(e.target)) {
-                    newBurger.classList.remove('active');
-                    navLinks.classList.remove('active');
-                    newBurger.setAttribute('aria-expanded', 'false');
-                    document.body.style.overflow = '';
-                }
-            });
-        }
-    }
-    
-    function setupTouchInteractions() {
-        // Add touch feedback to interactive elements
-        const interactiveElements = document.querySelectorAll(
-            '.cta-button, .submit-btn, .control-btn, .expertise-card, .service-card, .subject-card, .nav-link'
-        );
-        
-        interactiveElements.forEach(element => {
-            element.addEventListener('touchstart', function() {
-                this.style.transform = 'scale(0.98)';
-                this.style.transition = 'transform 0.1s ease';
-            });
-            
-            element.addEventListener('touchend', function() {
-                this.style.transform = '';
-                this.style.transition = '';
-            });
-            
-            element.addEventListener('touchcancel', function() {
-                this.style.transform = '';
-                this.style.transition = '';
-            });
+            // Update active nav link
+            updateActiveNavLink(link);
         });
-    }
-    
-    function setupScrollOptimizations() {
-        // Simplified scroll optimization for mobile - less frequent updates
-        let ticking = false;
-        let scrollTimeout;
-        
-        function updateScrollPosition() {
-            const scrolled = window.pageYOffset;
-            const header = document.getElementById('header');
-            
-            if (header) {
-                // Simplified header shadow update
-                if (scrolled > 50) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            }
-            
-            ticking = false;
-        }
-        
-        function requestTick() {
-            if (!ticking) {
-                // Use throttled requestAnimationFrame for better performance
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    requestAnimationFrame(updateScrollPosition);
-                }, 16); // ~60fps max
-                ticking = true;
-            }
-        }
-        
-        // Use passive scroll listener with throttling
-        window.addEventListener('scroll', requestTick, { passive: true });
-    }
-    
-    function setupMobileFormEnhancements() {
-        const form = document.getElementById('appointment-form');
-        const inputs = document.querySelectorAll('.form-control');
-        
-        if (form) {
-            // Add mobile-specific input handling
-            inputs.forEach(input => {
-                // Add focus/blur animations
-                input.addEventListener('focus', function() {
-                    this.parentNode.classList.add('focused');
-                });
-                
-                input.addEventListener('blur', function() {
-                    if (!this.value) {
-                        this.parentNode.classList.remove('focused');
-                    }
-                });
-                
-                // Auto-scroll to input when focused (prevents keyboard covering input)
-                input.addEventListener('focus', function() {
-                    setTimeout(() => {
-                        this.scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'center' 
-                        });
-                    }, 300);
-                });
-            });
-            
-            // Enhance form submission feedback
-            form.addEventListener('submit', function(e) {
-                // Add haptic feedback on supported devices
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
-            });
-        }
-    }
-    
-    function setupPerformanceOptimizations() {
-        // Lazy load images when they come into view
-        const images = document.querySelectorAll('img');
-        
-        if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                            img.removeAttribute('data-src');
-                        }
-                        observer.unobserve(img);
-                    }
-                });
-            });
-            
-            images.forEach(img => imageObserver.observe(img));
-        }
-        
-        // Reduce animations on slow devices
-        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
-            document.body.classList.add('reduce-motion');
-        }
-    }
-    
-    function preventInputZoom() {
-        // Prevent zoom on input focus for iOS devices
-        const inputs = document.querySelectorAll('input, select, textarea');
-        
-        inputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                const viewport = document.querySelector('meta[name="viewport"]');
-                if (viewport) {
-                    viewport.setAttribute('content', 
-                        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
-                    );
-                }
-            });
-            
-            input.addEventListener('blur', function() {
-                const viewport = document.querySelector('meta[name="viewport"]');
-                if (viewport) {
-                    viewport.setAttribute('content', 
-                        'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes'
-                    );
-                }
-            });
-        });
-    }
-    
-    function setupSwipeGestures() {
-        let startY = 0;
-        let startX = 0;
-        
-        // Setup swipe to close for modal-like elements
-        const modals = document.querySelectorAll('.subjects-details-container');
-        
-        modals.forEach(modal => {
-            modal.addEventListener('touchstart', function(e) {
-                startY = e.touches[0].clientY;
-                startX = e.touches[0].clientX;
-            }, { passive: true });
-            
-            modal.addEventListener('touchmove', function(e) {
-                if (!startY) return;
-                
-                const currentY = e.touches[0].clientY;
-                const currentX = e.touches[0].clientX;
-                const diffY = startY - currentY;
-                const diffX = startX - currentX;
-                
-                // Vertical swipe to close
-                if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 50) {
-                    if (diffY < -100) { // Swipe down
-                        this.style.display = 'none';
-                        startY = 0;
-                    }
-                }
-            }, { passive: true });
-            
-            modal.addEventListener('touchend', function() {
-                startY = 0;
-                startX = 0;
-            }, { passive: true });
-        });
-    }
-    
-    function applySmallViewportFixes() {
-        console.log('🎯 Applying small viewport fixes');
-        
-        // Fix centering issues
-        const heroSection = document.querySelector('.hero-section');
-        if (heroSection) {
-            heroSection.style.transform = 'none';
-            heroSection.style.position = 'relative';
-            heroSection.style.left = '0';
-            heroSection.style.right = '0';
-            heroSection.style.width = '100vw';
-            heroSection.style.maxWidth = '100vw';
-            heroSection.style.margin = '0';
-        }
-        
-        // Fix overflow issues
-        document.body.style.overflowX = 'hidden';
-        document.documentElement.style.overflowX = 'hidden';
-        
-        // Fix form elements font size
-        const inputs = document.querySelectorAll('input, select, textarea');
-        inputs.forEach(input => {
-            const fontSize = window.getComputedStyle(input).fontSize;
-            if (parseInt(fontSize) < 16) {
-                input.style.fontSize = '16px';
-            }
-        });
-    }
-    
-    // Handle orientation changes
-    window.addEventListener('orientationchange', function() {
-        setTimeout(() => {
-            // Recalculate viewport height
-            const vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-            
-            // Close mobile menu if open
-            const burgerMenu = document.getElementById('burger-menu');
-            const navLinks = document.getElementById('nav-links');
-            if (burgerMenu && navLinks) {
-                burgerMenu.classList.remove('active');
-                navLinks.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }, 100);
     });
     
-    // Set viewport height custom property for mobile browsers
-    function setViewportHeight() {
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-        console.log('Viewport height set:', vh + 'px');
-    }
+    // Subject tabs
+    const subjectTabs = document.querySelectorAll('.subject-tab');
+    subjectTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const subject = tab.dataset.subject;
+            switchSubjectTab(subject);
+        });
+    });
     
-    // Set initial viewport height
-    setViewportHeight();
+    // Scroll events
+    window.addEventListener('scroll', handleScroll);
     
-    // Update on resize and orientation change
-    window.addEventListener('resize', setViewportHeight, { passive: true });
-    window.addEventListener('orientationchange', () => {
-        setTimeout(setViewportHeight, 100);
-    }, { passive: true });
-
-    // === PRICING CALCULATOR FUNCTIONALITY ===
+    // Resize events
+    window.addEventListener('resize', handleResize);
     
-    // Pricing tiers configuration
-    const PRICING_TIERS = [
-        { name: 'Flex', minHours: 1, maxHours: 4, madPerHour: 250, freeHours: 0 },
-        { name: 'Starter', minHours: 5, maxHours: 9, madPerHour: 225, freeHours: 0 },
-        { name: 'Progress', minHours: 10, maxHours: 10, madPerHour: 200, freeHours: 1 },
-        { name: 'Intensive', minHours: 11, maxHours: 20, madPerHour: 200, freeHours: 2 },
-        { name: 'Bootcamp', minHours: 21, maxHours: 30, madPerHour: 200, freeHours: 3 }
-    ];
+    // Form submission (handled by existing handleSubmit function)
+    
+    console.log('📝 Event listeners setup complete');
+}
 
-    /**
-     * Calculate pricing based on requested hours
-     * @param {number} hoursRequested - Number of hours requested (1-30)
-     * @returns {Object} Pricing breakdown
-     */
-    function calculatePrice(hoursRequested) {
-        // Input validation
-        if (hoursRequested < 1) {
-            throw new Error('Le minimum est 1 heure');
-        }
-        if (hoursRequested > 30) {
-            throw new Error('Maximum 30 heures - contactez-nous pour plus');
-        }
-
-        // Find matching tier
-        let selectedTier = null;
-        
-        if (hoursRequested <= 10) {
-            // For 1-10 hours, find exact tier match
-            selectedTier = PRICING_TIERS.find(tier => 
-                hoursRequested >= tier.minHours && hoursRequested <= tier.maxHours
-            );
-        } else {
-            // For 11+ hours, determine tier based on ranges
-            if (hoursRequested <= 20) {
-                selectedTier = PRICING_TIERS.find(tier => tier.name === 'Intensive');
-            } else {
-                selectedTier = PRICING_TIERS.find(tier => tier.name === 'Bootcamp');
+// === ANIMATIONS ===
+function initializeAnimations() {
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    animationObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-fade-in-up');
+                animationObserver.unobserve(entry.target);
             }
-        }
-
-        if (!selectedTier) {
-            throw new Error('Tier non trouvé pour cette durée');
-        }
-
-        // Calculate pricing
-        const totalMad = hoursRequested * selectedTier.madPerHour;
-        const totalHours = hoursRequested + selectedTier.freeHours;
-        const effectiveMad = Math.round(totalMad / totalHours);
-
-        return {
-            tier: selectedTier.name,
-            madPerHour: selectedTier.madPerHour,
-            freeHours: selectedTier.freeHours,
-            totalMad: totalMad,
-            effectiveMad: effectiveMad,
-            paidHours: hoursRequested,
-            totalHours: totalHours
-        };
-    }
-
-    /**
-     * Update the UI with new pricing information
-     * @param {number} hours - Selected hours
-     */
-    function updatePricingDisplay(hours) {
-        try {
-            const pricing = calculatePrice(hours);
-            
-            // Update display elements
-            const tierName = document.getElementById('tier-name');
-            const madPerHour = document.getElementById('mad-per-hour');
-            const totalMad = document.getElementById('total-mad');
-            const effectiveRate = document.getElementById('effective-mad');
-            const selectedHours = document.getElementById('selected-hours');
-            
-            if (tierName) tierName.textContent = pricing.tier;
-            if (madPerHour) madPerHour.textContent = `${pricing.madPerHour} MAD`;
-            if (totalMad) totalMad.textContent = `${pricing.totalMad}`;
-            if (effectiveRate) effectiveRate.textContent = `${pricing.effectiveMad} MAD/h`;
-            if (selectedHours) selectedHours.textContent = hours;
-            
-            // Update free hours display
-            const freeHoursElement = document.getElementById('free-hours');
-            if (freeHoursElement) {
-                if (pricing.freeHours > 0) {
-                    freeHoursElement.textContent = `+${pricing.freeHours}h`;
-                    freeHoursElement.parentElement.parentElement.style.display = 'flex';
-                } else {
-                    freeHoursElement.parentElement.parentElement.style.display = 'none';
-                }
-            }
-            
-            // Update progress bar
-            const progress = document.getElementById('range-progress');
-            if (progress) {
-                const percentage = ((hours - 1) / 29) * 100;
-                progress.style.width = `${percentage}%`;
-            }
-
-        } catch (error) {
-            console.error('Erreur de calcul:', error.message);
-        }
-    }
-
-    /**
-     * Initialize the pricing calculator
-     */
-    function initPricingCalculator() {
-        const hoursRange = document.getElementById('hours-range');
-        const bookPackBtn = document.getElementById('book-pack-btn');
-        
-        if (hoursRange) {
-            // Update display when slider changes
-            hoursRange.addEventListener('input', function() {
-                const hours = parseInt(this.value);
-                updatePricingDisplay(hours);
-            });
-            
-            // Initialize display
-            updatePricingDisplay(10);
-        }
-        
-        // Handle book pack button click
-        if (bookPackBtn) {
-            bookPackBtn.addEventListener('click', function() {
-                const hours = hoursRange ? parseInt(hoursRange.value) : 10;
-                const pricing = calculatePrice(hours);
-                
-                // Show appointment form
-                const appointmentSection = document.querySelector('.appointment-section');
-                if (appointmentSection) {
-                    appointmentSection.style.display = 'block';
-                    
-                    // Pre-fill hours field
-                    const hoursField = document.getElementById('hours');
-                    if (hoursField) {
-                        hoursField.value = `${hours} heures - Pack ${pricing.tier}`;
-                    }
-                    
-                    // Scroll to form
-                    appointmentSection.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        }
-    }
+        });
+    }, observerOptions);
     
-    // Initialize pricing calculator when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initPricingCalculator);
+    // Observe elements for animation
+    const animateElements = document.querySelectorAll('.service-card, .subject-card, .achievement-item, .contact-item');
+    animateElements.forEach(el => {
+        animationObserver.observe(el);
+    });
+}
+
+function initializeCounters() {
+    const counters = document.querySelectorAll('.stat-number');
+    
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const counter = entry.target;
+                const target = parseInt(counter.dataset.count);
+                animateCounter(counter, target);
+                counterObserver.unobserve(counter);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    counters.forEach(counter => {
+        counterObserver.observe(counter);
+    });
+}
+
+function animateCounter(element, target) {
+    let current = 0;
+    const increment = target / 50;
+    const duration = 2000;
+    const stepTime = duration / 50;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            current = target;
+            clearInterval(timer);
+        }
+        element.textContent = Math.floor(current);
+    }, stepTime);
+}
+
+// === SCROLL HANDLING ===
+function handleScroll() {
+    const header = document.getElementById('header');
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // Header scroll effect
+    if (scrollTop > 100) {
+        header.classList.add('scrolled');
     } else {
-        initPricingCalculator();
+        header.classList.remove('scrolled');
     }
     
-    // Expose functions globally if needed
-    window.calculatePrice = calculatePrice;
+    // Update active navigation based on scroll position
+    updateActiveNavOnScroll();
+    
+    scrollPosition = scrollTop;
+}
 
-})();
+function updateActiveNavOnScroll() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    let currentSection = '';
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionHeight = section.offsetHeight;
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            currentSection = section.getAttribute('id');
+        }
+    });
+    
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${currentSection}`) {
+            link.classList.add('active');
+        }
+    });
+}
+
+function updateActiveNavLink(activeLink) {
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => link.classList.remove('active'));
+    activeLink.classList.add('active');
+}
+
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        const headerHeight = document.getElementById('header').offsetHeight;
+        const targetPosition = section.offsetTop - headerHeight;
+        
+        window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+        });
+    }
+}
+
+// === RESIZE HANDLING ===
+function handleResize() {
+    // Close mobile menu on resize to desktop
+    if (window.innerWidth > 768) {
+        const navLinks = document.getElementById('nav-links');
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        
+        if (navLinks) navLinks.classList.remove('show');
+        if (mobileMenuToggle) mobileMenuToggle.classList.remove('active');
+    }
+}
+
+// === SUBJECT TABS ===
+function switchSubjectTab(subject) {
+    // Update tab buttons
+    const tabs = document.querySelectorAll('.subject-tab');
+    tabs.forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.subject === subject) {
+            tab.classList.add('active');
+        }
+    });
+    
+    // Update panels
+    const panels = document.querySelectorAll('.subject-panel');
+    panels.forEach(panel => {
+        panel.classList.remove('active');
+        if (panel.id === `${subject}-panel`) {
+            panel.classList.add('active');
+        }
+    });
+}
+
+// === SUBJECT MODAL ===
+function openSubjectModal(subjectId) {
+    const modal = document.getElementById('subject-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalContent = document.getElementById('modal-content');
+    
+    if (!modal || !modalTitle || !modalContent) {
+        console.error('Modal elements not found');
+        return;
+    }
+    
+    const subjectData = subjectModalData[subjectId];
+    if (!subjectData) {
+        console.error('Subject data not found for:', subjectId);
+        return;
+    }
+    
+    // Set modal content
+    modalTitle.textContent = subjectData.title[currentLanguage] || subjectData.title.fr;
+    modalContent.innerHTML = subjectData.content[currentLanguage] || subjectData.content.fr;
+    
+    // Show modal
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSubjectModal() {
+    const modal = document.getElementById('subject-modal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+}
+
+// === LOADING SCREEN ===
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 500);
+    }
+    isLoading = false;
+}
+
+// === FORM HANDLING ===
+function handleSubmit(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const submitBtn = form.querySelector('.submit-btn');
+    const originalText = submitBtn.innerHTML;
+    
+    // Show loading state
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + 
+        (currentLanguage === 'en' ? 'Sending...' : 
+         currentLanguage === 'ar' ? 'جاري الإرسال...' : 'Envoi en cours...');
+    submitBtn.disabled = true;
+    
+    // Get form data
+    const formData = new FormData(form);
+    const data = {};
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    
+    // Add metadata
+    data.timestamp = new Date().toISOString();
+    data.language = currentLanguage;
+    data.userAgent = navigator.userAgent;
+    
+    // Simulate form submission (replace with actual submission logic)
+    setTimeout(() => {
+        // Show success message
+        showSuccessMessage();
+        
+        // Reset form
+        form.reset();
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        
+        console.log('📧 Form submitted:', data);
+    }, 2000);
+}
+
+function showSuccessMessage() {
+    const successMessage = document.getElementById('success-message');
+    if (successMessage) {
+        successMessage.classList.add('show');
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            successMessage.classList.remove('show');
+        }, 5000);
+        
+        // Allow manual close by clicking outside
+        successMessage.addEventListener('click', (e) => {
+            if (e.target === successMessage) {
+                successMessage.classList.remove('show');
+            }
+        });
+    }
+}
+
+// === UTILITY FUNCTIONS ===
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+function throttle(func, limit) {
+    let inThrottle;
+    return function() {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+// === PERFORMANCE OPTIMIZATIONS ===
+// Optimize scroll handler
+const optimizedScrollHandler = throttle(handleScroll, 16);
+window.removeEventListener('scroll', handleScroll);
+window.addEventListener('scroll', optimizedScrollHandler);
+
+// Optimize resize handler
+const optimizedResizeHandler = debounce(handleResize, 250);
+window.removeEventListener('resize', handleResize);
+window.addEventListener('resize', optimizedResizeHandler);
+
+// === ACCESSIBILITY ===
+// Keyboard navigation for modals
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeSubjectModal();
+        
+        const successMessage = document.getElementById('success-message');
+        if (successMessage && successMessage.classList.contains('show')) {
+            successMessage.classList.remove('show');
+        }
+    }
+});
+
+// Focus management for mobile menu
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+        const navLinks = document.getElementById('nav-links');
+        if (navLinks && navLinks.classList.contains('show')) {
+            const focusableElements = navLinks.querySelectorAll('a');
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+            
+            if (e.shiftKey && document.activeElement === firstElement) {
+                e.preventDefault();
+                lastElement.focus();
+            } else if (!e.shiftKey && document.activeElement === lastElement) {
+                e.preventDefault();
+                firstElement.focus();
+            }
+        }
+    }
+});
+
+// === GLOBAL FUNCTIONS (for backward compatibility) ===
+window.toggleTheme = toggleTheme;
+window.changeLanguage = changeLanguage;
+window.scrollToSection = scrollToSection;
+window.openSubjectModal = openSubjectModal;
+window.closeSubjectModal = closeSubjectModal;
+window.handleSubmit = handleSubmit;
+
+// === ERROR HANDLING ===
+window.addEventListener('error', (e) => {
+    console.error('🚨 JavaScript Error:', e.error);
+    // Could send error to analytics service here
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+    console.error('🚨 Unhandled Promise Rejection:', e.reason);
+    // Could send error to analytics service here
+});
+
+console.log('🎉 OOUI PROF - Script loaded successfully');
