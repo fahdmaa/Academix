@@ -898,6 +898,81 @@ function restoreFormState() {
     console.log('📋 Form state restored');
 }
 
+// === PACK SELECTION FUNCTION ===
+function selectPack(packType) {
+    console.log('📦 Pack selected:', packType);
+    
+    // Pre-select the pack in the appointment form
+    const packSelect = document.getElementById('pack');
+    if (packSelect) {
+        packSelect.value = packType;
+        
+        // Trigger change event to update form state
+        const changeEvent = new Event('change', { bubbles: true });
+        packSelect.dispatchEvent(changeEvent);
+        
+        // Add visual feedback
+        packSelect.classList.add('form-highlight');
+        setTimeout(() => {
+            packSelect.classList.remove('form-highlight');
+        }, 2000);
+    }
+    
+    // Scroll to appointment section
+    setTimeout(() => {
+        scrollToSection('appointment');
+    }, 300);
+    
+    // Show a brief confirmation message
+    showPackSelectionFeedback(packType);
+}
+
+function showPackSelectionFeedback(packType) {
+    // Create feedback element if it doesn't exist
+    let feedback = document.getElementById('pack-selection-feedback');
+    if (!feedback) {
+        feedback = document.createElement('div');
+        feedback.id = 'pack-selection-feedback';
+        feedback.className = 'pack-selection-feedback';
+        document.body.appendChild(feedback);
+    }
+    
+    // Set feedback message based on current language
+    const messages = {
+        fr: {
+            flex: 'Pack Flex sélectionné ! Faites défiler vers le bas pour réserver.',
+            starter: 'Pack Starter sélectionné ! Faites défiler vers le bas pour réserver.',
+            progress: 'Pack Progress sélectionné ! Faites défiler vers le bas pour réserver.'
+        },
+        en: {
+            flex: 'Flex Pack selected! Scroll down to book.',
+            starter: 'Starter Pack selected! Scroll down to book.',
+            progress: 'Progress Pack selected! Scroll down to book.'
+        },
+        ar: {
+            flex: 'تم اختيار باقة مرنة! مرر لأسفل للحجز.',
+            starter: 'تم اختيار باقة البداية! مرر لأسفل للحجز.',
+            progress: 'تم اختيار باقة التقدم! مرر لأسفل للحجز.'
+        }
+    };
+    
+    const message = messages[currentLanguage]?.[packType] || messages.fr[packType];
+    feedback.innerHTML = `
+        <div class="feedback-content">
+            <i class="fas fa-check-circle"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    // Show feedback
+    feedback.classList.add('show');
+    
+    // Hide feedback after 3 seconds
+    setTimeout(() => {
+        feedback.classList.remove('show');
+    }, 3000);
+}
+
 // === THEME MANAGEMENT ===
 function initializeTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light';
@@ -1509,6 +1584,7 @@ window.scrollToSection = scrollToSection;
 window.openSubjectModal = openSubjectModal;
 window.closeSubjectModal = closeSubjectModal;
 window.handleSubmit = handleSubmit;
+window.selectPack = selectPack;
 
 // === ERROR HANDLING ===
 window.addEventListener('error', (e) => {
