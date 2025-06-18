@@ -8,6 +8,9 @@ let isLoading = true;
 let scrollPosition = 0;
 let animationObserver = null;
 
+// Store original French text for language switching
+let originalFrenchTexts = new Map();
+
 // === SUBJECT MODAL DATA ===
 const subjectModalData = {
     'corporate-finance': {
@@ -768,9 +771,15 @@ const subjectModalData = {
     }
 };
 
+// === FORM STATE MANAGEMENT ===
+let formStateSnapshot = new Map();
+
 // === INITIALIZATION ===
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 OOUI PROF - Initializing...');
+    
+    // Store original French texts first
+    storeOriginalTexts();
     
     // Initialize theme and language from localStorage
     initializeTheme();
@@ -788,6 +797,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize typewriter effect
     initializeTypewriter();
     
+    // Initialize form state management
+    initializeFormStateManagement();
+    
     // Hide loading screen
     setTimeout(() => {
         hideLoadingScreen();
@@ -795,6 +807,96 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('✅ OOUI PROF - Initialized successfully');
 });
+
+// === STORE ORIGINAL FRENCH TEXTS ===
+function storeOriginalTexts() {
+    const translatableElements = document.querySelectorAll('[data-en], [data-ar]');
+    
+    translatableElements.forEach((element, index) => {
+        const originalText = element.textContent.trim();
+        const elementId = element.id || `translatable-${index}`;
+        
+        // Store the original French text
+        originalFrenchTexts.set(elementId, originalText);
+        
+        // Add an ID if the element doesn't have one for future reference
+        if (!element.id) {
+            element.id = elementId;
+        }
+    });
+    
+    console.log('📝 Stored original French texts for', originalFrenchTexts.size, 'elements');
+}
+
+// === FORM STATE MANAGEMENT ===
+function initializeFormStateManagement() {
+    const form = document.getElementById('appointment-form');
+    if (!form) return;
+    
+    // Store initial form state
+    captureFormState();
+    
+    // Add event listeners to form elements to track changes
+    const formElements = form.querySelectorAll('input, select, textarea');
+    formElements.forEach(element => {
+        element.addEventListener('input', captureFormState);
+        element.addEventListener('change', captureFormState);
+    });
+    
+    console.log('📋 Form state management initialized');
+}
+
+function captureFormState() {
+    const form = document.getElementById('appointment-form');
+    if (!form) return;
+    
+    const formData = new FormData(form);
+    const state = {};
+    
+    // Capture all form values
+    for (let [key, value] of formData.entries()) {
+        state[key] = value;
+    }
+    
+    // Store in our state snapshot
+    formStateSnapshot.set('currentValues', state);
+    
+    // Also store individual element states
+    const formElements = form.querySelectorAll('input, select, textarea');
+    formElements.forEach(element => {
+        const elementState = {
+            value: element.value,
+            checked: element.checked,
+            selectedIndex: element.selectedIndex
+        };
+        formStateSnapshot.set(element.name || element.id, elementState);
+    });
+}
+
+function restoreFormState() {
+    const form = document.getElementById('appointment-form');
+    if (!form) return;
+    
+    const formElements = form.querySelectorAll('input, select, textarea');
+    formElements.forEach(element => {
+        const elementKey = element.name || element.id;
+        const savedState = formStateSnapshot.get(elementKey);
+        
+        if (savedState) {
+            if (element.type === 'checkbox' || element.type === 'radio') {
+                element.checked = savedState.checked || false;
+            } else if (element.tagName === 'SELECT') {
+                if (savedState.selectedIndex !== undefined) {
+                    element.selectedIndex = savedState.selectedIndex;
+                }
+            } else {
+                element.value = savedState.value || '';
+            }
+        }
+    });
+    
+    console.log('📋 Form state restored');
+}
 
 // === THEME MANAGEMENT ===
 function initializeTheme() {
@@ -821,12 +923,14 @@ function updateThemeIcon() {
     const sunIcon = document.querySelector('.sun-icon');
     const moonIcon = document.querySelector('.moon-icon');
     
-    if (currentTheme === 'dark') {
-        sunIcon.style.opacity = '0';
-        moonIcon.style.opacity = '1';
-    } else {
-        sunIcon.style.opacity = '1';
-        moonIcon.style.opacity = '0';
+    if (sunIcon && moonIcon) {
+        if (currentTheme === 'dark') {
+            sunIcon.style.opacity = '0';
+            moonIcon.style.opacity = '1';
+        } else {
+            sunIcon.style.opacity = '1';
+            moonIcon.style.opacity = '0';
+        }
     }
 }
 
@@ -842,6 +946,11 @@ function changeLanguage(lang) {
         console.error('Language not supported:', lang);
         return;
     }
+    
+    console.log(`🌐 Changing language from ${currentLanguage} to ${lang}`);
+    
+    // Capture form state before language change
+    captureFormState();
     
     currentLanguage = lang;
     localStorage.setItem('language', lang);
@@ -859,11 +968,17 @@ function changeLanguage(lang) {
     // Update all translatable elements
     updateTranslations();
     
-    // Update form placeholders
+    // Update form placeholders (but preserve form values)
     updateFormPlaceholders();
+    
+    // Restore form state after language change
+    restoreFormState();
     
     // Update typewriter effect
     updateTypewriterText();
+    
+    // Update select options
+    updateSelectOptions();
     
     // Close language dropdown
     const dropdown = document.getElementById('language-dropdown');
@@ -871,27 +986,60 @@ function changeLanguage(lang) {
         dropdown.classList.remove('show');
     }
     
-    console.log('🌐 Language changed to:', lang);
+    console.log('✅ Language changed to:', lang);
 }
 
 function updateTranslations() {
     const elements = document.querySelectorAll('[data-en], [data-ar]');
     
     elements.forEach(element => {
-        let text = '';
+        const elementId = element.id;
+        let newText = '';
         
-        if (currentLanguage === 'en' && element.dataset.en) {
-            text = element.dataset.en;
+        if (currentLanguage === 'fr') {
+            // Restore original French text
+            newText = originalFrenchTexts.get(elementId);
+        } else if (currentLanguage === 'en' && element.dataset.en) {
+            newText = element.dataset.en;
         } else if (currentLanguage === 'ar' && element.dataset.ar) {
-            text = element.dataset.ar;
-        } else {
-            // Keep original French text if no translation available
-            return;
+            newText = element.dataset.ar;
         }
         
-        if (text && text !== element.textContent) {
-            element.textContent = text;
+        // Only update if we have text and it's different from current
+        if (newText && newText !== element.textContent) {
+            element.textContent = newText;
         }
+    });
+}
+
+function updateSelectOptions() {
+    // Update select option text while preserving selected values
+    const selects = document.querySelectorAll('select');
+    
+    selects.forEach(select => {
+        const currentValue = select.value; // Preserve current selection
+        
+        const options = select.querySelectorAll('option[data-en], option[data-ar]');
+        options.forEach(option => {
+            const optionId = option.id || option.value;
+            let newText = '';
+            
+            if (currentLanguage === 'fr') {
+                // Get original French text
+                newText = originalFrenchTexts.get(optionId) || option.textContent;
+            } else if (currentLanguage === 'en' && option.dataset.en) {
+                newText = option.dataset.en;
+            } else if (currentLanguage === 'ar' && option.dataset.ar) {
+                newText = option.dataset.ar;
+            }
+            
+            if (newText && newText !== option.textContent) {
+                option.textContent = newText;
+            }
+        });
+        
+        // Restore the selected value
+        select.value = currentValue;
     });
 }
 
@@ -927,14 +1075,17 @@ function updateTypewriterText() {
     
     const newText = texts[currentLanguage] || texts.fr;
     
-    // Reset animation
-    typewriterElement.style.animation = 'none';
-    typewriterElement.textContent = newText;
-    
-    // Restart animation
-    setTimeout(() => {
-        typewriterElement.style.animation = 'typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite';
-    }, 10);
+    // Only update if text has changed
+    if (typewriterElement.textContent !== newText) {
+        // Reset animation
+        typewriterElement.style.animation = 'none';
+        typewriterElement.textContent = newText;
+        
+        // Restart animation
+        setTimeout(() => {
+            typewriterElement.style.animation = 'typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite';
+        }, 10);
+    }
 }
 
 // === EVENT LISTENERS ===
@@ -961,7 +1112,9 @@ function setupEventListeners() {
             option.addEventListener('click', (e) => {
                 e.preventDefault();
                 const lang = option.dataset.lang;
-                changeLanguage(lang);
+                if (lang && lang !== currentLanguage) {
+                    changeLanguage(lang);
+                }
             });
         });
     }
@@ -1226,9 +1379,13 @@ function handleSubmit(event) {
     const originalText = submitBtn.innerHTML;
     
     // Show loading state
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + 
-        (currentLanguage === 'en' ? 'Sending...' : 
-         currentLanguage === 'ar' ? 'جاري الإرسال...' : 'Envoi en cours...');
+    const loadingTexts = {
+        fr: '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...',
+        en: '<i class="fas fa-spinner fa-spin"></i> Sending...',
+        ar: '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...'
+    };
+    
+    submitBtn.innerHTML = loadingTexts[currentLanguage] || loadingTexts.fr;
     submitBtn.disabled = true;
     
     // Get form data
@@ -1250,6 +1407,7 @@ function handleSubmit(event) {
         
         // Reset form
         form.reset();
+        formStateSnapshot.clear(); // Clear saved form state
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
         
@@ -1305,12 +1463,10 @@ function throttle(func, limit) {
 // === PERFORMANCE OPTIMIZATIONS ===
 // Optimize scroll handler
 const optimizedScrollHandler = throttle(handleScroll, 16);
-window.removeEventListener('scroll', handleScroll);
 window.addEventListener('scroll', optimizedScrollHandler);
 
 // Optimize resize handler
 const optimizedResizeHandler = debounce(handleResize, 250);
-window.removeEventListener('resize', handleResize);
 window.addEventListener('resize', optimizedResizeHandler);
 
 // === ACCESSIBILITY ===
