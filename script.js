@@ -783,6 +783,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize theme and language from localStorage
     initializeTheme();
+    
+    // Clear any incorrect language setting and force French as default
+    if (localStorage.getItem('language') === 'en') {
+        localStorage.removeItem('language');
+    }
+    
     initializeLanguage();
     
     // Setup event listeners
@@ -1035,9 +1041,9 @@ function changeLanguage(lang) {
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     
     // Update language button text
-    const langText = document.querySelector('.lang-text');
-    if (langText) {
-        langText.textContent = lang.toUpperCase();
+    const currentLangElement = document.getElementById('current-language');
+    if (currentLangElement) {
+        currentLangElement.textContent = lang.toUpperCase();
     }
     
     // Update all translatable elements
@@ -1238,6 +1244,51 @@ function setupEventListeners() {
         });
     });
     
+    // Subject cards learn more buttons
+    const learnMoreButtons = document.querySelectorAll('.learn-more-btn');
+    learnMoreButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const subjectCard = button.closest('.subject-card');
+            const subjectId = subjectCard.dataset.subject;
+            openSubjectModal(subjectId);
+        });
+    });
+    
+    // Subject card click to open modal
+    const subjectCards = document.querySelectorAll('.subject-card');
+    subjectCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const subjectId = card.dataset.subject;
+            openSubjectModal(subjectId);
+        });
+    });
+    
+    // Modal close functionality
+    const modalClose = document.getElementById('modal-close');
+    if (modalClose) {
+        modalClose.addEventListener('click', closeSubjectModal);
+    }
+    
+    // Close modal when clicking outside
+    const subjectModal = document.getElementById('subject-modal');
+    if (subjectModal) {
+        subjectModal.addEventListener('click', (e) => {
+            if (e.target === subjectModal) {
+                closeSubjectModal();
+            }
+        });
+        
+        // Modal book button
+        const modalBookBtn = subjectModal.querySelector('.modal-book-btn');
+        if (modalBookBtn) {
+            modalBookBtn.addEventListener('click', () => {
+                closeSubjectModal();
+                scrollToSection('appointment');
+            });
+        }
+    }
+    
     // Scroll events
     window.addEventListener('scroll', handleScroll);
     
@@ -1256,19 +1307,72 @@ function initializeAnimations() {
     };
     
     animationObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry, index) => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('animate-fade-in-up');
-                animationObserver.unobserve(entry.target);
+                const element = entry.target;
+                const delay = index * 100; // Stagger delay
+                
+                setTimeout(() => {
+                    if (element.classList.contains('service-card')) {
+                        element.classList.add('animate-scale-in');
+                    } else if (element.classList.contains('subject-card')) {
+                        element.classList.add('animate-fade-in-up');
+                    } else if (element.classList.contains('info-card')) {
+                        element.classList.add('animate-slide-in-right');
+                    } else {
+                        element.classList.add('animate-fade-in-up');
+                    }
+                }, delay);
+                
+                animationObserver.unobserve(element);
             }
         });
     }, observerOptions);
     
     // Observe elements for animation
-    const animateElements = document.querySelectorAll('.service-card, .subject-card, .achievement-item, .contact-item');
-    animateElements.forEach(el => {
+    const animateElements = document.querySelectorAll('.service-card, .subject-card, .achievement-item, .contact-item, .info-card, .stat-item');
+    animateElements.forEach((el, index) => {
+        el.style.opacity = '0';
         animationObserver.observe(el);
     });
+    
+    // Add stagger classes to cards
+    document.querySelectorAll('.service-card').forEach((card, index) => {
+        card.classList.add(`stagger-${index + 1}`);
+    });
+    
+    document.querySelectorAll('.subject-card').forEach((card, index) => {
+        card.classList.add(`stagger-${index + 1}`);
+    });
+    
+    // Hero entrance animation
+    const heroTitle = document.querySelector('.hero-title');
+    const heroDescription = document.querySelector('.hero-description');
+    const heroButtons = document.querySelector('.hero-buttons');
+    
+    if (heroTitle) {
+        heroTitle.style.opacity = '0';
+        setTimeout(() => {
+            heroTitle.style.opacity = '1';
+            heroTitle.classList.add('animate-fade-in-up');
+        }, 200);
+    }
+    
+    if (heroDescription) {
+        heroDescription.style.opacity = '0';
+        setTimeout(() => {
+            heroDescription.style.opacity = '1';
+            heroDescription.classList.add('animate-fade-in-up');
+        }, 400);
+    }
+    
+    if (heroButtons) {
+        heroButtons.style.opacity = '0';
+        setTimeout(() => {
+            heroButtons.style.opacity = '1';
+            heroButtons.classList.add('animate-fade-in-up');
+        }, 600);
+    }
 }
 
 function initializeCounters() {
@@ -1402,8 +1506,9 @@ function switchSubjectTab(subject) {
 // === SUBJECT MODAL ===
 function openSubjectModal(subjectId) {
     const modal = document.getElementById('subject-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalContent = document.getElementById('modal-content');
+    const modalTitle = modal.querySelector('.modal-title');
+    const modalContent = modal.querySelector('.modal-body');
+    const modalIcon = modal.querySelector('.modal-icon i');
     
     if (!modal || !modalTitle || !modalContent) {
         console.error('Modal elements not found');
@@ -1419,6 +1524,20 @@ function openSubjectModal(subjectId) {
     // Set modal content
     modalTitle.textContent = subjectData.title[currentLanguage] || subjectData.title.fr;
     modalContent.innerHTML = subjectData.content[currentLanguage] || subjectData.content.fr;
+    
+    // Update modal icon based on subject
+    const iconMap = {
+        'financial-accounting': 'fas fa-calculator',
+        'management-accounting': 'fas fa-chart-line',
+        'corporate-finance': 'fas fa-building',
+        'financial-analysis': 'fas fa-chart-bar',
+        'taxation': 'fas fa-file-invoice-dollar',
+        'auditing': 'fas fa-search-dollar'
+    };
+    
+    if (modalIcon && iconMap[subjectId]) {
+        modalIcon.className = iconMap[subjectId];
+    }
     
     // Show modal
     modal.classList.add('show');

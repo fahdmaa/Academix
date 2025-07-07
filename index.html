@@ -15,7 +15,7 @@
     <link rel="manifest" href="images/favicon/site.webmanifest">
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Styles -->
@@ -30,15 +30,15 @@
 </head>
 <body>
     <!-- Header -->
-    <header id="header">
-        <div class="container nav-container">
+    <header class="header" id="header">
+        <div class="container navbar">
             <a href="#" class="logo">
                 <img src="images/logo-dark.png" alt="OUIIPROF Logo" class="logo-img logo-dark">
                 <img src="images/logo-light.png" alt="OUIIPROF Logo" class="logo-img logo-light">
             </a>
             
             <!-- Mobile Menu Button -->
-            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu">
+            <button class="mobile-menu-toggle" id="mobile-menu-btn" aria-label="Toggle navigation menu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -77,8 +77,8 @@
                 
                 <!-- Theme Toggle -->
                 <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-                    <i class="fas fa-moon"></i>
-                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-sun sun-icon"></i>
+                    <i class="fas fa-moon moon-icon"></i>
                 </button>
                 
                 <!-- CTA Button -->
@@ -92,8 +92,9 @@
 
     <!-- Hero Section -->
     <section class="hero-section" id="home">
-        <div class="hero-background">
-            <div class="hero-overlay"></div>
+        <div class="hero-bg">
+            <div class="hero-gradient"></div>
+            <div class="hero-pattern"></div>
         </div>
         <div class="container">
             <div class="hero-content">
@@ -115,8 +116,11 @@
                         </a>
                     </div>
                 </div>
-                <div class="hero-image">
-                    <img src="images/professor.jpg" alt="Professional Finance Tutor" class="professor-img">
+                <div class="hero-visual">
+                    <div class="hero-image-container">
+                        <div class="hero-image-bg"></div>
+                        <img src="images/professor.jpg" alt="Professional Finance Tutor" class="hero-image">
+                    </div>
                     <div class="hero-stats">
                         <div class="stat-item">
                             <div class="stat-number" data-count="500">0</div>
@@ -203,7 +207,7 @@
                     Couverture complète des sujets de finance et comptabilité
                 </p>
             </div>
-            <div class="subjects-grid">
+            <div class="subject-grid">
                 <div class="subject-card" data-subject="financial-accounting">
                     <div class="subject-icon">
                         <i class="fas fa-calculator"></i>
@@ -283,8 +287,9 @@
                 </p>
             </div>
             
-            <div class="appointment-container">
-                <form class="appointment-form" id="appointment-form">
+            <div class="appointment-content">
+                <div class="appointment-form-container">
+                    <form class="appointment-form" id="appointment-form" onsubmit="handleSubmit(event)">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="firstName" data-en="First Name" data-ar="الاسم الأول">Prénom</label>
@@ -361,7 +366,8 @@
                         <i class="fas fa-calendar-check"></i>
                         <span>Réserver la Séance</span>
                     </button>
-                </form>
+                    </form>
+                </div>
                 
                 <div class="appointment-info">
                     <div class="info-card">
