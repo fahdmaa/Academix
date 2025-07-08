@@ -1046,6 +1046,15 @@ function changeLanguage(lang) {
         currentLangElement.textContent = lang.toUpperCase();
     }
     
+    // Update language indicator in button
+    const langIndicator = document.querySelector('.lang-indicator');
+    if (langIndicator) {
+        langIndicator.textContent = lang.toUpperCase();
+    }
+    
+    // Update active language in dropdown
+    updateActiveLanguage();
+    
     // Update all translatable elements
     updateTranslations();
     
@@ -1068,6 +1077,17 @@ function changeLanguage(lang) {
     }
     
     console.log('✅ Language changed to:', lang);
+}
+
+function updateActiveLanguage() {
+    const languageOptions = document.querySelectorAll('.language-option');
+    languageOptions.forEach(option => {
+        if (option.dataset.lang === currentLanguage) {
+            option.classList.add('active');
+        } else {
+            option.classList.remove('active');
+        }
+    });
 }
 
 function updateTranslations() {
@@ -1196,8 +1216,12 @@ function setupEventListeners() {
                 if (lang && lang !== currentLanguage) {
                     changeLanguage(lang);
                 }
+                languageDropdown.classList.remove('show');
             });
         });
+        
+        // Update active language option
+        updateActiveLanguage();
     }
     
     // Close dropdown when clicking outside
@@ -1208,13 +1232,14 @@ function setupEventListeners() {
     });
     
     // Mobile menu toggle
-    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const navLinks = document.getElementById('nav-links');
+    const mobileMenuToggle = document.getElementById('mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-center');
     
-    if (mobileMenuToggle && navLinks) {
+    if (mobileMenuToggle) {
         mobileMenuToggle.addEventListener('click', () => {
             mobileMenuToggle.classList.toggle('active');
-            navLinks.classList.toggle('show');
+            // For glassmorphism navbar, we might need a different mobile menu approach
+            // This is a placeholder for now
         });
     }
     

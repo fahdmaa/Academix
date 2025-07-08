@@ -31,11 +31,29 @@
 <body>
     <!-- Header -->
     <header class="header" id="header">
-        <div class="container navbar">
-            <a href="#" class="logo">
-                <img src="images/logo-dark.png" alt="OUIIPROF Logo" class="logo-img logo-dark">
-                <img src="images/logo-light.png" alt="OUIIPROF Logo" class="logo-img logo-light">
-            </a>
+        <nav class="navbar-glassmorphism">
+            <a href="#" class="logo">OUIIPROF</a>
+            
+            <div class="nav-center">
+                <a href="#home" class="nav-link active" data-en="Home" data-ar="الرئيسية">Accueil</a>
+                <a href="#services" class="nav-link" data-en="Services" data-ar="الخدمات">Services</a>
+                <a href="#subjects" class="nav-link" data-en="Subjects" data-ar="المواد">Matières</a>
+                <a href="#appointment" class="nav-link" data-en="Appointment" data-ar="المواعيد">Rendez-vous</a>
+            </div>
+            
+            <div class="nav-right">
+                <button class="icon-button search-btn" aria-label="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="icon-button lang-btn" id="language-btn" aria-label="Select language">
+                    <i class="fas fa-globe"></i>
+                    <span class="lang-indicator">FR</span>
+                </button>
+                <button class="icon-button theme-btn" id="theme-toggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="#appointment" class="book-now" data-en="Book Now" data-ar="احجز الآن">Réserver Maintenant</a>
+            </div>
             
             <!-- Mobile Menu Button -->
             <button class="mobile-menu-toggle" id="mobile-menu-btn" aria-label="Toggle navigation menu">
@@ -44,50 +62,22 @@
                 <span></span>
             </button>
             
-            <nav class="nav-links" id="nav-links">
-                <a href="#home" class="nav-link" data-en="Home" data-ar="الرئيسية">Accueil</a>
-                <a href="#services" class="nav-link" data-en="Services" data-ar="الخدمات">Services</a>
-                <a href="#subjects" class="nav-link" data-en="Subjects" data-ar="المواد">Matières</a>
-                <a href="#appointment" class="nav-link" data-en="Appointment" data-ar="المواعيد">Rendez-vous</a>
-            </nav>
-            
-            <div class="header-controls">
-                <!-- Language Selector -->
-                <div class="language-selector">
-                    <button class="language-btn" id="language-btn" aria-label="Select language">
-                        <i class="fas fa-globe"></i>
-                        <span id="current-language">FR</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="language-dropdown" id="language-dropdown">
-                        <button class="language-option" data-lang="fr">
-                            <span class="flag">🇫🇷</span>
-                            <span>Français</span>
-                        </button>
-                        <button class="language-option" data-lang="en">
-                            <span class="flag">🇺🇸</span>
-                            <span>English</span>
-                        </button>
-                        <button class="language-option" data-lang="ar">
-                            <span class="flag">🇲🇦</span>
-                            <span>العربية</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Theme Toggle -->
-                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-                    <i class="fas fa-sun sun-icon"></i>
-                    <i class="fas fa-moon moon-icon"></i>
+            <!-- Language Dropdown -->
+            <div class="language-dropdown" id="language-dropdown">
+                <button class="language-option" data-lang="fr">
+                    <span class="flag">🇫🇷</span>
+                    <span>Français</span>
                 </button>
-                
-                <!-- CTA Button -->
-                <a href="#appointment" class="cta-button" data-en="Book Now" data-ar="احجز الآن">
-                    <i class="fas fa-calendar-plus"></i>
-                    <span>Réserver</span>
-                </a>
+                <button class="language-option" data-lang="en">
+                    <span class="flag">🇺🇸</span>
+                    <span>English</span>
+                </button>
+                <button class="language-option" data-lang="ar">
+                    <span class="flag">🇲🇦</span>
+                    <span>العربية</span>
+                </button>
             </div>
-        </div>
+        </nav>
     </header>
 
     <!-- Hero Section -->
@@ -99,7 +89,7 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1 class="hero-title" data-en="Private Finance Tutoring" data-ar="دروس خصوصية في المالية">
+                    <h1 class="hero-title" data-text="Cours Particuliers de Finance" data-en="Private Finance Tutoring" data-ar="دروس خصوصية في المالية">
                         Cours Particuliers de Finance
                     </h1>
                     <p class="hero-description" data-en="Personalized lessons to excel in your studies and professional career with a modern and effective teaching approach." data-ar="دروس مخصصة للتفوق في دراستك وحياتك المهنية مع نهج تعليمي حديث وفعال.">
@@ -109,10 +99,6 @@
                         <a href="#appointment" class="btn btn-primary" data-en="Book a Session" data-ar="احجز جلسة">
                             <i class="fas fa-calendar-check"></i>
                             Réserver une séance
-                        </a>
-                        <a href="#services" class="btn btn-secondary" data-en="Learn More" data-ar="اعرف المزيد">
-                            <i class="fas fa-info-circle"></i>
-                            En savoir plus
                         </a>
                     </div>
                 </div>
