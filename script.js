@@ -1590,12 +1590,17 @@ function hideLoadingScreen() {
 }
 
 // === FORM HANDLING ===
-function handleSubmit(event) {
+async function handleSubmit(event) {
     event.preventDefault();
     
     const form = event.target;
     const submitBtn = form.querySelector('.submit-btn');
     const originalText = submitBtn.innerHTML;
+    
+    // Validate form
+    if (!validateForm(form)) {
+        return;
+    }
     
     // Show loading state
     const loadingTexts = {
@@ -1614,29 +1619,245 @@ function handleSubmit(event) {
         data[key] = value;
     }
     
+    // Transform data for Azure Function compatibility
+    // Azure Function expects 'name' field instead of separate firstName/lastName
+    if (data.firstName && data.lastName) {
+        data.name = `${data.firstName} ${data.lastName}`;
+    }
+    
+    // Ensure message field exists (Azure Function requires it)
+    // Azure Function appears to reject empty messages, so provide a default
+    if (!data.message || data.message === undefined || data.message === '') {
+        data.message = 'Demande de réservation de séance'; // Default message in French
+    }
+    
+    // Ensure all required fields are strings
+    data.name = String(data.name || '');
+    data.email = String(data.email || '');
+    data.message = String(data.message);
+    
     // Add metadata
     data.timestamp = new Date().toISOString();
     data.language = currentLanguage;
     data.userAgent = navigator.userAgent;
+    data.submissionId = 'SUB_' + Date.now();
     
-    // Simulate form submission (replace with actual submission logic)
-    setTimeout(() => {
+    // Debug: Log the data being sent
+    console.log('📤 Sending form data to Azure:');
+    console.log('- Name:', data.name);
+    console.log('- Email:', data.email);
+    console.log('- Message:', data.message);
+    console.log('- Full data:', JSON.stringify(data, null, 2));
+    
+    try {
+        // Get configuration
+        const config = window.OUIIPROF_CONFIG || {};
+        
+        // Check if Azure is disabled or forced to local storage
+        if (config.forceLocalStorage || !config.azureFunctionUrl) {
+            throw new Error('Local storage mode enabled');
+        }
+        
+        const azureUrl = config.azureFunctionUrl;
+        
+        // Prepare headers
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        
+        // Add function key if configured
+        if (config.azureFunctionKey) {
+            headers['x-functions-key'] = config.azureFunctionKey;
+        }
+        
+        console.log('📤 Sending to URL:', azureUrl);
+        console.log('📤 Headers:', headers);
+        
+        // Create the request body
+        const requestBody = JSON.stringify(data);
+        console.log('📤 Request body:', requestBody);
+        
+        const response = await fetch(azureUrl, {
+            method: 'POST',
+            headers: headers,
+            body: requestBody
+        }).catch(error => {
+            console.error('Fetch error:', error);
+            throw error;
+        });
+        
+        console.log('📤 Response status:', response.status, response.statusText);
+        
+        if (!response.ok) {
+            // Try to get the error message from Azure
+            const errorText = await response.text();
+            console.error('❌ Azure Function Error Response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+        }
+        
+        // Get response text first to debug
+        const responseText = await response.text();
+        console.log('📤 Raw response:', responseText);
+        
+        // Parse as JSON
+        let result;
+        try {
+            result = JSON.parse(responseText);
+            console.log('✅ Azure submission successful:', result);
+        } catch (e) {
+            console.error('Failed to parse response:', e);
+            // If we can't parse but status is OK, consider it success
+            result = { success: true, message: responseText };
+        }
+        
         // Show success message
         showSuccessMessage();
         
         // Reset form
         form.reset();
-        formStateSnapshot.clear(); // Clear saved form state
+        formStateSnapshot.clear();
+        
+    } catch (error) {
+        console.error('❌ Azure submission failed:', error);
+        
+        // Fallback to localStorage
+        try {
+            const submissions = JSON.parse(localStorage.getItem('ouiiprof_submissions') || '[]');
+            submissions.unshift(data);
+            localStorage.setItem('ouiiprof_submissions', JSON.stringify(submissions.slice(0, 100)));
+            
+            console.log('✅ Form data saved locally as backup:', data);
+            
+            // Show success message (but mention it's saved locally)
+            showSuccessMessage(true); // true indicates backup mode
+            
+            // Reset form
+            form.reset();
+            formStateSnapshot.clear();
+            
+        } catch (localError) {
+            console.error('❌ Local storage save failed:', localError);
+            showErrorMessage();
+        }
+    } finally {
+        // Restore button state
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-        
-        console.log('📧 Form submitted:', data);
-    }, 2000);
+    }
 }
 
-function showSuccessMessage() {
+function validateForm(form) {
+    const required = form.querySelectorAll('[required]');
+    let isValid = true;
+    
+    required.forEach(field => {
+        // Remove previous error states
+        field.classList.remove('error');
+        const errorMsg = field.parentElement.querySelector('.error-message');
+        if (errorMsg) errorMsg.remove();
+        
+        // Check if field is empty
+        if (!field.value.trim()) {
+            isValid = false;
+            field.classList.add('error');
+            
+            // Add error message
+            const error = document.createElement('span');
+            error.className = 'error-message';
+            error.style.color = '#ef4444';
+            error.style.fontSize = '0.875rem';
+            error.style.marginTop = '4px';
+            error.style.display = 'block';
+            
+            const errorTexts = {
+                fr: 'Ce champ est requis',
+                en: 'This field is required',
+                ar: 'هذا الحقل مطلوب'
+            };
+            
+            error.textContent = errorTexts[currentLanguage] || errorTexts.fr;
+            field.parentElement.appendChild(error);
+        }
+        
+        // Email validation
+        if (field.type === 'email' && field.value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(field.value)) {
+                isValid = false;
+                field.classList.add('error');
+                
+                const error = document.createElement('span');
+                error.className = 'error-message';
+                error.style.color = '#ef4444';
+                error.style.fontSize = '0.875rem';
+                error.style.marginTop = '4px';
+                error.style.display = 'block';
+                
+                const errorTexts = {
+                    fr: 'Adresse email invalide',
+                    en: 'Invalid email address',
+                    ar: 'عنوان بريد إلكتروني غير صالح'
+                };
+                
+                error.textContent = errorTexts[currentLanguage] || errorTexts.fr;
+                field.parentElement.appendChild(error);
+            }
+        }
+        
+        // Phone validation
+        if (field.type === 'tel' && field.value) {
+            const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+            if (!phoneRegex.test(field.value) || field.value.length < 8) {
+                isValid = false;
+                field.classList.add('error');
+                
+                const error = document.createElement('span');
+                error.className = 'error-message';
+                error.style.color = '#ef4444';
+                error.style.fontSize = '0.875rem';
+                error.style.marginTop = '4px';
+                error.style.display = 'block';
+                
+                const errorTexts = {
+                    fr: 'Numéro de téléphone invalide',
+                    en: 'Invalid phone number',
+                    ar: 'رقم هاتف غير صالح'
+                };
+                
+                error.textContent = errorTexts[currentLanguage] || errorTexts.fr;
+                field.parentElement.appendChild(error);
+            }
+        }
+    });
+    
+    // Scroll to first error if any
+    if (!isValid) {
+        const firstError = form.querySelector('.error');
+        if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstError.focus();
+        }
+    }
+    
+    return isValid;
+}
+
+function showSuccessMessage(isBackupMode = false) {
     const successMessage = document.getElementById('success-message');
     if (successMessage) {
+        // Update message if in backup mode
+        if (isBackupMode) {
+            const messageElement = successMessage.querySelector('p');
+            if (messageElement) {
+                const backupTexts = {
+                    fr: 'Votre demande a été enregistrée localement. Nous vous contacterons bientôt.',
+                    en: 'Your request has been saved locally. We will contact you soon.',
+                    ar: 'تم حفظ طلبك محلياً. سنتواصل معك قريباً.'
+                };
+                messageElement.textContent = backupTexts[currentLanguage] || backupTexts.fr;
+            }
+        }
+        
         successMessage.classList.add('show');
         
         // Auto-hide after 5 seconds
@@ -1651,6 +1872,44 @@ function showSuccessMessage() {
             }
         });
     }
+}
+
+function showErrorMessage() {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message-popup';
+    errorDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+        padding: 20px 40px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    `;
+    
+    const errorTexts = {
+        fr: 'Une erreur est survenue. Veuillez réessayer plus tard.',
+        en: 'An error occurred. Please try again later.',
+        ar: 'حدث خطأ. يرجى المحاولة مرة أخرى لاحقاً.'
+    };
+    
+    errorDiv.innerHTML = `
+        <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+        <p style="margin: 0;">${errorTexts[currentLanguage] || errorTexts.fr}</p>
+    `;
+    
+    document.body.appendChild(errorDiv);
+    
+    setTimeout(() => {
+        errorDiv.style.opacity = '0';
+        errorDiv.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => errorDiv.remove(), 300);
+    }, 3000);
 }
 
 // === UTILITY FUNCTIONS ===
