@@ -18,7 +18,13 @@
       "Bash(python:*)",
       "Bash(npx serve:*)",
       "Bash(awk:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npm start)",
+      "WebFetch(domain:127.0.0.1)",
+      "WebFetch(domain:localhost)",
+      "WebFetch(domain:dribbble.com)",
+      "Bash(npx http-server:*)",
+      "Bash(curl:*)"
     ],
     "deny": []
   },

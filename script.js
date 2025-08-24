@@ -806,6 +806,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize form state management
     initializeFormStateManagement();
     
+    // Initialize floating dots navigation
+    initializeFloatingDots();
+    
     // Hide loading screen
     setTimeout(() => {
         hideLoadingScreen();
@@ -816,7 +819,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // === STORE ORIGINAL FRENCH TEXTS ===
 function storeOriginalTexts() {
-    const translatableElements = document.querySelectorAll('[data-en], [data-ar]');
+    const translatableElements = document.querySelectorAll('[data-en]');
     
     translatableElements.forEach((element, index) => {
         const originalText = element.textContent.trim();
@@ -1023,7 +1026,7 @@ function initializeLanguage() {
 }
 
 function changeLanguage(lang) {
-    if (!['fr', 'en', 'ar'].includes(lang)) {
+    if (!['fr', 'en'].includes(lang)) {
         console.error('Language not supported:', lang);
         return;
     }
@@ -1038,7 +1041,7 @@ function changeLanguage(lang) {
     
     // Update HTML attributes
     document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir = 'ltr';
     
     // Update language button text
     const currentLangElement = document.getElementById('current-language');
@@ -1091,7 +1094,7 @@ function updateActiveLanguage() {
 }
 
 function updateTranslations() {
-    const elements = document.querySelectorAll('[data-en], [data-ar]');
+    const elements = document.querySelectorAll('[data-en]');
     
     elements.forEach(element => {
         const elementId = element.id;
@@ -1102,8 +1105,6 @@ function updateTranslations() {
             newText = originalFrenchTexts.get(elementId);
         } else if (currentLanguage === 'en' && element.dataset.en) {
             newText = element.dataset.en;
-        } else if (currentLanguage === 'ar' && element.dataset.ar) {
-            newText = element.dataset.ar;
         }
         
         // Only update if we have text and it's different from current
@@ -1120,7 +1121,7 @@ function updateSelectOptions() {
     selects.forEach(select => {
         const currentValue = select.value; // Preserve current selection
         
-        const options = select.querySelectorAll('option[data-en], option[data-ar]');
+        const options = select.querySelectorAll('option[data-en]');
         options.forEach(option => {
             const optionId = option.id || option.value;
             let newText = '';
@@ -1130,8 +1131,6 @@ function updateSelectOptions() {
                 newText = originalFrenchTexts.get(optionId) || option.textContent;
             } else if (currentLanguage === 'en' && option.dataset.en) {
                 newText = option.dataset.en;
-            } else if (currentLanguage === 'ar' && option.dataset.ar) {
-                newText = option.dataset.ar;
             }
             
             if (newText && newText !== option.textContent) {
@@ -1145,12 +1144,28 @@ function updateSelectOptions() {
 }
 
 function updateFormPlaceholders() {
+    // Update all input placeholders based on current language
+    const inputs = document.querySelectorAll('input[data-placeholder-en], textarea[data-placeholder-en]');
+    
+    inputs.forEach(input => {
+        if (currentLanguage === 'en' && input.dataset.placeholderEn) {
+            input.placeholder = input.dataset.placeholderEn;
+        } else {
+            // Get the original French placeholder from the HTML
+            const frenchPlaceholder = input.getAttribute('placeholder');
+            if (frenchPlaceholder) {
+                input.placeholder = frenchPlaceholder;
+            }
+        }
+    });
+    
+    // Handle the message textarea specifically
     const messageTextarea = document.getElementById('message');
     if (messageTextarea) {
         const placeholders = {
-            fr: 'Décrivez vos besoins spécifiques...',
-            en: 'Describe your specific needs...',
-            ar: 'صف احتياجاتك المحددة...'
+            fr: 'Décrivez vos objectifs d\'apprentissage ou toute exigence spécifique...',
+            en: 'Describe your learning goals or any specific requirements...',
+            ar: 'صف أهدافك التعليمية أو أي متطلبات محددة...'
         };
         messageTextarea.placeholder = placeholders[currentLanguage] || placeholders.fr;
     }
@@ -1437,15 +1452,7 @@ function animateCounter(element, target) {
 
 // === SCROLL HANDLING ===
 function handleScroll() {
-    const header = document.getElementById('header');
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    // Header scroll effect
-    if (scrollTop > 100) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
     
     // Update active navigation based on scroll position
     updateActiveNavOnScroll();
@@ -1485,8 +1492,7 @@ function updateActiveNavLink(activeLink) {
 function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
-        const headerHeight = document.getElementById('header').offsetHeight;
-        const targetPosition = section.offsetTop - headerHeight;
+        const targetPosition = section.offsetTop;
         
         window.scrollTo({
             top: targetPosition,
@@ -1999,3 +2005,261 @@ window.addEventListener('unhandledrejection', (e) => {
 });
 
 console.log('🎉 OOUI PROF - Script loaded successfully');
+
+// === MODERN TAB BAR NAVIGATION ===
+document.addEventListener('DOMContentLoaded', function() {
+    initializeModernTabBar();
+});
+
+function initializeModernTabBar() {
+    const tabItems = document.querySelectorAll('.modern-tab-bar .tab-item');
+    
+    if (tabItems.length === 0) return; // Exit if no modern tab bar found
+    
+    tabItems.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all tabs
+            tabItems.forEach(item => item.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            
+            // Get target section
+            const targetSection = this.dataset.tab;
+            
+            // Handle navigation
+            if (targetSection === 'home') {
+                scrollToSection('home');
+            } else if (targetSection === 'services') {
+                scrollToSection('services');
+            } else if (targetSection === 'subjects') {
+                scrollToSection('subjects');
+            } else if (targetSection === 'appointment') {
+                scrollToSection('appointment');
+            }
+            
+            // Add animation effect
+            this.style.transform = 'scale(0.95) translateY(-2px)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
+    });
+    
+    // Update active tab on scroll
+    updateActiveTabOnScroll();
+}
+
+function updateActiveTabOnScroll() {
+    const sections = ['home', 'services', 'subjects', 'appointment'];
+    const tabItems = document.querySelectorAll('.modern-tab-bar .tab-item');
+    
+    function updateActiveTab() {
+        const scrollPosition = window.scrollY + 100;
+        
+        for (let i = sections.length - 1; i >= 0; i--) {
+            const section = document.getElementById(sections[i]);
+            if (section && section.offsetTop <= scrollPosition) {
+                // Remove active from all tabs
+                tabItems.forEach(item => item.classList.remove('active'));
+                
+                // Add active to corresponding tab
+                const activeTab = document.querySelector(`.modern-tab-bar .tab-item[data-tab="${sections[i]}"]`);
+                if (activeTab) {
+                    activeTab.classList.add('active');
+                }
+                break;
+            }
+        }
+    }
+    
+    // Throttle scroll events
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                updateActiveTab();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}
+
+// Make functions available globally
+window.initializeModernTabBar = initializeModernTabBar;
+
+// === FLOATING BUTTONS FUNCTIONALITY ===
+document.addEventListener('DOMContentLoaded', function() {
+    initializeFloatingButtons();
+});
+
+function initializeFloatingButtons() {
+    const floatingTheme = document.getElementById('floating-theme-toggle');
+    const floatingLanguage = document.getElementById('floating-language-btn');
+    const floatingDropdown = document.getElementById('floating-language-dropdown');
+    
+    // Floating theme button
+    if (floatingTheme) {
+        floatingTheme.addEventListener('click', toggleTheme);
+    }
+    
+    // Floating language button and dropdown
+    if (floatingLanguage && floatingDropdown) {
+        floatingLanguage.addEventListener('click', function(e) {
+            e.stopPropagation();
+            floatingDropdown.classList.toggle('show');
+        });
+        
+        // Handle language selection
+        const languageOptions = floatingDropdown.querySelectorAll('.language-option');
+        languageOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.preventDefault();
+                const selectedLang = this.dataset.lang;
+                changeLanguage(selectedLang);
+                floatingDropdown.classList.remove('show');
+            });
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!floatingLanguage.contains(e.target) && !floatingDropdown.contains(e.target)) {
+                floatingDropdown.classList.remove('show');
+            }
+        });
+    }
+    
+    // Update floating button states based on current theme
+    updateFloatingButtonStates();
+}
+
+function updateFloatingButtonStates() {
+    const floatingTheme = document.getElementById('floating-theme-toggle');
+    const floatingLanguage = document.getElementById('floating-language-btn');
+    
+    if (floatingTheme) {
+        const icon = floatingTheme.querySelector('i');
+        if (document.documentElement.getAttribute('data-theme') === 'dark') {
+            icon.className = 'fas fa-sun';
+        } else {
+            icon.className = 'fas fa-moon';
+        }
+    }
+    
+    if (floatingLanguage) {
+        const langIndicator = floatingLanguage.querySelector('.lang-indicator');
+        if (langIndicator) {
+            langIndicator.textContent = currentLanguage.toUpperCase();
+        }
+    }
+}
+
+// Update the existing toggleTheme function to also update floating buttons
+const originalToggleTheme = toggleTheme;
+toggleTheme = function() {
+    originalToggleTheme();
+    updateFloatingButtonStates();
+};
+
+// Update the existing changeLanguage function to also update floating buttons  
+const originalChangeLanguage = changeLanguage;
+changeLanguage = function(lang) {
+    originalChangeLanguage(lang);
+    updateFloatingButtonStates();
+};
+
+// Make functions available globally
+window.initializeFloatingButtons = initializeFloatingButtons;
+window.updateFloatingButtonStates = updateFloatingButtonStates;
+
+// === FLOATING DOTS NAVIGATION ===
+function initializeFloatingDots() {
+    const floatingDotsNav = document.getElementById('floating-dots-nav');
+    const dotItems = document.querySelectorAll('.floating-dots-nav .dot-item');
+    
+    if (!floatingDotsNav || dotItems.length === 0) return;
+    
+    // Add click event listeners to dots
+    dotItems.forEach(dot => {
+        dot.addEventListener('click', function() {
+            const targetSection = this.dataset.target;
+            if (targetSection) {
+                // Scroll to section
+                scrollToSection(targetSection);
+                
+                // Update active dot
+                updateActiveDot(this);
+            }
+        });
+    });
+    
+    // Update dots based on scroll position
+    const updateDotsOnScroll = () => {
+        const sections = document.querySelectorAll('section[id]');
+        let currentSection = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 200;
+            const sectionHeight = section.offsetHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop >= sectionTop && scrollTop < sectionTop + sectionHeight) {
+                currentSection = section.getAttribute('id');
+            }
+        });
+        
+        // Update active dot
+        dotItems.forEach(dot => {
+            dot.classList.remove('active');
+            if (dot.dataset.target === currentSection) {
+                dot.classList.add('active');
+            }
+        });
+    };
+    
+    // Add scroll listener for updating dots
+    window.addEventListener('scroll', updateDotsOnScroll);
+    
+    // Initial update
+    updateDotsOnScroll();
+}
+
+function updateActiveDot(activeDot) {
+    const dotItems = document.querySelectorAll('.floating-dots-nav .dot-item');
+    dotItems.forEach(dot => dot.classList.remove('active'));
+    activeDot.classList.add('active');
+}
+
+// Update floating dots language when language changes
+function updateFloatingDotsLanguage() {
+    const dotItems = document.querySelectorAll('.floating-dots-nav .dot-item');
+    
+    dotItems.forEach(dot => {
+        const spans = dot.querySelectorAll('span');
+        if (spans.length >= 2) {
+            // Hide all spans first
+            spans.forEach(span => span.style.display = 'none');
+            
+            // Show the appropriate span based on current language
+            if (currentLanguage === 'en' && spans[1].hasAttribute('data-en')) {
+                spans[1].style.display = 'block';
+            } else {
+                spans[0].style.display = 'block';
+            }
+        }
+    });
+}
+
+// Override the existing changeLanguage function to also update dots
+const originalChangeLanguageForDots = changeLanguage;
+changeLanguage = function(lang) {
+    originalChangeLanguageForDots(lang);
+    updateFloatingDotsLanguage();
+};
+
+// Make floating dots functions available globally
+window.initializeFloatingDots = initializeFloatingDots;
+window.updateFloatingDotsLanguage = updateFloatingDotsLanguage;
