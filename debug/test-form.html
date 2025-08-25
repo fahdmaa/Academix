@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Test - OUIIPROF</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { padding: 20px; }
+        .test-form { max-width: 600px; margin: 0 auto; }
+        .debug-info { background: #f0f0f0; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .console-log { background: #000; color: #0f0; padding: 10px; margin: 10px 0; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="test-form">
+        <h1>Form Submission Test</h1>
+        
+        <div class="debug-info">
+            <h3>Debug Information</h3>
+            <p>Config Status: <span id="config-status">Loading...</span></p>
+            <p>Current Language: <span id="current-lang">Loading...</span></p>
+            <p>Form Handler: <span id="form-handler">Loading...</span></p>
+        </div>
+
+        <form class="appointment-form" id="test-form" onsubmit="testHandleSubmit(event)">
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Your first name" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Your last name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Your message" rows="4"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary submit-btn">Test Submit</button>
+        </form>
+
+        <div class="success-message" id="success-message" style="display: none;">
+            <div class="success-content">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Test Successful!</h3>
+                <p>Form submission test completed successfully.</p>
+            </div>
+        </div>
+
+        <div id="console-output" class="console-log"></div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="../script.js"></script>
+    <script>
+        // Override console.log to capture output
+        const originalLog = console.log;
+        const originalError = console.error;
+        const output = document.getElementById('console-output');
+        
+        function addToOutput(type, ...args) {
+            const div = document.createElement('div');
+            div.style.color = type === 'error' ? '#ff4444' : '#00ff00';
+            div.textContent = args.join(' ');
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        console.log = (...args) => {
+            originalLog(...args);
+            addToOutput('log', ...args);
+        };
+        
+        console.error = (...args) => {
+            originalError(...args);
+            addToOutput('error', ...args);
+        };
+
+        // Test function
+        async function testHandleSubmit(event) {
+            console.log('🧪 TEST: Form submission started');
+            return handleSubmit(event);
+        }
+
+        // Check debug info
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('config-status').textContent = 
+                window.OUIIPROF_CONFIG ? 'Loaded' : 'Not loaded';
+            document.getElementById('current-lang').textContent = 
+                window.currentLanguage || 'undefined';
+            document.getElementById('form-handler').textContent = 
+                typeof window.handleSubmit === 'function' ? 'Available' : 'Missing';
+        });
+    </script>
+</body>
+</html>
