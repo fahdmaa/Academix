@@ -5,8 +5,8 @@ window.OUIIPROF_CONFIG = {
     // Azure Functions Configuration
     azureFunctionUrl: 'https://ouiiprof-form-handler.azurewebsites.net/api/ouiiprof-form-handler',
     
-    // No function key needed - will use Azure Function's built-in CORS and domain validation
-    azureFunctionKey: null,
+    // Function key will be loaded from environment variable
+    azureFunctionKey: '',  // Will be set by build process
     
     // Fallback settings
     forceLocalStorage: false,

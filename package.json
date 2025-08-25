@@ -6,7 +6,8 @@
     "start": "BROWSER=firefox npx http-server -p 8080 -o",
     "serve": "npx http-server -p 8080 -o",
     "live": "npx live-server --port=8080",
-    "dev": "BROWSER=firefox npx http-server -p 8080 -o"
+    "dev": "BROWSER=firefox npx http-server -p 8080 -o",
+    "build": "node build.js"
   },
   "devDependencies": {
     "http-server": "^14.1.1",
