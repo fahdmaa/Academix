@@ -24,7 +24,8 @@
       "WebFetch(domain:localhost)",
       "WebFetch(domain:dribbble.com)",
       "Bash(npx http-server:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   },
