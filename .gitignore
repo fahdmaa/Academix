@@ -5,6 +5,7 @@ node_modules/
 .env
 .env.local
 config.js
+# Note: config.prod.js is included in git for production deployment
 
 # IDE files
 .idea/
