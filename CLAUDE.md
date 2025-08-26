@@ -123,16 +123,63 @@ php -S localhost:8080
 - **start-server.py**: Python script with automatic port selection (8080-8089)
 - **backup-submit.js**: Handles form submission fallback to localStorage
 
+## Azure Functions Backend
+
+### Azure Infrastructure
+The project uses a complete Azure serverless infrastructure for form handling:
+
+1. **Azure Function App**: `ouiiprof-form-handler`
+   - Function Name: `handleForm`
+   - Runtime: Node.js
+   - Authorization Level: Function Key Required
+   - URL: `https://ouiiprof-form-handler.azurewebsites.net/api/handleForm`
+
+2. **Azure Cosmos DB**: `ouiiprof-backend-rg`
+   - Database: `FormSubmissionsDB`
+   - Container: `Messages`
+   - Stores all form submissions with metadata
+
+3. **EmailJS Integration**: Configured in Azure Function environment variables
+   - `EMAILJS_SERVICE_ID`: Service configuration
+   - `EMAILJS_TEMPLATE_ID`: Email template
+   - `EMAILJS_PUBLIC_KEY`: Public API key
+   - `EMAILJS_PRIVATE_KEY`: Private API key for authentication
+
+### Form Submission Flow
+1. **Form Data**: Collected from contact form (name, email, message, etc.)
+2. **Azure Function**: Processes submission with authentication via function key
+3. **Data Storage**: Saved to Cosmos DB with timestamp and unique ID
+4. **Email Notification**: Sent via EmailJS to `fahd.maatoug@outlook.fr`
+5. **Response**: Success/failure response with email and DB status
+
+### Configuration Files
+- **`config.js`**: Local development config (contains Azure function key, excluded from git)
+- **`config.prod.js`**: Production config (key injected via Vercel environment variables)
+- **`build.js`**: Build script that injects environment variables during deployment
+
+### Environment Variables (Vercel Production)
+- `AZURE_FUNCTION_KEY`: The function key for authentication (`default` key recommended)
+
+### CORS Configuration
+Azure Function CORS allows:
+- `https://ouiiprof.me` (production domain)
+- `https://*.vercel.app` (Vercel preview deployments)
+- `http://localhost:8080` (local development)
+- `http://127.0.0.1:8080` (alternative localhost)
+
 ## Important Notes
 
-1. **No Build Process**: Changes to files are immediately reflected - no compilation needed
-2. **Security**: Input sanitization implemented, Azure Functions provide secure backend
-3. **localStorage Keys**: `theme`, `language`, `formSubmissions`
+1. **No Build Process**: Changes to files are immediately reflected - no compilation needed (except for production config injection)
+2. **Security**: Input sanitization implemented, Azure Functions provide secure backend with function key authentication
+3. **localStorage Keys**: `theme`, `language`, `ouiiprof_submissions`
 4. **Testing**: Manual testing only - no automated test framework
 5. **Mobile Integration**: All mobile functionality is now integrated into the main files (index.html, styles.css, script.js)
 6. **Cleaned Structure**: Test/debug files removed, duplicate functions eliminated, code optimized
 7. **Accessibility**: ARIA labels added, semantic HTML improved, keyboard navigation supported
-8. **Configuration**: Azure Functions configuration is in `config.js` (excluded from repository)
+8. **Configuration**: 
+   - Local: Uses `config.js` with actual Azure function key
+   - Production: Uses `config.prod.js` with environment variable injection
 9. **Fallback System**: Form submissions automatically fall back to localStorage if Azure backend fails
 10. **Browser Testing**: Test in multiple browsers, especially for RTL (Arabic) support
 11. **Mobile Testing**: Significant mobile optimizations - test on various device sizes
+12. **Azure Function Status**: Working correctly - processes form submissions, saves to Cosmos DB, sends emails via EmailJS
