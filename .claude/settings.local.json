@@ -25,7 +25,10 @@
       "WebFetch(domain:dribbble.com)",
       "Bash(npx http-server:*)",
       "Bash(curl:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git reset:*)"
     ],
     "deny": []
   },
