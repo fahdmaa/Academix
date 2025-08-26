@@ -3,7 +3,7 @@
 
 window.OUIIPROF_CONFIG = {
     // Azure Functions Configuration
-    azureFunctionUrl: 'https://ouiiprof-form-handler.azurewebsites.net/api/ouiiprof-form-handler',
+    azureFunctionUrl: 'https://ouiiprof-form-handler.azurewebsites.net/api/handleForm',
     
     // Function key will be loaded from environment variable
     azureFunctionKey: '',  // Will be set by build process
