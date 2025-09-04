@@ -9,8 +9,8 @@ import socketserver
 import os
 import sys
 
-# Try different ports if 8000 is busy
-PORTS = [8000, 8080, 3000, 5000, 9000]
+# Try different ports if 3000 is busy
+PORTS = [3000, 8000, 8080, 5000, 9000]
 PORT = None
 httpd = None
 

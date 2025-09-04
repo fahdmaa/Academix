@@ -1,15 +1,43 @@
-// OOUI PROF - Modern JavaScript
-// Enhanced with animations, interactions, and modern features
+// ==========================================================================
+// OUIIPROF - Modern JavaScript Architecture
+// ==========================================================================
 
-// === GLOBAL VARIABLES ===
-let currentLanguage = 'fr';
-let currentTheme = 'light';
-let isLoading = true;
-let scrollPosition = 0;
-let animationObserver = null;
+// === MODERN ES6+ FEATURES & PERFORMANCE OPTIMIZATIONS ===
 
-// Store original French text for language switching
-let originalFrenchTexts = new Map();
+// Global state management using modern patterns
+const AppState = {
+    currentLanguage: 'fr',
+    currentTheme: 'light',
+    isLoading: true,
+    scrollPosition: 0,
+    animationObserver: null,
+    originalFrenchTexts: new Map(),
+    formState: new Map(),
+    observers: new Set(),
+    timeouts: new Set(),
+    intervals: new Set()
+};
+
+// Modern configuration object
+const CONFIG = {
+    animation: {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px',
+        duration: 300,
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+    },
+    scroll: {
+        threshold: 100,
+        debounceDelay: 16
+    },
+    form: {
+        validationDelay: 300,
+        submitTimeout: 10000
+    },
+    theme: {
+        transitionDuration: 300
+    }
+};
 
 // === SUBJECT MODAL DATA ===
 const subjectModalData = {
@@ -1301,6 +1329,23 @@ function setupEventListeners() {
         card.addEventListener('click', () => {
             const subjectId = card.dataset.subject;
             openSubjectModal(subjectId);
+        });
+    });
+
+    // Footer subject links to open modal
+    const footerSubjectLinks = document.querySelectorAll('.footer-links a[data-subject]');
+    footerSubjectLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const subjectId = link.dataset.subject;
+            if (subjectId) {
+                // Scroll to subjects section first
+                scrollToSection('subjects');
+                // Then open the modal after a short delay
+                setTimeout(() => {
+                    openSubjectModal(subjectId);
+                }, 800);
+            }
         });
     });
     
