@@ -8,7 +8,7 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/((?!images|styles\\.css|script\\.js|config\\.prod\\.js|config\\.js).*)",
       "dest": "/index.html"
     }
   ],
@@ -33,6 +33,24 @@
     },
     {
       "source": "/script.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/config.prod.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/config.js",
       "headers": [
         {
           "key": "Cache-Control",
