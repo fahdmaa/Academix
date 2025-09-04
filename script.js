@@ -1701,94 +1701,150 @@ async function handleSubmit(event) {
     console.log('- Full data:', JSON.stringify(data, null, 2));
     
     try {
-        // Get configuration
+        // Get configuration with better error handling
         const config = window.OUIIPROF_CONFIG || {};
-        
-        // Check if Azure is disabled or forced to local storage
-        if (config.forceLocalStorage || !config.azureFunctionUrl) {
-            throw new Error('Local storage mode enabled');
+
+        console.log('🔧 Using configuration:', {
+            hasAzureUrl: !!config.azureFunctionUrl,
+            hasAzureKey: !!config.azureFunctionKey,
+            forceLocalStorage: config.forceLocalStorage
+        });
+
+        // Check if we should use local storage or if Azure is not configured
+        const useLocalStorage = config.forceLocalStorage ||
+                               !config.azureFunctionUrl ||
+                               config.azureFunctionUrl === '';
+
+        if (useLocalStorage) {
+            console.log('📦 Using local storage mode (Azure not configured or disabled)');
+            throw new Error('Local storage mode');
         }
-        
+
         const azureUrl = config.azureFunctionUrl;
-        
+
+        // Validate URL format
+        try {
+            new URL(azureUrl);
+        } catch (urlError) {
+            console.error('❌ Invalid Azure Function URL:', azureUrl);
+            throw new Error('Invalid Azure Function URL configuration');
+        }
+
         // Prepare headers
         const headers = {
             'Content-Type': 'application/json',
         };
-        
+
         // Add function key if configured
-        if (config.azureFunctionKey) {
+        if (config.azureFunctionKey && config.azureFunctionKey !== '') {
             headers['x-functions-key'] = config.azureFunctionKey;
         }
-        
-        console.log('📤 Sending to URL:', azureUrl);
-        console.log('📤 Headers:', headers);
-        
+
+        console.log('📤 Sending to Azure Function:', azureUrl);
+
         // Create the request body
         const requestBody = JSON.stringify(data);
-        console.log('📤 Request body:', requestBody);
-        
+
+        // Set timeout for the request
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
         const response = await fetch(azureUrl, {
             method: 'POST',
             headers: headers,
-            body: requestBody
-        }).catch(error => {
-            console.error('Fetch error:', error);
-            throw error;
+            body: requestBody,
+            signal: controller.signal
         });
-        
+
+        clearTimeout(timeoutId);
+
         console.log('📤 Response status:', response.status, response.statusText);
-        
+
         if (!response.ok) {
             // Try to get the error message from Azure
-            const errorText = await response.text();
-            console.error('❌ Azure Function Error Response:', errorText);
-            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+            let errorText = 'Unknown error';
+            try {
+                errorText = await response.text();
+            } catch (e) {
+                console.error('Could not read error response:', e);
+            }
+
+            console.error('❌ Azure Function Error:', response.status, errorText);
+
+            // Check for specific error types
+            if (response.status === 401) {
+                throw new Error('Authentication failed - check Azure Function key');
+            } else if (response.status === 403) {
+                throw new Error('Access forbidden - check Azure Function permissions');
+            } else if (response.status === 404) {
+                throw new Error('Azure Function not found - check URL configuration');
+            } else if (response.status >= 500) {
+                throw new Error('Server error - Azure Function may be down');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
         }
-        
-        // Get response text first to debug
+
+        // Get response text
         const responseText = await response.text();
         console.log('📤 Raw response:', responseText);
-        
+
         // Parse as JSON
         let result;
         try {
             result = JSON.parse(responseText);
             console.log('✅ Azure submission successful:', result);
         } catch (e) {
-            console.error('Failed to parse response:', e);
+            console.error('Failed to parse response as JSON:', e);
             // If we can't parse but status is OK, consider it success
             result = { success: true, message: responseText };
         }
-        
+
         // Show success message
         showSuccessMessage();
-        
+
         // Reset form
         form.reset();
         formStateSnapshot.clear();
-        
+
     } catch (error) {
-        console.error('❌ Azure submission failed:', error);
-        
-        // Fallback to localStorage
+        console.error('❌ Submission failed:', error);
+
+        // Handle different error types
+        if (error.name === 'AbortError') {
+            console.error('Request timed out');
+            showErrorMessage('La requête a expiré. Veuillez réessayer.');
+            return;
+        }
+
+        // Check if it's a network error
+        if (error.message === 'Failed to fetch' || error.message.includes('NetworkError')) {
+            console.error('Network error - falling back to local storage');
+        }
+
+        // Fallback to localStorage for all errors
         try {
             const submissions = JSON.parse(localStorage.getItem('ouiiprof_submissions') || '[]');
-            submissions.unshift(data);
+            submissions.unshift({
+                ...data,
+                fallback: true,
+                error: error.message,
+                timestamp: new Date().toISOString()
+            });
             localStorage.setItem('ouiiprof_submissions', JSON.stringify(submissions.slice(0, 100)));
-            
+
             console.log('✅ Form data saved locally as backup:', data);
-            
-            // Show success message (but mention it's saved locally)
-            showSuccessMessage(true); // true indicates backup mode
-            
+
+            // Show success message with fallback indication
+            showSuccessMessage(true, error.message);
+
             // Reset form
             form.reset();
             formStateSnapshot.clear();
-            
+
         } catch (localError) {
             console.error('❌ Local storage save failed:', localError);
-            showErrorMessage();
+            showErrorMessage('Erreur lors de la sauvegarde. Veuillez réessayer.');
         }
     } finally {
         // Restore button state
@@ -1925,7 +1981,7 @@ function showSuccessMessage(isBackupMode = false) {
     }
 }
 
-function showErrorMessage() {
+function showErrorMessage(customMessage = null) {
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message-popup';
     errorDiv.style.cssText = `
@@ -1942,20 +1998,22 @@ function showErrorMessage() {
         text-align: center;
         backdrop-filter: blur(10px);
     `;
-    
-    const errorTexts = {
+
+    const defaultTexts = {
         fr: 'Une erreur est survenue. Veuillez réessayer plus tard.',
         en: 'An error occurred. Please try again later.',
         ar: 'حدث خطأ. يرجى المحاولة مرة أخرى لاحقاً.'
     };
-    
+
+    const message = customMessage || (defaultTexts[currentLanguage] || defaultTexts.fr);
+
     errorDiv.innerHTML = `
         <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-        <p style="margin: 0;">${errorTexts[currentLanguage] || errorTexts.fr}</p>
+        <p style="margin: 0;">${message}</p>
     `;
-    
+
     document.body.appendChild(errorDiv);
-    
+
     setTimeout(() => {
         errorDiv.style.opacity = '0';
         errorDiv.style.transition = 'opacity 0.3s ease';
