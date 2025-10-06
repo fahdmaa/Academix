@@ -19,8 +19,8 @@
 
 /* === GLOBAL STYLES === */
 body {
-    background: #0A0A0A !important;
-    color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #1A1A1A !important;
     position: relative;
 }
 
@@ -162,14 +162,14 @@ body {
 .hero-title {
     font-size: clamp(2.75rem, 5vw, 4rem) !important;
     font-weight: 700 !important;
-    color: #FFFFFF !important;
+    color: #1A1A1A !important;
     line-height: 1.2 !important;
     margin-bottom: 1.5rem !important;
     margin-top: 0 !important;
     letter-spacing: -0.02em !important;
     background: none !important;
-    -webkit-text-fill-color: #FFFFFF !important;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3) !important;
+    -webkit-text-fill-color: #1A1A1A !important;
+    text-shadow: none !important;
 }
 
 .hero-title::after {
@@ -178,7 +178,7 @@ body {
 
 .hero-description {
     font-size: 1.063rem !important;
-    color: rgba(255, 255, 255, 0.85) !important;
+    color: rgba(26, 26, 26, 0.75) !important;
     line-height: 1.7 !important;
     margin-bottom: 2.5rem !important;
     font-weight: 400 !important;
@@ -193,14 +193,14 @@ body {
 
 /* === MODERN ROUNDED BUTTON === */
 .btn-primary {
-    background: #FFFFFF !important;
-    color: #0A0A0A !important;
+    background: #1A1A1A !important;
+    color: #FFFFFF !important;
     border: none !important;
     padding: 1rem 2rem !important;
     font-size: 1rem !important;
     font-weight: 600 !important;
     border-radius: 50px !important;
-    box-shadow: 0 4px 30px rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15) !important;
     transition: all 0.3s ease !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -213,13 +213,13 @@ body {
 
 .btn-primary:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 8px 40px rgba(255, 255, 255, 0.3) !important;
-    background: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25) !important;
+    background: rgba(26, 26, 26, 0.9) !important;
 }
 
 .btn-primary i {
-    background: #0A0A0A !important;
-    color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #1A1A1A !important;
     width: 28px !important;
     height: 28px !important;
     display: flex !important;
@@ -245,18 +245,18 @@ body {
 .section-title {
     font-size: clamp(2.25rem, 4vw, 3.5rem) !important;
     font-weight: 700 !important;
-    color: #FFFFFF !important;
+    color: #1A1A1A !important;
     margin-bottom: 1rem !important;
     letter-spacing: -0.02em !important;
     background: none !important;
-    -webkit-text-fill-color: #FFFFFF !important;
+    -webkit-text-fill-color: #1A1A1A !important;
     text-align: center !important;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3) !important;
+    text-shadow: none !important;
 }
 
 .section-description,
 .section-subtitle {
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: rgba(26, 26, 26, 0.7) !important;
     font-size: 1.125rem !important;
     text-align: center !important;
     max-width: 700px !important;
@@ -274,13 +274,13 @@ body {
 }
 
 .service-card {
-    background: rgba(255, 255, 255, 0.05) !important;
+    background: rgba(255, 255, 255, 0.8) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
     border-radius: 24px !important;
     padding: 2.5rem !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
     transition: all 0.4s ease !important;
     display: flex !important;
     flex-direction: column !important;
@@ -305,9 +305,9 @@ body {
 
 .service-card:hover {
     transform: translateY(-8px) !important;
-    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6) !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-    border-color: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 .service-card::before {
@@ -317,18 +317,18 @@ body {
 .service-icon {
     width: 64px !important;
     height: 64px !important;
-    background: rgba(255, 255, 255, 0.1) !important;
+    background: rgba(26, 26, 26, 0.05) !important;
     border-radius: 16px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     margin: 0 auto 1.5rem !important;
-    color: #FFFFFF !important;
+    color: #1A1A1A !important;
     font-size: 1.75rem !important;
 }
 
 .service-icon i {
-    color: #FFFFFF !important;
+    color: #1A1A1A !important;
     font-family: "Font Awesome 6 Free" !important;
     font-weight: 900 !important;
     font-size: 1.75rem !important;
@@ -341,19 +341,19 @@ body {
 .service-title {
     font-size: 1.5rem !important;
     font-weight: 700 !important;
-    color: #FFFFFF !important;
+    color: #1A1A1A !important;
     margin-bottom: 1rem !important;
 }
 
 .service-card p,
 .service-description {
-    color: rgba(255, 255, 255, 0.75) !important;
+    color: rgba(26, 26, 26, 0.7) !important;
     line-height: 1.7 !important;
     font-size: 1rem !important;
 }
 
 .service-features li {
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: rgba(26, 26, 26, 0.65) !important;
 }
 
 /* === SUBJECTS SECTION === */
@@ -375,13 +375,13 @@ body {
 }
 
 .subject-card {
-    background: rgba(255, 255, 255, 0.05) !important;
+    background: rgba(255, 255, 255, 0.8) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
     border-radius: 20px !important;
     padding: 2rem !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
     transition: all 0.4s ease !important;
     cursor: pointer !important;
     display: flex !important;
@@ -407,26 +407,26 @@ body {
 
 .subject-card:hover {
     transform: translateY(-6px) !important;
-    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6) !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-    border-color: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 .subject-icon {
     width: 56px !important;
     height: 56px !important;
-    background: rgba(255, 255, 255, 0.1) !important;
+    background: rgba(26, 26, 26, 0.05) !important;
     border-radius: 12px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     margin: 0 auto 1.25rem !important;
-    color: #FFFFFF !important;
+    color: #1A1A1A !important;
     font-size: 1.5rem !important;
 }
 
 .subject-icon i {
-    color: #FFFFFF !important;
+    color: #1A1A1A !important;
     font-family: "Font Awesome 6 Free" !important;
     font-weight: 900 !important;
     font-size: 1.5rem !important;
@@ -437,7 +437,7 @@ body {
 
 .subject-card h3,
 .subject-title {
-    color: #FFFFFF !important;
+    color: #1A1A1A !important;
     font-weight: 700 !important;
     font-size: 1.25rem !important;
     margin-bottom: 0.75rem !important;
@@ -445,14 +445,14 @@ body {
 
 .subject-card p,
 .subject-description {
-    color: rgba(255, 255, 255, 0.75) !important;
+    color: rgba(26, 26, 26, 0.7) !important;
     line-height: 1.6 !important;
 }
 
 .learn-more-btn {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: #FFFFFF !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background: rgba(26, 26, 26, 0.05) !important;
+    color: #1A1A1A !important;
+    border: 1px solid rgba(26, 26, 26, 0.1) !important;
     padding: 0.5rem 1.25rem !important;
     border-radius: 20px !important;
     font-size: 0.875rem !important;
@@ -462,8 +462,8 @@ body {
 }
 
 .learn-more-btn:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
+    background: rgba(26, 26, 26, 0.1) !important;
+    border-color: rgba(26, 26, 26, 0.2) !important;
 }
 
 /* === ABOUT SECTION === */
