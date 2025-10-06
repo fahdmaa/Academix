@@ -32,7 +32,15 @@
       "Bash(npm install:*)",
       "Bash(vercel dev:*)",
       "Bash(timeout:*)",
-      "Bash(npm run test-api:*)"
+      "Bash(npm run test-api:*)",
+      "Bash(git config:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(cat:*)",
+      "Bash(npm create:*)",
+      "Bash(npm run dev:*)",
+      "Bash(taskkill:*)",
+      "Bash(xargs kill:*)",
+      "Bash(powershell:*)"
     ],
     "deny": []
   },

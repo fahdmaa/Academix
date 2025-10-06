@@ -1,25 +1,24 @@
 {
   "name": "academix",
   "version": "1.0.0",
-  "description": "Academix - Private Finance and Accounting Lessons",
+  "private": true,
   "type": "module",
+  "description": "Academix - Private Finance and Accounting Lessons built with React",
   "scripts": {
-    "start": "BROWSER=firefox npx http-server -p 8080 -o",
-    "serve": "npx http-server -p 8080 -o",
-    "live": "npx live-server --port=8080",
-    "dev": "vercel dev",
-    "test-api": "node test-server.js",
-    "build": "node build.js"
-  },
-  "devDependencies": {
-    "http-server": "^14.1.1",
-    "live-server": "^1.2.2"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
+    "framer-motion": "^12.23.22",
     "gsap": "^3.13.0",
     "mongodb": "^6.3.0",
-    "ogl": "^1.0.11"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.8"
   }
 }

@@ -13,7 +13,7 @@
       "dest": "/api/$1"
     },
     {
-      "src": "/((?!images|styles\\.css|script\\.js|config\\.prod\\.js|config\\.js|api).*)",
+      "src": "/(.*)",
       "dest": "/index.html"
     }
   ],
@@ -28,34 +28,16 @@
       ]
     },
     {
-      "source": "/styles.css",
+      "source": "/assets/**",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=86400, must-revalidate"
+          "value": "public, max-age=86400, immutable"
         }
       ]
     },
     {
-      "source": "/script.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=86400, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/config.prod.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=86400, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/config.js",
+      "source": "/(.*\.css|.*\.js)",
       "headers": [
         {
           "key": "Cache-Control",

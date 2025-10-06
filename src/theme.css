@@ -1,0 +1,196 @@
+/* Theme Variables */
+:root[data-theme="light"] {
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #ffffff;
+  --text-primary: #1A1A1A;
+  --text-secondary: rgba(26, 26, 26, 0.75);
+  --accent-color: #667eea;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-shadow: rgba(102, 126, 234, 0.15);
+  --border-color: rgba(102, 126, 234, 0.15);
+}
+
+:root[data-theme="dark"] {
+  --bg-primary: #0f0f1e;
+  --bg-secondary: #1a1a2e;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.75);
+  --accent-color: #8b5cf6;
+  --card-bg: rgba(26, 26, 46, 0.7);
+  --card-shadow: rgba(139, 92, 246, 0.2);
+  --border-color: rgba(139, 92, 246, 0.2);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  margin-right: 1rem;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 20px var(--card-shadow);
+}
+
+.theme-toggle i {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover i {
+  transform: rotate(20deg);
+}
+
+/* Nav Actions Container */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+    margin-right: 0.5rem;
+  }
+
+  .theme-toggle i {
+    font-size: 1rem;
+  }
+}
+
+/* Apply theme colors to existing elements */
+body {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.hero-title,
+.section-title {
+  color: var(--text-primary) !important;
+}
+
+.hero-description,
+.section-description {
+  color: var(--text-secondary) !important;
+}
+
+.service-card,
+.subject-card,
+.appointment-form-container,
+.info-carousel {
+  background: var(--card-bg) !important;
+  box-shadow: 0 8px 32px var(--card-shadow) !important;
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.service-card:hover,
+.subject-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 12px 40px var(--card-shadow) !important;
+  border-color: var(--accent-color) !important;
+}
+
+.service-icon i,
+.subject-icon i {
+  color: var(--accent-color) !important;
+}
+
+.btn-primary {
+  background: #1A1A1A !important;
+  color: #ffffff !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3) !important;
+  background: #000000 !important;
+}
+
+.submit-btn {
+  background: var(--accent-color) !important;
+  color: #ffffff !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px var(--card-shadow) !important;
+}
+
+.navbar {
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  box-shadow: 0 4px 16px var(--card-shadow) !important;
+}
+
+.nav-link {
+  color: var(--text-primary) !important;
+  transition: color 0.3s ease !important;
+}
+
+.nav-link:hover {
+  color: var(--accent-color) !important;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  height: 50px;
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
+.logo-image:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .logo-image {
+    height: 40px;
+  }
+}
+
+.footer {
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-top: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+input,
+textarea,
+select {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary) !important;
+}
