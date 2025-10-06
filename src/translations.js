@@ -75,6 +75,7 @@ export const translations = {
     // Success Message
     bookingConfirmed: 'Réservation Confirmée !',
     bookingThankYou: 'Merci pour votre réservation. Nous vous contacterons bientôt pour confirmer les détails.',
+    submissionError: 'Erreur lors de l\'envoi. Veuillez réessayer.',
 
     // Footer
     footerTagline: 'Excellence en enseignement de la finance et de la comptabilité. Votre partenaire pour réussir dans le monde de la finance.',
@@ -169,6 +170,7 @@ export const translations = {
     // Success Message
     bookingConfirmed: 'Booking Confirmed!',
     bookingThankYou: 'Thank you for your booking. We will contact you soon to confirm the details.',
+    submissionError: 'Submission error. Please try again.',
 
     // Footer
     footerTagline: 'Excellence in finance and accounting education. Your partner for success in the world of finance.',
