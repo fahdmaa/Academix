@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useLanguage } from '../context/LanguageContext'
 
 function Appointment() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -43,7 +43,7 @@ function Appointment() {
         body: JSON.stringify({
           ...formData,
           timestamp: new Date().toISOString(),
-          language: 'fr'
+          language: language
         })
       })
 
