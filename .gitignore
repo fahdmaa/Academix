@@ -1,29 +1,40 @@
-# Dependencies
-node_modules/
-
-# Environment and config files
+# Environment variables
 .env
 .env.local
-config.js
-# Note: config.prod.js is included in git for production deployment
+.env.*.local
 
-# IDE files
-.idea/
-.vscode/
-*.swp
-*.swo
+# Vercel
+.vercel
 
-# OS files
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-# Build files
+# Backup files
+*_backup.*
+*.bak
+
+# Config files with secrets (keep .example versions)
+config.js
+config.prod.js
+
+# Build outputs
 dist/
 build/
-
-# Temporary files
-*.tmp
-*.temp

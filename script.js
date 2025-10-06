@@ -1,5 +1,5 @@
 // ==========================================================================
-// OUIIPROF - Modern JavaScript Architecture
+// Academix - Modern JavaScript Architecture
 // ==========================================================================
 
 // === MODERN ES6+ FEATURES & PERFORMANCE OPTIMIZATIONS ===
@@ -1702,7 +1702,7 @@ async function handleSubmit(event) {
     
     try {
         // Get configuration with better error handling
-        const config = window.OUIIPROF_CONFIG || {};
+        const config = window.ACADEMIX_CONFIG || {};
 
         console.log('🔧 Using configuration:', {
             hasAzureUrl: !!config.azureFunctionUrl,
@@ -1824,14 +1824,14 @@ async function handleSubmit(event) {
 
         // Fallback to localStorage for all errors
         try {
-            const submissions = JSON.parse(localStorage.getItem('ouiiprof_submissions') || '[]');
+            const submissions = JSON.parse(localStorage.getItem('academix_submissions') || '[]');
             submissions.unshift({
                 ...data,
                 fallback: true,
                 error: error.message,
                 timestamp: new Date().toISOString()
             });
-            localStorage.setItem('ouiiprof_submissions', JSON.stringify(submissions.slice(0, 100)));
+            localStorage.setItem('academix_submissions', JSON.stringify(submissions.slice(0, 100)));
 
             console.log('✅ Form data saved locally as backup:', data);
 

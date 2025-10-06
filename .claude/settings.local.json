@@ -28,7 +28,11 @@
       "Bash(git push:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(npm install:*)",
+      "Bash(vercel dev:*)",
+      "Bash(timeout:*)",
+      "Bash(npm run test-api:*)"
     ],
     "deny": []
   },

@@ -1,16 +1,25 @@
 {
-  "name": "ouiiprof",
+  "name": "academix",
   "version": "1.0.0",
-  "description": "OUIIPROF - Cours Particuliers de Finance",
+  "description": "Academix - Private Finance and Accounting Lessons",
+  "type": "module",
   "scripts": {
     "start": "BROWSER=firefox npx http-server -p 8080 -o",
     "serve": "npx http-server -p 8080 -o",
     "live": "npx live-server --port=8080",
-    "dev": "BROWSER=firefox npx http-server -p 8080 -o",
+    "dev": "vercel dev",
+    "test-api": "node test-server.js",
     "build": "node build.js"
   },
   "devDependencies": {
     "http-server": "^14.1.1",
     "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "gsap": "^3.13.0",
+    "mongodb": "^6.3.0",
+    "ogl": "^1.0.11"
   }
 }

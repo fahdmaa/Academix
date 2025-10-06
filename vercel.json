@@ -1,8 +1,19 @@
 {
   "version": 2,
+  "name": "academix",
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
-      "src": "/((?!images|styles\\.css|script\\.js|config\\.prod\\.js|config\\.js).*)",
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/((?!images|styles\\.css|script\\.js|config\\.prod\\.js|config\\.js|api).*)",
       "dest": "/index.html"
     }
   ],

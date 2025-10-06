@@ -4,15 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-OOUI PROF is a static single-page web application for booking private finance and accounting lessons. It's a multi-language (French/English/Arabic) educational service website with no backend dependencies.
+**Academix** is a modern single-page web application for booking private finance and accounting lessons. It's a multi-language educational service website with MongoDB backend integration.
 
 ## Architecture
 
 ### Technology Stack
 - **Frontend**: Pure HTML, CSS, JavaScript (no framework)
-- **Backend**: Azure Functions for contact form submissions
+- **Backend**: Vercel Serverless Functions + MongoDB Atlas
 - **Storage**: LocalStorage for user preferences and form data backup
-- **Deployment**: Static files, can be served from any web server
+- **Deployment**: Vercel (static files + serverless API)
 
 ### Key Components
 
