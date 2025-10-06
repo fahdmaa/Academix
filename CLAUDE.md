@@ -4,182 +4,207 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Academix** is a modern single-page web application for booking private finance and accounting lessons. It's a multi-language educational service website with MongoDB backend integration.
+**Academix** is a modern React-based single-page web application for booking private finance and accounting lessons. It's a multi-language (French/English) educational service website with MongoDB backend integration and modern UI/UX design.
 
 ## Architecture
 
 ### Technology Stack
-- **Frontend**: Pure HTML, CSS, JavaScript (no framework)
+- **Frontend**: React 18.2.0 + Vite 5.0.8
+- **UI Libraries**: Framer Motion (animations), GSAP (menu animations)
 - **Backend**: Vercel Serverless Functions + MongoDB Atlas
-- **Storage**: LocalStorage for user preferences and form data backup
-- **Deployment**: Vercel (static files + serverless API)
+- **Storage**: LocalStorage for user preferences (theme, language)
+- **Deployment**: Vercel (React SPA + serverless API)
+- **Styling**: CSS Modules with theme variables (glassmorphism design)
 
 ### Key Components
 
 1. **Multi-language System**
-   - Languages: French (default), English, Arabic (with RTL support)
-   - Translation keys in `script.js` (translations object)
+   - Languages: French (default), English
+   - Translation system in `src/translations.js` with complete FR/EN dictionaries
+   - Language context provider in `src/context/LanguageContext.jsx`
    - Language preference saved to localStorage
+   - All components use `t('key')` function for translations
 
 2. **Theme System**
-   - Dark/Light mode toggle
-   - CSS variables for theming in `styles.css`
+   - Dark/Light mode toggle with CSS variables
+   - Theme context provider in `src/context/ThemeContext.jsx`
+   - Plasma animated background with theme-aware colors
    - Theme preference saved to localStorage
+   - Glassmorphism design with backdrop-filter effects
 
 3. **Form Handling**
-   - Azure Functions backend integration for form submissions
-   - Backup submission to localStorage if Azure backend fails
-   - Form validation and error handling
+   - MongoDB Atlas backend for form submissions
+   - Vercel serverless function at `/api/submit-form`
+   - EmailJS integration for email notifications
+   - Form validation and error handling with translations
+   - Success/error messages in selected language
 
-4. **Mobile Support**
-   - Responsive design with mobile optimizations integrated into main files
-   - Touch interactions and swipe gestures
-   - Mobile menu with hamburger icon
-   - Performance optimizations for low-end devices
+4. **UI/UX Features**
+   - StaggeredMenu navigation with GSAP animations
+   - Plasma animated background (5 gradient layers)
+   - Subject modal with detailed information
+   - Theme-aware components and styling
+   - Auto-hiding header on scroll down
+   - Responsive design for all screen sizes
 
 ## Development Setup
 
 ### Installing Dependencies
 ```bash
-npm install  # Only installs dev servers (http-server, live-server)
+npm install
 ```
 
 ### Running Locally
-
-Since this is a static site with no build process, you can use any static file server:
-
-#### Method 1: npm Scripts (Recommended)
 ```bash
-npm start      # Starts http-server on port 8080 and opens browser
-npm run live   # Starts live-server with auto-reload on port 8080
-npm run dev    # Alias for npm start
+npm run dev    # Starts Vite dev server (usually port 3000-3004)
 ```
 
-#### Method 2: Python Server
+### Building for Production
 ```bash
-# Navigate to project directory
-cd /mnt/c/Users/fahdm/WebstormProjects/OUIIPROF
-python3 -m http.server 8080
+npm run build  # Builds to /dist directory
+npm run preview # Preview production build locally
 ```
-
-#### Method 3: Use the Start Script
-```bash
-# Windows users can double-click start-server.bat
-# Or run:
-python start-server.py  # Automatic port selection (8080-8089)
-```
-
-#### Method 4: Alternative Servers
-```bash
-# Using Node.js
-npm install -g http-server
-http-server -p 8080
-
-# Using PHP
-php -S localhost:8080
-```
-
-#### Method 5: Direct File Access (Firefox)
-- Open files directly in Firefox Developer Edition via File > Open
-- Full path: `file:///C:/Users/fahdm/WebstormProjects/OUIIPROF/index.html`
-- Note: May encounter CORS issues with some features
 
 ### Access Points
-- Main site: `http://localhost:8080/index.html`
-- Pricing module: `http://localhost:8080/pricing-module.html`
+- Dev server: `http://localhost:3004` (or next available port)
+- All routes handled by React Router (SPA)
 
-### Troubleshooting
-- **Port conflicts**: The Python script automatically tries ports 8080-8089
-- **CORS errors**: Always use `http://` URLs instead of `file://` protocol
-- **Windows Firewall**: May need to allow Python through firewall
-- **Live reload**: Use `npm run live` for automatic browser refresh on file changes
+### Environment Variables
+Create `.env.local` file with:
+```
+MONGODB_URI=mongodb+srv://Academix-admin:VwCCtasgkklQArow@academix-cluster.nacfctb.mongodb.net/academix-db?retryWrites=true&w=majority&appName=academix-cluster
+
+# Optional: EmailJS for email notifications
+EMAILJS_SERVICE_ID=your_service_id
+EMAILJS_TEMPLATE_ID=your_template_id
+EMAILJS_PUBLIC_KEY=your_public_key
+EMAILJS_PRIVATE_KEY=your_private_key
+```
 
 ## Code Structure
 
-### Main Files
-- **index.html**: Main landing page with all sections (hero, services, about, contact)
-- **pricing-module.html**: Dedicated pricing page with detailed lesson packages
+### React Components (`src/components/`)
+- **Hero.jsx**: Hero section with background image, overlay, animated title
+- **Services.jsx**: Services grid with 3 service cards
+- **Subjects.jsx**: 6 subjects with "En savoir plus" buttons opening modals
+- **SubjectModal.jsx**: Detailed subject information modal
+- **Appointment.jsx**: Booking form with full-width layout
+- **Footer.jsx**: Modern footer with gradient, social links, legal sections
+- **StaggeredMenuNew.jsx**: Animated hamburger menu with GSAP
+- **ThemeToggle.jsx**: Theme switcher button
+- **LanguageToggle.jsx**: Modern gradient language selector (FR/EN)
+- **PlasmaBackground.jsx**: Animated gradient background
 
-### JavaScript
-- **script.js**: Contains all core functionality:
-  - Theme switching (`toggleTheme()`)
-  - Language switching (`changeLanguage()`)
-  - Form submission (`handleSubmit()`)
-  - UI animations and interactions
-  - Achievement counters
-  - Modal system for subjects
-  - Mobile enhancements (navigation, touch, performance)
+### Context Providers (`src/context/`)
+- **ThemeContext.jsx**: Global theme state (light/dark)
+- **LanguageContext.jsx**: Global language state + `t()` translation function
 
-### Styles
-- **styles.css**: Main stylesheet with:
-  - CSS custom properties for theming
-  - Responsive breakpoints
-  - Animation keyframes
-  - Component styles
-  - Mobile-specific media queries (768px, 480px, 437px)
+### Hooks (`src/hooks/`)
+- **useScrollDirection.js**: Detects scroll direction for auto-hiding header
 
-### Helper Scripts
-- **start-server.bat**: Windows batch file for starting local server
-- **start-server.py**: Python script with automatic port selection (8080-8089)
-- **backup-submit.js**: Handles form submission fallback to localStorage
+### Styles (`src/styles/`)
+- **main.css**: Core component styles
+- **plasma.css**: Plasma background animations
+- **SubjectModal.css**: Modal styling with glassmorphism
+- **Carousel.css**: Framer Motion carousel styles
+- **LanguageToggle.css**: Modern language toggle button
+- **StaggeredMenu.css**: GSAP menu animations
 
-## Azure Functions Backend
+### Translations (`src/translations.js`)
+Complete FR/EN dictionaries for all UI text
 
-### Azure Infrastructure
-The project uses a complete Azure serverless infrastructure for form handling:
+### API (`api/`)
+- **submit-form.js**: Vercel serverless function for form submissions
+  - Validates form data
+  - Saves to MongoDB Atlas
+  - Sends email via EmailJS (optional)
+  - Returns success/error response
 
-1. **Azure Function App**: `ouiiprof-form-handler`
-   - Function Name: `handleForm`
-   - Runtime: Node.js
-   - Authorization Level: Function Key Required
-   - URL: `https://ouiiprof-form-handler.azurewebsites.net/api/handleForm`
+### MongoDB (`lib/`)
+- **mongodb.js**: MongoDB connection helper with connection pooling
 
-2. **Azure Cosmos DB**: `ouiiprof-backend-rg`
-   - Database: `FormSubmissionsDB`
-   - Container: `Messages`
-   - Stores all form submissions with metadata
+## MongoDB Backend
 
-3. **EmailJS Integration**: Configured in Azure Function environment variables
-   - `EMAILJS_SERVICE_ID`: Service configuration
-   - `EMAILJS_TEMPLATE_ID`: Email template
-   - `EMAILJS_PUBLIC_KEY`: Public API key
-   - `EMAILJS_PRIVATE_KEY`: Private API key for authentication
+### Database Configuration
+- **Provider**: MongoDB Atlas (cloud)
+- **Database**: `academix-db`
+- **Collection**: `form_submissions`
+- **Connection**: Via `MONGODB_URI` environment variable
 
 ### Form Submission Flow
-1. **Form Data**: Collected from contact form (name, email, message, etc.)
-2. **Azure Function**: Processes submission with authentication via function key
-3. **Data Storage**: Saved to Cosmos DB with timestamp and unique ID
-4. **Email Notification**: Sent via EmailJS to `fahd.maatoug@outlook.fr`
-5. **Response**: Success/failure response with email and DB status
+1. User fills form in Appointment section
+2. Frontend sends POST to `/api/submit-form`
+3. Serverless function validates data
+4. Data saved to MongoDB Atlas
+5. EmailJS sends notification (if configured)
+6. Success message shown in selected language
 
-### Configuration Files
-- **`config.js`**: Local development config (contains Azure function key, excluded from git)
-- **`config.prod.js`**: Production config (key injected via Vercel environment variables)
-- **`build.js`**: Build script that injects environment variables during deployment
+### Environment Variables (Vercel)
+Required:
+- `MONGODB_URI`: MongoDB Atlas connection string
 
-### Environment Variables (Vercel Production)
-- `AZURE_FUNCTION_KEY`: The function key for authentication (`default` key recommended)
+Optional (for email notifications):
+- `EMAILJS_SERVICE_ID`
+- `EMAILJS_TEMPLATE_ID`
+- `EMAILJS_PUBLIC_KEY`
+- `EMAILJS_PRIVATE_KEY`
 
-### CORS Configuration
-Azure Function CORS allows:
-- `https://ouiiprof.me` (production domain)
-- `https://*.vercel.app` (Vercel preview deployments)
-- `http://localhost:8080` (local development)
-- `http://127.0.0.1:8080` (alternative localhost)
+## Deployment
+
+### Vercel Configuration (`vercel.json`)
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [...]
+}
+```
+
+### Deploy to Vercel
+1. Connect GitHub repository to Vercel
+2. Add environment variables in Vercel dashboard
+3. Deploy automatically on push to master
+
+See [VERCEL_SETUP.md](./VERCEL_SETUP.md) for detailed deployment guide.
 
 ## Important Notes
 
-1. **No Build Process**: Changes to files are immediately reflected - no compilation needed (except for production config injection)
-2. **Security**: Input sanitization implemented, Azure Functions provide secure backend with function key authentication
-3. **localStorage Keys**: `theme`, `language`, `ouiiprof_submissions`
-4. **Testing**: Manual testing only - no automated test framework
-5. **Mobile Integration**: All mobile functionality is now integrated into the main files (index.html, styles.css, script.js)
-6. **Cleaned Structure**: Test/debug files removed, duplicate functions eliminated, code optimized
-7. **Accessibility**: ARIA labels added, semantic HTML improved, keyboard navigation supported
-8. **Configuration**: 
-   - Local: Uses `config.js` with actual Azure function key
-   - Production: Uses `config.prod.js` with environment variable injection
-9. **Fallback System**: Form submissions automatically fall back to localStorage if Azure backend fails
-10. **Browser Testing**: Test in multiple browsers, especially for RTL (Arabic) support
-11. **Mobile Testing**: Significant mobile optimizations - test on various device sizes
-12. **Azure Function Status**: Working correctly - processes form submissions, saves to Cosmos DB, sends emails via EmailJS
+1. **React Migration**: Migrated from vanilla JS to React 18 with Vite
+2. **Translation System**: All text uses `t('key')` from LanguageContext
+3. **Theme System**: All colors use CSS variables that change with theme
+4. **Build Process**: Vite builds to `/dist` directory
+5. **localStorage Keys**: `theme`, `language`
+6. **Modern UI**: Glassmorphism, plasma background, smooth animations
+7. **Responsive**: Mobile-first design with breakpoints at 768px, 1024px
+8. **Accessibility**: ARIA labels, semantic HTML, keyboard navigation
+9. **Performance**: Code splitting, lazy loading, optimized animations
+10. **Browser Support**: Modern browsers (Chrome, Firefox, Safari, Edge)
+
+## Development Workflow
+
+1. **Start dev server**: `npm run dev`
+2. **Make changes**: Hot module reload (HMR) updates automatically
+3. **Test translations**: Switch between FR/EN using language toggle
+4. **Test themes**: Switch between light/dark using theme toggle
+5. **Test form**: Submit form (requires MongoDB connection)
+6. **Build**: `npm run build` before deploying
+7. **Deploy**: Push to GitHub → Vercel auto-deploys
+
+## Testing
+
+- **Manual testing**: Test all features in both languages and themes
+- **Form testing**: Test form submission with valid/invalid data
+- **Responsive testing**: Test on mobile, tablet, desktop sizes
+- **Browser testing**: Test in Chrome, Firefox, Safari
+- **API testing**: Verify MongoDB connection and email notifications
+
+## Key Files Reference
+
+- **Entry point**: `src/main.jsx`
+- **Root component**: `src/App.jsx`
+- **Translations**: `src/translations.js`
+- **Theme config**: `src/theme.css`
+- **Main HTML**: `index.html`
+- **API endpoint**: `api/submit-form.js`
+- **MongoDB config**: `lib/mongodb.js`
+- **Deployment guide**: `VERCEL_SETUP.md`
