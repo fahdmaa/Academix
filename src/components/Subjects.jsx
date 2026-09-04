@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext'
 import SubjectModal from './SubjectModal'
 
 function Subjects() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [selectedSubject, setSelectedSubject] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
