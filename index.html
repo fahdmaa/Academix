@@ -43,23 +43,16 @@
     </nav>
 
     <div class="nav-actions">
-      <!-- Language Selector Dropdown -->
-      <div class="lang-toggle-wrapper">
-        <button id="lang-toggle-btn" class="lang-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Choisir la langue">
-          <span id="current-lang-flag">🇫🇷</span>
-          <span id="current-lang-code">FR</span>
-          <i class="ti ti-chevron-down"></i>
+      <!-- Modern Apple Segmented Language Switcher -->
+      <div class="lang-segmented-control" role="radiogroup" aria-label="Choisir la langue">
+        <button type="button" class="lang-pill-btn active" data-lang="fr" role="radio" aria-checked="true" aria-label="Français">
+          <span class="lang-flag-emoji">🇫🇷</span>
+          <span class="lang-label-text">FR</span>
         </button>
-        <div id="lang-dropdown" class="lang-dropdown" role="menu">
-          <button class="lang-option active" data-lang="fr" role="menuitem" aria-selected="true">
-            <span>🇫🇷 Français</span>
-            <i class="ti ti-check"></i>
-          </button>
-          <button class="lang-option" data-lang="en" role="menuitem" aria-selected="false">
-            <span>🇬🇧 English</span>
-            <i class="ti ti-check"></i>
-          </button>
-        </div>
+        <button type="button" class="lang-pill-btn" data-lang="en" role="radio" aria-checked="false" aria-label="English">
+          <span class="lang-flag-emoji">🇬🇧</span>
+          <span class="lang-label-text">EN</span>
+        </button>
       </div>
 
       <!-- Theme Mode Toggle -->
@@ -87,6 +80,19 @@
       <li><a href="#subjects" class="drawer-link" data-i18n="navSubjects">Matières</a></li>
       <li><a href="#appointment" class="drawer-link" data-i18n="navBooking">Réservation</a></li>
     </ul>
+
+    <div class="drawer-footer-actions">
+      <div class="lang-segmented-control drawer-lang-control" role="radiogroup" aria-label="Choisir la langue">
+        <button type="button" class="lang-pill-btn active" data-lang="fr" role="radio" aria-checked="true">
+          <span class="lang-flag-emoji">🇫🇷</span>
+          <span class="lang-label-text">Français</span>
+        </button>
+        <button type="button" class="lang-pill-btn" data-lang="en" role="radio" aria-checked="false">
+          <span class="lang-flag-emoji">🇬🇧</span>
+          <span class="lang-label-text">English</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <main>

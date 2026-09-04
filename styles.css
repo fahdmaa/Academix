@@ -302,95 +302,82 @@ section {
   gap: 0.65rem;
 }
 
-/* Language Toggle Dropdown */
-.lang-toggle-wrapper {
-  position: relative;
-}
-
-.lang-btn {
+/* Modern Apple Segmented Language Switcher */
+.lang-segmented-control {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 0.8rem;
   background: var(--bg-subtle);
   border: 1px solid var(--border-color);
   border-radius: 9999px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  min-height: 40px;
-  transition: all 0.2s var(--ease-apple);
+  padding: 3px;
+  gap: 2px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s var(--ease-apple), background-color 0.2s var(--ease-apple);
 }
 
-.lang-btn:hover {
-  background: rgba(125, 125, 125, 0.12);
+.lang-segmented-control:hover {
   border-color: var(--border-specular);
 }
 
-.lang-btn:active {
-  transform: scale(0.96);
-}
-
-.lang-dropdown {
-  position: absolute;
-  top: calc(100% + 0.6rem);
-  right: 0;
-  background: var(--card-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 0.35rem;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-  display: none;
-  flex-direction: column;
-  gap: 0.25rem;
-  min-width: 140px;
-  z-index: 1010;
-  animation: dropdownIn 0.2s var(--ease-apple);
-}
-
-.lang-dropdown.active {
-  display: flex;
-}
-
-.lang-option {
-  display: flex;
+.lang-pill-btn {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.65rem;
-  padding: 0.55rem 0.85rem;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  min-height: 32px;
   background: transparent;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 0.88rem;
-  font-weight: 500;
+  border: 1px solid transparent;
+  border-radius: 9999px;
   color: var(--text-secondary);
-  width: 100%;
-  text-align: left;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.lang-option:hover {
-  background: var(--bg-subtle);
-  color: var(--text-primary);
-}
-
-.lang-option.active {
-  color: var(--accent-color);
+  font-size: 0.78rem;
   font-weight: 600;
-  background: var(--accent-subtle);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.22s var(--ease-apple);
 }
 
-.lang-option i {
-  font-size: 0.95rem;
+.lang-pill-btn:hover:not(.active) {
+  color: var(--text-primary);
+  background: rgba(125, 125, 125, 0.08);
 }
 
-@keyframes dropdownIn {
-  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+.lang-pill-btn:active {
+  transform: scale(0.94);
+}
+
+.lang-pill-btn.active {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border-color: var(--border-specular);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .lang-pill-btn.active {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.lang-flag-emoji {
+  font-size: 0.85rem;
+  line-height: 1;
+  display: inline-block;
+  transition: transform 0.2s var(--ease-apple);
+}
+
+.lang-pill-btn:hover .lang-flag-emoji {
+  transform: scale(1.15);
+}
+
+.lang-label-text {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 /* Theme Toggle Button */
@@ -511,6 +498,28 @@ section {
 
 .drawer-link:hover {
   background: var(--bg-subtle);
+}
+
+.drawer-footer-actions {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+}
+
+.drawer-lang-control {
+  width: 100%;
+  max-width: 320px;
+  justify-content: stretch;
+  padding: 4px;
+}
+
+.drawer-lang-control .lang-pill-btn {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  font-size: 0.88rem;
+  min-height: 42px;
 }
 
 @media (max-width: 860px) {

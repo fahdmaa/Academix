@@ -470,10 +470,7 @@ const htmlEl = document.documentElement;
 const themeToggleBtn = document.getElementById('theme-toggle-btn');
 const themeIcon = document.getElementById('theme-icon');
 const logoImg = document.getElementById('navbar-logo');
-const langToggleBtn = document.getElementById('lang-toggle-btn');
-const langDropdown = document.getElementById('lang-dropdown');
-const currentLangFlag = document.getElementById('current-lang-flag');
-const currentLangCode = document.getElementById('current-lang-code');
+const langPillBtns = document.querySelectorAll('.lang-pill-btn');
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 const mobileDrawer = document.getElementById('mobile-drawer');
 
@@ -523,21 +520,21 @@ function applyLanguage(lang) {
   htmlEl.setAttribute('lang', lang);
   localStorage.setItem('academix_lang', lang);
 
-  // Update header toggle button
-  if (lang === 'fr') {
-    currentLangFlag.textContent = '🇫🇷';
-    currentLangCode.textContent = 'FR';
-  } else {
-    currentLangFlag.textContent = '🇬🇧';
-    currentLangCode.textContent = 'EN';
-  }
-
-  // Update active status in dropdown
-  document.querySelectorAll('.lang-option').forEach(btn => {
+  // Update active status for all segmented pill buttons across desktop & mobile
+  document.querySelectorAll('.lang-pill-btn').forEach(btn => {
     const isSelected = btn.dataset.lang === lang;
     btn.classList.toggle('active', isSelected);
-    btn.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+    btn.setAttribute('aria-checked', isSelected ? 'true' : 'false');
   });
+
+  // Update theme toggle button accessible label
+  if (themeToggleBtn) {
+    if (currentTheme === 'dark') {
+      themeToggleBtn.setAttribute('aria-label', lang === 'fr' ? 'Passer en mode clair' : 'Switch to light mode');
+    } else {
+      themeToggleBtn.setAttribute('aria-label', lang === 'fr' ? 'Passer en mode sombre' : 'Switch to dark mode');
+    }
+  }
 
   // Apply translations to all data-i18n elements
   const dict = TRANSLATIONS[lang] || TRANSLATIONS.fr;
@@ -557,7 +554,7 @@ function applyLanguage(lang) {
   });
 
   // Re-populate modal if open
-  if (currentSubjectId && subjectModal.classList.contains('active')) {
+  if (currentSubjectId && subjectModal && subjectModal.classList.contains('active')) {
     populateSubjectModal(currentSubjectId);
   }
 }
@@ -647,32 +644,15 @@ if (themeToggleBtn) {
   });
 }
 
-// Language dropdown toggle
-if (langToggleBtn) {
-  langToggleBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isExpanded = langDropdown.classList.toggle('active');
-    langToggleBtn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
-  });
-}
-
-// Language options click
-document.querySelectorAll('.lang-option').forEach(btn => {
+// Language segmented pill switcher (Header & Mobile Drawer)
+document.querySelectorAll('.lang-pill-btn').forEach(btn => {
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
-    const lang = btn.dataset.lang;
-    applyLanguage(lang);
-    langDropdown.classList.remove('active');
-    langToggleBtn.setAttribute('aria-expanded', 'false');
+    const targetLang = btn.dataset.lang;
+    if (targetLang && targetLang !== currentLang) {
+      applyLanguage(targetLang);
+    }
   });
-});
-
-// Close language dropdown on outside click
-document.addEventListener('click', (e) => {
-  if (langDropdown && e && e.target && !langDropdown.contains(e.target) && (!langToggleBtn || !langToggleBtn.contains(e.target))) {
-    langDropdown.classList.remove('active');
-    if (langToggleBtn) langToggleBtn.setAttribute('aria-expanded', 'false');
-  }
 });
 
 // Mobile menu toggle
