@@ -1036,6 +1036,30 @@ section {
   margin-bottom: 1.25rem;
 }
 
+.subject-media {
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: transparent;
+}
+
+.subject-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: none;
+  filter: drop-shadow(0 6px 16px rgba(0, 113, 227, 0.2));
+  transition: transform 0.3s var(--ease-apple), filter 0.3s ease;
+}
+
+.subject-card:hover .subject-img {
+  transform: scale(1.12) translateY(-2px);
+  filter: drop-shadow(0 12px 24px rgba(0, 113, 227, 0.45));
+}
+
 .subject-icon {
   width: 52px;
   height: 52px;
@@ -1235,17 +1259,29 @@ section {
 }
 
 .modal-icon-badge {
-  width: 72px;
-  height: 72px;
+  width: 76px;
+  height: 76px;
   margin: 0 auto 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  background: var(--accent-subtle);
-  border: 1px solid var(--accent-border);
+  background: transparent;
   color: var(--accent-color);
   font-size: 2.25rem;
+}
+
+.modal-subject-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 20px rgba(0, 113, 227, 0.35));
+  animation: floatSubtle 3s ease-in-out infinite;
+}
+
+@keyframes floatSubtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
 
 .modal-title {

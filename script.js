@@ -6,6 +6,7 @@
 const SUBJECTS_DATA = {
   'financial-accounting': {
     icon: 'ti-calculator',
+    image: '/images/subjects/financial-accounting.png',
     title: {
       fr: 'Comptabilité Financière',
       en: 'Financial Accounting'
@@ -52,6 +53,7 @@ const SUBJECTS_DATA = {
 
   'management-accounting': {
     icon: 'ti-chart-pie',
+    image: '/images/subjects/management-accounting.png',
     title: {
       fr: 'Comptabilité de Gestion',
       en: 'Management Accounting'
@@ -98,6 +100,7 @@ const SUBJECTS_DATA = {
 
   'corporate-finance': {
     icon: 'ti-building-bank',
+    image: '/images/subjects/corporate-finance.png',
     title: {
       fr: 'Finance d\'Entreprise',
       en: 'Corporate Finance'
@@ -144,6 +147,7 @@ const SUBJECTS_DATA = {
 
   'financial-analysis': {
     icon: 'ti-trending-up',
+    image: '/images/subjects/financial-analysis.png',
     title: {
       fr: 'Analyse Financière',
       en: 'Financial Analysis'
@@ -190,6 +194,7 @@ const SUBJECTS_DATA = {
 
   'taxation': {
     icon: 'ti-receipt-tax',
+    image: '/images/subjects/taxation.png',
     title: {
       fr: 'Fiscalité des Entreprises',
       en: 'Corporate Taxation'
@@ -236,6 +241,7 @@ const SUBJECTS_DATA = {
 
   'auditing': {
     icon: 'ti-clipboard-check',
+    image: '/images/subjects/auditing.png',
     title: {
       fr: 'Audit & Contrôle Interne',
       en: 'Auditing & Internal Control'
@@ -785,8 +791,12 @@ function populateSubjectModal(subjectId) {
   if (!data) return;
   currentSubjectId = subjectId;
 
-  // Icon
-  modalIcon.innerHTML = `<i class="ti ${data.icon}"></i>`;
+  // 3D Glass Icon Image
+  if (data.image) {
+    modalIcon.innerHTML = `<img src="${data.image}" alt="${data.title[currentLang]}" class="modal-subject-img" />`;
+  } else {
+    modalIcon.innerHTML = `<i class="ti ${data.icon}"></i>`;
+  }
 
   // Title & Level
   modalTitle.textContent = data.title[currentLang];
