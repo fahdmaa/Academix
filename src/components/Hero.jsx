@@ -1,73 +1,71 @@
-import { useEffect, useRef } from 'react'
 import { useLanguage } from '../context/LanguageContext'
 
 function Hero() {
-  const { t } = useLanguage()
-  const titleRef = useRef(null)
+  const { t, language } = useLanguage()
 
-  useEffect(() => {
-    // Split text animation
-    const splitText = (element) => {
-      const text = element.textContent.trim()
-      const words = text.split(' ')
-      element.innerHTML = ''
-      element.classList.add('split-text')
-
-      let charIndex = 0
-      words.forEach((word, wordIndex) => {
-        const wordSpan = document.createElement('span')
-        wordSpan.className = 'word'
-
-        for (let i = 0; i < word.length; i++) {
-          const char = word[i]
-          const span = document.createElement('span')
-          span.className = 'char'
-          span.textContent = char
-          span.style.animationDelay = `${charIndex * 0.03}s`
-          wordSpan.appendChild(span)
-          charIndex++
-        }
-
-        element.appendChild(wordSpan)
-        if (wordIndex < words.length - 1) {
-          const space = document.createTextNode(' ')
-          element.appendChild(space)
-          charIndex++
-        }
-      })
+  const stats = [
+    {
+      value: '1-à-1',
+      label: language === 'fr' ? 'Accompagnement Sur-Mesure' : 'Tailored 1-on-1 Mentorship',
+      icon: 'fa-user-graduate'
+    },
+    {
+      value: '100%',
+      label: language === 'fr' ? 'Flexible & Personnalisé' : '100% Flexible Sessions',
+      icon: 'fa-clock'
+    },
+    {
+      value: '+500h',
+      label: language === 'fr' ? 'De cours dispensés' : 'Hours of Tutoring Delivered',
+      icon: 'fa-chalkboard-teacher'
+    },
+    {
+      value: 'L1 → Master',
+      label: language === 'fr' ? 'Tous niveaux académiques' : 'All Academic Levels',
+      icon: 'fa-award'
     }
-
-    if (titleRef.current) {
-      splitText(titleRef.current)
-    }
-  }, [t])
+  ]
 
   return (
     <section className="hero-section" id="home">
-      <div className="hero-background">
-        <img
-          src="/images/hero-classroom.jpg"
-          alt="Finance classroom"
-          className="hero-bg-image"
-        />
-        <div className="hero-overlay"></div>
-      </div>
-
       <div className="container">
         <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title" ref={titleRef}>
-              {t('heroTitle')}
-            </h1>
-            <p className="hero-description">
-              {t('heroDescription')}
-            </p>
-            <div className="hero-buttons">
-              <a href="#appointment" className="btn-primary">
-                <span>{t('bookSession')}</span>
-                <i className="fas fa-arrow-right"></i>
-              </a>
-            </div>
+          <div className="hero-badge">
+            <span className="hero-badge-sparkle">✦</span>
+            <span className="hero-badge-text">
+              {language === 'fr' ? 'Excellence en Finance & Comptabilité' : 'Excellence in Finance & Accounting'}
+            </span>
+          </div>
+
+          <h1 className="hero-title">
+            {t('heroTitle')}
+          </h1>
+
+          <p className="hero-description">
+            {t('heroDescription')}
+          </p>
+
+          <div className="hero-buttons">
+            <a href="#appointment" className="btn-primary">
+              <span>{t('bookSession')}</span>
+              <i className="fas fa-arrow-right"></i>
+            </a>
+            <a href="#subjects" className="btn-secondary-glass">
+              <span>{language === 'fr' ? 'Explorer les Matières' : 'Explore Subjects'}</span>
+              <i className="fas fa-chevron-down"></i>
+            </a>
+          </div>
+
+          <div className="hero-stats-grid">
+            {stats.map((stat, idx) => (
+              <div key={idx} className="hero-stat-card">
+                <div className="hero-stat-icon">
+                  <i className={`fas ${stat.icon}`}></i>
+                </div>
+                <div className="hero-stat-value">{stat.value}</div>
+                <div className="hero-stat-label">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -76,3 +74,4 @@ function Hero() {
 }
 
 export default Hero
+

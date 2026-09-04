@@ -1,3 +1,4 @@
+import { useLanguage } from './context/LanguageContext'
 import StaggeredMenuNew from './components/StaggeredMenuNew'
 import Hero from './components/Hero'
 import Services from './components/Services'
@@ -6,14 +7,32 @@ import Appointment from './components/Appointment'
 import Footer from './components/Footer'
 import PlasmaBackground from './components/PlasmaBackground'
 
-const menuItems = [
-  { label: 'Accueil', ariaLabel: 'Aller à l\'accueil', link: '#home' },
-  { label: 'Services', ariaLabel: 'Voir nos services', link: '#services' },
-  { label: 'Matières', ariaLabel: 'Découvrir les matières', link: '#subjects' },
-  { label: 'Réservation', ariaLabel: 'Réserver une séance', link: '#appointment' }
-];
-
 function App() {
+  const { t, language } = useLanguage()
+
+  const menuItems = [
+    { 
+      label: language === 'fr' ? 'Accueil' : 'Home', 
+      ariaLabel: language === 'fr' ? 'Aller à l\'accueil' : 'Go to home', 
+      link: '#home' 
+    },
+    { 
+      label: t('services'), 
+      ariaLabel: language === 'fr' ? 'Voir nos services' : 'View our services', 
+      link: '#services' 
+    },
+    { 
+      label: t('subjects'), 
+      ariaLabel: language === 'fr' ? 'Découvrir les matières' : 'Discover subjects', 
+      link: '#subjects' 
+    },
+    { 
+      label: t('reservation'), 
+      ariaLabel: language === 'fr' ? 'Réserver une séance' : 'Book a session', 
+      link: '#appointment' 
+    }
+  ]
+
   return (
     <>
       <PlasmaBackground />
@@ -36,3 +55,4 @@ function App() {
 }
 
 export default App
+

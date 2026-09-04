@@ -127,6 +127,9 @@ function Subjects() {
       <section className="subjects-section" id="subjects">
         <div className="container">
           <div className="section-header">
+            <div className="section-eyebrow">
+              {language === 'fr' ? 'Curriculum & Spécialités' : 'Curriculum & Specializations'}
+            </div>
             <h2 className="section-title">{t('subjectsTitle')}</h2>
             <p className="section-description">
               {t('subjectsDescription')}
@@ -135,14 +138,33 @@ function Subjects() {
 
           <div className="subject-grid">
             {subjects.map((subject, index) => (
-              <div key={index} className="subject-card">
-                <div className="subject-icon">
-                  <i className={`fas ${subject.icon}`}></i>
+              <div key={index} className="subject-card" onClick={() => handleOpenModal(subject)}>
+                <div className="subject-card-header">
+                  <div className="subject-icon">
+                    <i className={`fas ${subject.icon}`}></i>
+                  </div>
+                  <span className="subject-level-badge">{subject.level}</span>
                 </div>
+
                 <h3 className="subject-title">{t(subject.titleKey)}</h3>
                 <p className="subject-description">{t(subject.descriptionKey)}</p>
-                <button className="learn-more-btn" onClick={() => handleOpenModal(subject)}>
-                  {t('learnMore')}
+
+                <div className="subject-topics-preview">
+                  {subject.topics.slice(0, 3).map((top, tIdx) => (
+                    <span key={tIdx} className="subject-topic-pill">{top}</span>
+                  ))}
+                </div>
+
+                <button 
+                  className="learn-more-btn" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenModal(subject);
+                  }}
+                  aria-label={`En savoir plus sur ${t(subject.titleKey)}`}
+                >
+                  <span>{t('learnMore')}</span>
+                  <i className="fas fa-arrow-right"></i>
                 </button>
               </div>
             ))}

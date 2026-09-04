@@ -1,14 +1,10 @@
 import { useLanguage } from '../context/LanguageContext'
 
 function Footer() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
 
   return (
     <footer className="footer">
-      <div className="footer-background">
-        <div className="footer-gradient"></div>
-      </div>
-
       <div className="container">
         <div className="footer-content">
           <div className="footer-section footer-brand">
@@ -19,46 +15,44 @@ function Footer() {
             <p className="footer-description">
               {t('footerTagline')}
             </p>
-            <div className="footer-badge">
-              <i className="fas fa-graduation-cap"></i>
-              <span>{t('since2024')}</span>
+            <div className="footer-status-pill">
+              <span className="status-dot"></span>
+              <span>{language === 'fr' ? 'Sessions ouvertes • Année 2024-2025' : 'Bookings Open • Academic Year 2024-2025'}</span>
             </div>
           </div>
 
           <div className="footer-section">
             <h4 className="footer-section-title">
-              <i className="fas fa-link"></i>
               {t('quickLinks')}
             </h4>
             <ul className="footer-links">
-              <li><a href="#services"><i className="fas fa-chevron-right"></i>{t('services')}</a></li>
-              <li><a href="#subjects"><i className="fas fa-chevron-right"></i>{t('subjects')}</a></li>
-              <li><a href="#appointment"><i className="fas fa-chevron-right"></i>{t('reservation')}</a></li>
-              <li><a href="#about"><i className="fas fa-chevron-right"></i>{t('about')}</a></li>
+              <li><a href="#home">{language === 'fr' ? 'Accueil' : 'Home'}</a></li>
+              <li><a href="#services">{t('services')}</a></li>
+              <li><a href="#subjects">{t('subjects')}</a></li>
+              <li><a href="#appointment">{t('reservation')}</a></li>
             </ul>
           </div>
 
           <div className="footer-section">
             <h4 className="footer-section-title">
-              <i className="fas fa-envelope"></i>
               {t('contact')}
             </h4>
             <ul className="footer-links footer-contact">
               <li>
-                <a href="mailto:contact@academix.com">
-                  <i className="fas fa-paper-plane"></i>
-                  <span>contact@academix.com</span>
+                <a href="mailto:contact@ouiiprof.me">
+                  <i className="fas fa-envelope"></i>
+                  <span>contact@ouiiprof.me</span>
                 </a>
               </li>
               <li>
                 <a href="tel:+33123456789">
-                  <i className="fas fa-phone-alt"></i>
+                  <i className="fas fa-phone"></i>
                   <span>+33 1 23 45 67 89</span>
                 </a>
               </li>
               <li>
                 <div className="footer-location">
-                  <i className="fas fa-map-marker-alt"></i>
+                  <i className="fas fa-location-dot"></i>
                   <span>{t('location')}</span>
                 </div>
               </li>
@@ -67,21 +61,20 @@ function Footer() {
 
           <div className="footer-section">
             <h4 className="footer-section-title">
-              <i className="fas fa-share-alt"></i>
               {t('followUs')}
             </h4>
             <div className="social-links-modern">
-              <a href="#" aria-label="Facebook" className="social-link-fb">
-                <i className="fab fa-facebook-f"></i>
-              </a>
-              <a href="#" aria-label="LinkedIn" className="social-link-ln">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                 <i className="fab fa-linkedin-in"></i>
               </a>
-              <a href="#" aria-label="Instagram" className="social-link-ig">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <i className="fab fa-instagram"></i>
               </a>
-              <a href="#" aria-label="Twitter" className="social-link-tw">
-                <i className="fab fa-twitter"></i>
+              <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+                <i className="fab fa-x-twitter"></i>
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <i className="fab fa-facebook-f"></i>
               </a>
             </div>
             <div className="footer-newsletter">
@@ -93,8 +86,7 @@ function Footer() {
         <div className="footer-bottom">
           <div className="footer-bottom-content">
             <p className="footer-copyright">
-              <i className="fas fa-copyright"></i>
-              {new Date().getFullYear()} Academix. {t('allRightsReserved')}
+              © {new Date().getFullYear()} Academix Education. {t('allRightsReserved')}
             </p>
             <div className="footer-legal">
               <a href="#privacy">{t('privacy')}</a>
@@ -109,3 +101,4 @@ function Footer() {
 }
 
 export default Footer
+

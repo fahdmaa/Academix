@@ -1,6 +1,7 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
 import { useScrollDirection } from '../hooks/useScrollDirection';
@@ -15,6 +16,7 @@ export const StaggeredMenuNew = ({
   onMenuClose
 }) => {
   const { theme } = useTheme();
+  const { t, language } = useLanguage();
   const isVisible = useScrollDirection();
   const [open, setOpen] = useState(false);
   const openRef = useRef(false);
@@ -26,7 +28,7 @@ export const StaggeredMenuNew = ({
   const iconRef = useRef(null);
   const textInnerRef = useRef(null);
   const textWrapRef = useRef(null);
-  const [textLines, setTextLines] = useState(['Menu', 'Close']);
+  const [textLines, setTextLines] = useState(['Menu', language === 'fr' ? 'Fermer' : 'Close']);
 
   const openTlRef = useRef(null);
   const closeTweenRef = useRef(null);
@@ -257,17 +259,30 @@ export const StaggeredMenuNew = ({
 
       <header className="staggered-menu-header" aria-label="Main navigation header">
         <div className="sm-logo" aria-label="Logo">
-          <img
-            src={theme === 'light' ? '/images/logos/logo-light.png' : '/images/logos/logo-dark.png'}
-            alt="Academix Logo"
-            className="sm-logo-img"
-            draggable={false}
-          />
+          <a href="#home" className="sm-logo-link">
+            <img
+              src={theme === 'light' ? '/images/logos/logo-light.png' : '/images/logos/logo-dark.png'}
+              alt="Academix Logo"
+              className="sm-logo-img"
+              draggable={false}
+            />
+          </a>
         </div>
+
+        <nav className="sm-desktop-nav" aria-label="Navigation principale">
+          {items.map((it, idx) => (
+            <a key={idx} href={it.link} className="sm-desktop-link">
+              {it.label}
+            </a>
+          ))}
+        </nav>
 
         <div className="sm-header-actions">
           <LanguageToggle />
           <ThemeToggle />
+          <a href="#appointment" className="sm-book-btn">
+            <span>{t('reservation') || 'Réservation'}</span>
+          </a>
           <button
             ref={toggleBtnRef}
             className="sm-toggle"

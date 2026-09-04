@@ -1,7 +1,10 @@
 import { useEffect } from 'react'
+import { useLanguage } from '../context/LanguageContext'
 import '../styles/SubjectModal.css'
 
 function SubjectModal({ subject, isOpen, onClose }) {
+  const { t, language } = useLanguage()
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -27,18 +30,23 @@ function SubjectModal({ subject, isOpen, onClose }) {
 
   if (!isOpen || !subject) return null
 
+  const subjectTitle = subject.titleKey ? t(subject.titleKey) : subject.title
+
   return (
     <div className="subject-modal-overlay" onClick={onClose}>
       <div className="subject-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="subject-modal-close" onClick={onClose} aria-label="Fermer">
-          <i className="fas fa-times"></i>
+        <div className="subject-modal-grabber" aria-hidden="true"></div>
+
+        <button className="subject-modal-close" onClick={onClose} aria-label={t('close') || 'Fermer'}>
+          <i className="fas fa-xmark"></i>
         </button>
 
         <div className="subject-modal-header">
           <div className="subject-modal-icon">
             <i className={`fas ${subject.icon}`}></i>
           </div>
-          <h2 className="subject-modal-title">{subject.title}</h2>
+          <h2 className="subject-modal-title">{subjectTitle}</h2>
+          {subject.level && <span className="subject-modal-badge">{subject.level}</span>}
         </div>
 
         <div className="subject-modal-body">
@@ -47,13 +55,13 @@ function SubjectModal({ subject, isOpen, onClose }) {
           {subject.topics && subject.topics.length > 0 && (
             <div className="subject-modal-section">
               <h3 className="subject-modal-subtitle">
-                <i className="fas fa-book-open"></i>
-                Thèmes Abordés
+                <i className="fas fa-book-bookmark"></i>
+                {language === 'fr' ? 'Thèmes Abordés' : 'Key Topics Covered'}
               </h3>
               <ul className="subject-modal-topics">
                 {subject.topics.map((topic, index) => (
                   <li key={index} className="subject-modal-topic">
-                    <i className="fas fa-check-circle"></i>
+                    <i className="fas fa-circle-check"></i>
                     <span>{topic}</span>
                   </li>
                 ))}
@@ -64,8 +72,8 @@ function SubjectModal({ subject, isOpen, onClose }) {
           {subject.skills && subject.skills.length > 0 && (
             <div className="subject-modal-section">
               <h3 className="subject-modal-subtitle">
-                <i className="fas fa-lightbulb"></i>
-                Compétences Développées
+                <i className="fas fa-bolt"></i>
+                {language === 'fr' ? 'Compétences Développées' : 'Core Skills Acquired'}
               </h3>
               <div className="subject-modal-skills">
                 {subject.skills.map((skill, index) => (
@@ -82,15 +90,15 @@ function SubjectModal({ subject, isOpen, onClose }) {
               <div className="subject-modal-info-item">
                 <i className="fas fa-clock"></i>
                 <div>
-                  <strong>Durée recommandée</strong>
+                  <strong>{language === 'fr' ? 'Durée Recommandée' : 'Recommended Duration'}</strong>
                   <p>{subject.duration}</p>
                 </div>
               </div>
               {subject.level && (
                 <div className="subject-modal-info-item">
-                  <i className="fas fa-signal"></i>
+                  <i className="fas fa-layer-group"></i>
                   <div>
-                    <strong>Niveau</strong>
+                    <strong>{language === 'fr' ? 'Niveau Ciblé' : 'Target Level'}</strong>
                     <p>{subject.level}</p>
                   </div>
                 </div>
@@ -100,8 +108,8 @@ function SubjectModal({ subject, isOpen, onClose }) {
 
           <div className="subject-modal-cta">
             <a href="#appointment" className="subject-modal-btn" onClick={onClose}>
-              <i className="fas fa-calendar-check"></i>
-              Réserver une Séance
+              <span>{t('bookSession')}</span>
+              <i className="fas fa-arrow-right"></i>
             </a>
           </div>
         </div>
