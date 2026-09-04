@@ -38,23 +38,24 @@
   height: 50px;
   width: auto;
   object-fit: contain;
-  transition: transform 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
 .sm-logo-img:hover {
-  transform: scale(1.05);
+  opacity: 0.85;
 }
 
 .sm-header-actions {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .sm-toggle {
   position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   background: transparent;
   border: none;
@@ -63,18 +64,27 @@
   font-size: 1rem;
   line-height: 1;
   overflow: visible;
-  padding: 0.5rem;
-  transition: transform 0.3s ease;
+  padding: 0.6rem 0.85rem;
+  min-height: 44px;
+  min-width: 44px;
+  border-radius: 9999px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease, background 0.2s ease;
 }
 
 .sm-toggle:hover {
-  transform: scale(1.05);
+  opacity: 0.85;
+  background: rgba(125, 125, 125, 0.08);
+}
+
+.sm-toggle:active {
+  transform: scale(0.95) !important;
+  transition: transform 80ms ease-out !important;
 }
 
 .sm-toggle:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 4px;
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .sm-toggle-textWrap {
