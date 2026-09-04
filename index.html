@@ -1,22 +1,699 @@
-<!doctype html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Academix - Cours particuliers de finance et comptabilité personnalisés" />
-    <title>Academix - Cours Particuliers de Finance et Comptabilité</title>
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="description" content="Academix - Cours particuliers et tutorat d'excellence en finance et comptabilité" />
+  <title>Academix - Cours Particuliers de Finance & Comptabilité</title>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Google Fonts - Inter with optical weights -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;850&display=swap" rel="stylesheet" />
 
-    <!-- Google Fonts - Inter with optical sizing -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+  <!-- Tabler Icons Library from CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+
+  <!-- Master Apple HIG Stylesheet -->
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+
+  <!-- Ambient Plasma Mesh Background -->
+  <div class="plasma-background" aria-hidden="true">
+    <div class="plasma-gradient plasma-gradient-1"></div>
+    <div class="plasma-gradient plasma-gradient-2"></div>
+    <div class="plasma-gradient plasma-gradient-3"></div>
+  </div>
+
+  <!-- Floating Dynamic Island Header -->
+  <header class="header-island" role="banner">
+    <div class="nav-brand">
+      <a href="#home" class="logo-link" aria-label="Academix Home">
+        <img id="navbar-logo" src="/images/logos/logo-light.png" alt="Academix Logo" class="logo-img" draggable="false" />
+      </a>
+    </div>
+
+    <nav class="nav-desktop" aria-label="Navigation principale">
+      <a href="#home" class="nav-link" data-i18n="navHome">Accueil</a>
+      <a href="#services" class="nav-link" data-i18n="navServices">Services</a>
+      <a href="#subjects" class="nav-link" data-i18n="navSubjects">Matières</a>
+      <a href="#appointment" class="nav-link" data-i18n="navBooking">Réservation</a>
+    </nav>
+
+    <div class="nav-actions">
+      <!-- Language Selector Dropdown -->
+      <div class="lang-toggle-wrapper">
+        <button id="lang-toggle-btn" class="lang-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Choisir la langue">
+          <span id="current-lang-flag">🇫🇷</span>
+          <span id="current-lang-code">FR</span>
+          <i class="ti ti-chevron-down"></i>
+        </button>
+        <div id="lang-dropdown" class="lang-dropdown" role="menu">
+          <button class="lang-option active" data-lang="fr" role="menuitem" aria-selected="true">
+            <span>🇫🇷 Français</span>
+            <i class="ti ti-check"></i>
+          </button>
+          <button class="lang-option" data-lang="en" role="menuitem" aria-selected="false">
+            <span>🇬🇧 English</span>
+            <i class="ti ti-check"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Theme Mode Toggle -->
+      <button id="theme-toggle-btn" class="theme-btn" type="button" aria-label="Passer en mode sombre">
+        <i id="theme-icon" class="ti ti-moon"></i>
+      </button>
+
+      <!-- Desktop Booking Pill -->
+      <a href="#appointment" class="nav-cta-btn" data-i18n="navBooking">
+        Réservation
+      </a>
+
+      <!-- Mobile Hamburger Toggle -->
+      <button id="mobile-menu-btn" class="mobile-toggle-btn" type="button" aria-expanded="false" aria-label="Menu de navigation mobile">
+        <i class="ti ti-menu-2"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Sheet Drawer -->
+  <div id="mobile-drawer" class="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menu Mobile">
+    <ul class="drawer-links">
+      <li><a href="#home" class="drawer-link" data-i18n="navHome">Accueil</a></li>
+      <li><a href="#services" class="drawer-link" data-i18n="navServices">Services</a></li>
+      <li><a href="#subjects" class="drawer-link" data-i18n="navSubjects">Matières</a></li>
+      <li><a href="#appointment" class="drawer-link" data-i18n="navBooking">Réservation</a></li>
+    </ul>
+  </div>
+
+  <main>
+    <!-- === HERO SECTION === -->
+    <section class="hero-section" id="home">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="eyebrow-sparkle">✦</span>
+            <span class="hero-badge-text" data-i18n="heroBadge">Excellence en Finance & Comptabilité</span>
+          </div>
+
+          <h1 class="hero-title" data-i18n="heroTitle">
+            Cours Particuliers de Finance
+          </h1>
+
+          <p class="hero-description" data-i18n="heroDescription">
+            Maîtrisez la finance et la comptabilité avec un accompagnement sur-mesure, adapté à vos objectifs universitaires et professionnels.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="#appointment" class="btn-primary">
+              <span data-i18n="bookSession">Réserver une Séance</span>
+              <i class="ti ti-arrow-right"></i>
+            </a>
+            <a href="#subjects" class="btn-secondary-glass">
+              <span data-i18n="exploreSubjects">Explorer les Matières</span>
+              <i class="ti ti-chevron-down"></i>
+            </a>
+          </div>
+
+          <!-- 4-Card Bento Stats Grid -->
+          <div class="hero-stats-grid">
+            <div class="hero-stat-card">
+              <div class="hero-stat-icon">
+                <i class="ti ti-user-check"></i>
+              </div>
+              <div class="hero-stat-value" data-i18n="stat1Value">1-à-1</div>
+              <div class="hero-stat-label" data-i18n="stat1Label">Accompagnement Sur-Mesure</div>
+            </div>
+
+            <div class="hero-stat-card">
+              <div class="hero-stat-icon">
+                <i class="ti ti-clock-check"></i>
+              </div>
+              <div class="hero-stat-value" data-i18n="stat2Value">100%</div>
+              <div class="hero-stat-label" data-i18n="stat2Label">Flexible & Personnalisé</div>
+            </div>
+
+            <div class="hero-stat-card">
+              <div class="hero-stat-icon">
+                <i class="ti ti-school"></i>
+              </div>
+              <div class="hero-stat-value" data-i18n="stat3Value">+500h</div>
+              <div class="hero-stat-label" data-i18n="stat3Label">De cours dispensés</div>
+            </div>
+
+            <div class="hero-stat-card">
+              <div class="hero-stat-icon">
+                <i class="ti ti-award"></i>
+              </div>
+              <div class="hero-stat-value" data-i18n="stat4Value">L1 → Master</div>
+              <div class="hero-stat-label" data-i18n="stat4Label">Tous niveaux académiques</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === SERVICES SECTION === -->
+    <section class="services-section" id="services">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow" data-i18n="servicesEyebrow">Formats d'apprentissage</div>
+          <h2 class="section-title" data-i18n="servicesTitle">Nos Services</h2>
+          <p class="section-description" data-i18n="servicesDescription">
+            Des formules flexibles conçues pour garantir votre réussite académique et professionnelle.
+          </p>
+        </div>
+
+        <div class="services-grid">
+          <!-- Service 1 -->
+          <div class="service-card">
+            <div class="service-card-top">
+              <div class="service-icon">
+                <i class="ti ti-user"></i>
+              </div>
+              <span class="service-num">01</span>
+            </div>
+            <span class="service-tag" data-i18n="service1Tag">Le plus populaire</span>
+            <h3 class="service-title" data-i18n="service1Title">Cours Individuels</h3>
+            <p class="service-description" data-i18n="service1Desc">
+              Attention personnalisée en tête-à-tête avec un programme adapté précisément à votre rythme.
+            </p>
+            <ul class="service-features">
+              <li>
+                <i class="ti ti-circle-check"></i>
+                <span data-i18n="service1F1">Diagnostic initial & plan personnalisé</span>
+              </li>
+              <li>
+                <i class="ti ti-circle-check"></i>
+                <span data-i18n="service1F2">Rythme adapté à vos échéances d'examens</span>
+              </li>
+              <li>
+                <i class="ti ti-circle-check"></i>
+                <span data-i18n="service1F3">Correction d'exercices et cas réels</span>
+              </li>
+            </ul>
+            <a href="#appointment" class="service-cta-link">
+              <span data-i18n="bookSession">Réserver une Séance</span>
+              <i class="ti ti-arrow-right"></i>
+            </a>
+          </div>
+
+          <!-- Service 2 -->
+          <div class="service-card">
+            <div class="service-card-top">
+              <div class="service-icon">
+                <i class="ti ti-users"></i>
+              </div>
+              <span class="service-num">02</span>
+            </div>
+            <span class="service-tag" data-i18n="service2Tag">Collaboratif</span>
+            <h3 class="service-title" data-i18n="service2Title">Sessions de Groupe</h3>
+            <p class="service-description" data-i18n="service2Desc">
+              Apprentissage dynamique en petits comités pour stimuler la réflexion et le partage.
+            </p>
+            <ul class="service-features">
+              <li>
+                <i class="ti ti-circle-check"></i>
+                <span data-i18n="service2F1">Petits groupes de 2 à 4 étudiants</span>
+              </li>
+              <li>
+                <i class="ti ti-circle-check"></i>
+                <span data-i18n="service2F2">Émulation & partage d'astuces</span>
+              </li>
+              <li>
+                <i class="ti ti-circle-check"></i>
+                <span data-i18n="service2F3">Tarifs avantageux & dynamiques</span>
+              </li>
+            </ul>
+            <a href="#appointment" class="service-cta-link">
+              <span data-i18n="bookSession">Réserver une Séance</span>
+              <i class="ti ti-arrow-right"></i>
+            </a>
+          </div>
+
+          <!-- Service 3 -->
+          <div class="service-card">
+            <div class="service-card-top">
+              <div class="service-icon">
+                <i class="ti ti-device-laptop"></i>
+              </div>
+              <span class="service-num">03</span>
+            </div>
+            <span class="service-tag" data-i18n="service3Tag">100% Flexible</span>
+            <h3 class="service-title" data-i18n="service3Title">Cours en Ligne</h3>
+            <p class="service-description" data-i18n="service3Desc">
+              Sessions interactives HD à distance avec supports partagés et flexibilité maximale.
+            </p>
+            <ul class="service-features">
+              <li>
+                <i class="ti ti-circle-check"></i>
+                <span data-i18n="service3F1">Plateforme interactive HD & tableau blanc</span>
+              </li>
+              <li>
+                <i class="ti ti-circle-check"></i>
+                <span data-i18n="service3F2">Replay et supports de cours partagés</span>
+              </li>
+              <li>
+                <i class="ti ti-circle-check"></i>
+                <span data-i18n="service3F3">Créneaux flexibles 7j/7</span>
+              </li>
+            </ul>
+            <a href="#appointment" class="service-cta-link">
+              <span data-i18n="bookSession">Réserver une Séance</span>
+              <i class="ti ti-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === SUBJECTS SECTION === -->
+    <section class="subjects-section" id="subjects">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow" data-i18n="subjectsEyebrow">Curriculum & Spécialités</div>
+          <h2 class="section-title" data-i18n="subjectsTitle">Matières Enseignées</h2>
+          <p class="section-description" data-i18n="subjectsDescription">
+            Une expertise éprouvée sur l'ensemble des disciplines financières et comptables.
+          </p>
+        </div>
+
+        <div class="subject-grid">
+          <!-- Subject 1 -->
+          <div class="subject-card" data-subject-id="financial-accounting">
+            <div class="subject-card-header">
+              <div class="subject-icon">
+                <i class="ti ti-calculator"></i>
+              </div>
+              <span class="subject-level-badge">L1 - Master</span>
+            </div>
+            <h3 class="subject-title">Comptabilité Financière</h3>
+            <p class="subject-description">Maîtrisez les principes fondamentaux, l'enregistrement des opérations et les états financiers.</p>
+            <div class="subject-topics-preview">
+              <span class="subject-topic-pill">Normes IFRS / GAAP</span>
+              <span class="subject-topic-pill">Bilan & Résultat</span>
+              <span class="subject-topic-pill">Flux de Trésorerie</span>
+            </div>
+            <button class="learn-more-btn" type="button" aria-label="En savoir plus sur Comptabilité Financière">
+              <span data-i18n="learnMore">En savoir plus</span>
+              <i class="ti ti-arrow-right"></i>
+            </button>
+          </div>
+
+          <!-- Subject 2 -->
+          <div class="subject-card" data-subject-id="management-accounting">
+            <div class="subject-card-header">
+              <div class="subject-icon">
+                <i class="ti ti-chart-pie"></i>
+              </div>
+              <span class="subject-level-badge">L2 - Master</span>
+            </div>
+            <h3 class="subject-title">Comptabilité de Gestion</h3>
+            <p class="subject-description">Apprenez les outils de modélisation des coûts, d'élaboration budgétaire et de pilotage stratégique.</p>
+            <div class="subject-topics-preview">
+              <span class="subject-topic-pill">Coûts Complets & ABC</span>
+              <span class="subject-topic-pill">Seuil de Rentabilité</span>
+              <span class="subject-topic-pill">Analyse des Écarts</span>
+            </div>
+            <button class="learn-more-btn" type="button" aria-label="En savoir plus sur Comptabilité de Gestion">
+              <span data-i18n="learnMore">En savoir plus</span>
+              <i class="ti ti-arrow-right"></i>
+            </button>
+          </div>
+
+          <!-- Subject 3 -->
+          <div class="subject-card" data-subject-id="corporate-finance">
+            <div class="subject-card-header">
+              <div class="subject-icon">
+                <i class="ti ti-building-bank"></i>
+              </div>
+              <span class="subject-level-badge">L3 - Master</span>
+            </div>
+            <h3 class="subject-title">Finance d'Entreprise</h3>
+            <p class="subject-description">Maîtrisez la valorisation d'actifs, le choix des investissements et les structures optimales de capital.</p>
+            <div class="subject-topics-preview">
+              <span class="subject-topic-pill">VAN / TRI / WACC</span>
+              <span class="subject-topic-pill">Valorisation DCF</span>
+              <span class="subject-topic-pill">Levées de Fonds</span>
+            </div>
+            <button class="learn-more-btn" type="button" aria-label="En savoir plus sur Finance d'Entreprise">
+              <span data-i18n="learnMore">En savoir plus</span>
+              <i class="ti ti-arrow-right"></i>
+            </button>
+          </div>
+
+          <!-- Subject 4 -->
+          <div class="subject-card" data-subject-id="financial-analysis">
+            <div class="subject-card-header">
+              <div class="subject-icon">
+                <i class="ti ti-trending-up"></i>
+              </div>
+              <span class="subject-level-badge">Tous Niveaux</span>
+            </div>
+            <h3 class="subject-title">Analyse Financière</h3>
+            <p class="subject-description">Développez vos compétences pour diagnostiquer avec rigueur la rentabilité, liquidité et solvabilité.</p>
+            <div class="subject-topics-preview">
+              <span class="subject-topic-pill">SIG & Bilan Fonctionnel</span>
+              <span class="subject-topic-pill">ROE / ROA / ROCE</span>
+              <span class="subject-topic-pill">Gearing & Solvabilité</span>
+            </div>
+            <button class="learn-more-btn" type="button" aria-label="En savoir plus sur Analyse Financière">
+              <span data-i18n="learnMore">En savoir plus</span>
+              <i class="ti ti-arrow-right"></i>
+            </button>
+          </div>
+
+          <!-- Subject 5 -->
+          <div class="subject-card" data-subject-id="taxation">
+            <div class="subject-card-header">
+              <div class="subject-icon">
+                <i class="ti ti-receipt-tax"></i>
+              </div>
+              <span class="subject-level-badge">L2 - Master</span>
+            </div>
+            <h3 class="subject-title">Fiscalité des Entreprises</h3>
+            <p class="subject-description">Maîtrisez l'impôt sur les sociétés (IS), la TVA, les plus-values et l'optimisation fiscale légale.</p>
+            <div class="subject-topics-preview">
+              <span class="subject-topic-pill">Impôt sur les Sociétés</span>
+              <span class="subject-topic-pill">Mécanismes TVA</span>
+              <span class="subject-topic-pill">Crédits d'Impôt</span>
+            </div>
+            <button class="learn-more-btn" type="button" aria-label="En savoir plus sur Fiscalité">
+              <span data-i18n="learnMore">En savoir plus</span>
+              <i class="ti ti-arrow-right"></i>
+            </button>
+          </div>
+
+          <!-- Subject 6 -->
+          <div class="subject-card" data-subject-id="auditing">
+            <div class="subject-card-header">
+              <div class="subject-icon">
+                <i class="ti ti-clipboard-check"></i>
+              </div>
+              <span class="subject-level-badge">Master & Pro</span>
+            </div>
+            <h3 class="subject-title">Audit & Contrôle Interne</h3>
+            <p class="subject-description">Comprenez la méthodologie d'audit financier (normes ISA), la gestion des risques et la certification.</p>
+            <div class="subject-topics-preview">
+              <span class="subject-topic-pill">Normes ISA & COSO</span>
+              <span class="subject-topic-pill">Tests de Substance</span>
+              <span class="subject-topic-pill">Rapports de Synthèse</span>
+            </div>
+            <button class="learn-more-btn" type="button" aria-label="En savoir plus sur Audit">
+              <span data-i18n="learnMore">En savoir plus</span>
+              <i class="ti ti-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === APPOINTMENT BOOKING SECTION === -->
+    <section class="appointment-section" id="appointment">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow" data-i18n="appointmentEyebrow">Réservation en Ligne</div>
+          <h2 class="section-title" data-i18n="appointmentTitle">Réservez Votre Séance</h2>
+          <p class="section-description" data-i18n="appointmentDescription">
+            Planifiez votre premier cours personnalisé en quelques clics.
+          </p>
+        </div>
+
+        <div class="appointment-container">
+          <form id="booking-form" class="appointment-form" novalidate>
+            <!-- Apple Segmented Control for Session Type -->
+            <div class="form-group full-width session-type-group">
+              <label data-i18n="sessionTypeLabel">Type de Séance</label>
+              <div class="segmented-control" role="radiogroup" aria-label="Type de Séance">
+                <button type="button" class="segment-btn active" data-type="individual" role="radio" aria-checked="true">
+                  <i class="ti ti-user"></i>
+                  <span data-i18n="typeIndividual">Individuel</span>
+                </button>
+                <button type="button" class="segment-btn" data-type="group" role="radio" aria-checked="false">
+                  <i class="ti ti-users"></i>
+                  <span data-i18n="typeGroup">Groupe</span>
+                </button>
+                <button type="button" class="segment-btn" data-type="online" role="radio" aria-checked="false">
+                  <i class="ti ti-device-laptop"></i>
+                  <span data-i18n="typeOnline">En Ligne</span>
+                </button>
+              </div>
+              <input type="hidden" id="session-type-input" name="sessionType" value="individual" />
+            </div>
+
+            <!-- First Name -->
+            <div class="form-group">
+              <label for="first-name" data-i18n="firstNameLabel">Prénom</label>
+              <input type="text" id="first-name" name="firstName" required data-i18n-placeholder="firstNamePlaceholder" placeholder="Votre prénom" />
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+              <label for="last-name" data-i18n="lastNameLabel">Nom</label>
+              <input type="text" id="last-name" name="lastName" required data-i18n-placeholder="lastNamePlaceholder" placeholder="Votre nom" />
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label for="email" data-i18n="emailLabel">Email</label>
+              <input type="email" id="email" name="email" required data-i18n-placeholder="emailPlaceholder" placeholder="votre.email@exemple.com" />
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+              <label for="phone" data-i18n="phoneLabel">Téléphone</label>
+              <input type="tel" id="phone" name="phone" required data-i18n-placeholder="phonePlaceholder" placeholder="+33 1 23 45 67 89" />
+            </div>
+
+            <!-- Academic Subject -->
+            <div class="form-group">
+              <label for="subject-select" data-i18n="subjectLabel">Matière</label>
+              <select id="subject-select" name="subject" required>
+                <option value="" disabled selected data-i18n="chooseSubject">Choisir une matière...</option>
+                <option value="financial-accounting">Comptabilité Financière</option>
+                <option value="management-accounting">Comptabilité de Gestion</option>
+                <option value="corporate-finance">Finance d'Entreprise</option>
+                <option value="financial-analysis">Analyse Financière</option>
+                <option value="taxation">Fiscalité des Entreprises</option>
+                <option value="auditing">Audit & Contrôle Interne</option>
+              </select>
+            </div>
+
+            <!-- Preferred Date -->
+            <div class="form-group">
+              <label for="preferred-date" data-i18n="dateLabel">Date Préférée</label>
+              <input type="date" id="preferred-date" name="preferredDate" required />
+            </div>
+
+            <!-- Preferred Time -->
+            <div class="form-group full-width">
+              <label for="preferred-time" data-i18n="timeLabel">Créneau Horaire</label>
+              <select id="preferred-time" name="preferredTime" required>
+                <option value="" disabled selected data-i18n="chooseTime">Choisir une heure...</option>
+                <option value="09:00 - 10:30">09:00 - 10:30</option>
+                <option value="11:00 - 12:30">11:00 - 12:30</option>
+                <option value="14:00 - 15:30">14:00 - 15:30</option>
+                <option value="16:00 - 17:30">16:00 - 17:30</option>
+                <option value="18:00 - 19:30">18:00 - 19:30</option>
+                <option value="20:00 - 21:30">20:00 - 21:30</option>
+              </select>
+            </div>
+
+            <!-- Additional Message -->
+            <div class="form-group full-width">
+              <label for="message" data-i18n="messageLabel">Objectifs & Message (Optionnel)</label>
+              <textarea id="message" name="message" rows="3" data-i18n-placeholder="messagePlaceholder" placeholder="Décrivez vos échéances, examens cibles ou difficultés particulières..."></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group full-width">
+              <button type="submit" id="booking-submit-btn" class="submit-btn">
+                <span data-i18n="submitBtn">Confirmer la Réservation</span>
+                <i class="ti ti-arrow-right"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- === SUBJECT DETAILS VISIONOS MODAL === -->
+  <div id="subject-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-content">
+      <div class="modal-grabber" aria-hidden="true"></div>
+      <button id="modal-close-btn" class="modal-close-btn" type="button" aria-label="Fermer le modal">
+        <i class="ti ti-x"></i>
+      </button>
+
+      <div class="modal-header">
+        <div id="modal-icon" class="modal-icon-badge">
+          <i class="ti ti-calculator"></i>
+        </div>
+        <h2 id="modal-title" class="modal-title">Comptabilité Financière</h2>
+        <span id="modal-badge" class="modal-badge">Débutant à Avancé</span>
+      </div>
+
+      <div class="modal-body">
+        <p id="modal-desc" class="modal-description"></p>
+
+        <div class="modal-section">
+          <h3 class="modal-subtitle">
+            <i class="ti ti-book"></i>
+            <span data-i18n="modalTopicsTitle">Thèmes Abordés</span>
+          </h3>
+          <ul id="modal-topics" class="modal-topics-list"></ul>
+        </div>
+
+        <div class="modal-section">
+          <h3 class="modal-subtitle">
+            <i class="ti ti-bolt"></i>
+            <span data-i18n="modalSkillsTitle">Compétences Développées</span>
+          </h3>
+          <div id="modal-skills" class="modal-skills-wrapper"></div>
+        </div>
+
+        <div class="modal-info-grid">
+          <div class="modal-info-item">
+            <i class="ti ti-clock"></i>
+            <div>
+              <strong data-i18n="modalDurationTitle">Durée Recommandée</strong>
+              <p id="modal-duration">3 - 6 mois</p>
+            </div>
+          </div>
+          <div class="modal-info-item">
+            <i class="ti ti-layers-subtract"></i>
+            <div>
+              <strong data-i18n="modalLevelTitle">Niveau Ciblé</strong>
+              <p id="modal-level">Débutant à Avancé</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-cta-wrapper">
+          <a href="#appointment" id="modal-booking-btn" class="modal-booking-btn">
+            <span data-i18n="modalBookingCTA">Réserver ce Cours</span>
+            <i class="ti ti-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- === SUCCESS MODAL === -->
+  <div id="success-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="success-title">
+    <div class="success-modal-card">
+      <div class="success-icon-badge">
+        <i class="ti ti-circle-check"></i>
+      </div>
+      <h3 id="success-title" data-i18n="successTitle">Réservation Confirmée !</h3>
+      <p id="success-desc" data-i18n="successDesc">
+        Merci pour votre demande. Nous vous contacterons très rapidement pour valider votre créneau.
+      </p>
+      <button id="success-dismiss-btn" class="success-dismiss-btn" type="button" data-i18n="successDismiss">
+        Parfait, merci
+      </button>
+    </div>
+  </div>
+
+  <!-- === APPLE FOOTER === -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-content">
+        <!-- Brand & Live Status -->
+        <div class="footer-brand">
+          <h3 class="footer-title">Academix</h3>
+          <div class="footer-accent-line"></div>
+          <p class="footer-description" data-i18n="footerTagline">
+            Excellence en enseignement de la finance et de la comptabilité. Votre partenaire pour réussir dans le monde universitaire et professionnel.
+          </p>
+          <div class="footer-status-pill">
+            <span class="status-dot"></span>
+            <span data-i18n="footerStatus">Sessions ouvertes • Année 2024-2025</span>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+          <h4 class="footer-section-title" data-i18n="footerLinksTitle">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#home" data-i18n="navHome">Accueil</a></li>
+            <li><a href="#services" data-i18n="navServices">Services</a></li>
+            <li><a href="#subjects" data-i18n="navSubjects">Matières</a></li>
+            <li><a href="#appointment" data-i18n="navBooking">Réservation</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="footer-col">
+          <h4 class="footer-section-title" data-i18n="footerContactTitle">Contact</h4>
+          <ul class="footer-links">
+            <li>
+              <a href="mailto:contact@ouiiprof.me" class="footer-contact-link">
+                <i class="ti ti-mail"></i>
+                <span>contact@ouiiprof.me</span>
+              </a>
+            </li>
+            <li>
+              <a href="tel:+33123456789" class="footer-contact-link">
+                <i class="ti ti-phone"></i>
+                <span>+33 1 23 45 67 89</span>
+              </a>
+            </li>
+            <li>
+              <div class="footer-location">
+                <i class="ti ti-map-pin"></i>
+                <span data-i18n="location">Paris, France</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Connect & Updates -->
+        <div class="footer-col">
+          <h4 class="footer-section-title" data-i18n="footerFollowTitle">Suivez-nous</h4>
+          <div class="social-links-grid">
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-link-btn" aria-label="LinkedIn">
+              <i class="ti ti-brand-linkedin"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-link-btn" aria-label="Instagram">
+              <i class="ti ti-brand-instagram"></i>
+            </a>
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" class="social-link-btn" aria-label="X (Twitter)">
+              <i class="ti ti-brand-x"></i>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-link-btn" aria-label="Facebook">
+              <i class="ti ti-brand-facebook"></i>
+            </a>
+          </div>
+          <div class="footer-newsletter">
+            <p class="newsletter-text" data-i18n="footerNewsletterText">
+              Restez informé de nos ouvertures de créneaux et astuces méthodologiques.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="footer-bottom-content">
+          <p class="footer-copyright" data-i18n="footerCopyright">
+            © 2024-2025 Academix Education. Tous droits réservés.
+          </p>
+          <div class="footer-legal">
+            <a href="#privacy" data-i18n="privacy">Confidentialité</a>
+            <span class="footer-separator">•</span>
+            <a href="#terms" data-i18n="terms">Mentions Légales</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Vanilla JavaScript App Script -->
+  <script type="module" src="/script.js"></script>
+</body>
 </html>
