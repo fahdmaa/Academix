@@ -1507,6 +1507,24 @@ section {
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
+/* Date input styling */
+.form-group input[type="date"] {
+  position: relative;
+  cursor: pointer;
+  color-scheme: light dark;
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.2s ease, transform 0.2s var(--ease-apple);
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
 .form-group textarea {
   min-height: 90px;
   resize: vertical;
@@ -1524,6 +1542,262 @@ section {
 .form-group input::placeholder,
 .form-group textarea::placeholder {
   color: var(--text-tertiary);
+}
+
+/* === APPLE CUSTOM SELECT DROPDOWNS === */
+.apple-custom-select {
+  position: relative;
+  width: 100%;
+}
+
+/* Hidden native select for validation & accessibility */
+.native-hidden-select {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Modern Apple Select Trigger */
+.apple-select-trigger {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: rgba(125, 125, 125, 0.05);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.2s var(--ease-apple),
+              box-shadow 0.2s var(--ease-apple),
+              background 0.2s var(--ease-apple),
+              transform 0.15s var(--ease-apple);
+}
+
+.apple-select-trigger:hover {
+  background: rgba(125, 125, 125, 0.08);
+  border-color: var(--border-specular);
+}
+
+.apple-select-trigger:focus-visible,
+.apple-custom-select.open .apple-select-trigger {
+  outline: none;
+  border-color: var(--accent-color);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 3.5px rgba(0, 113, 227, 0.25);
+}
+
+.apple-select-trigger:active {
+  transform: scale(0.99);
+}
+
+.select-trigger-content {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.select-trigger-content .select-icon {
+  font-size: 1.15rem;
+  color: var(--accent-color);
+  flex-shrink: 0;
+  transition: transform 0.2s var(--ease-apple);
+}
+
+.select-trigger-content .placeholder-icon {
+  color: var(--text-tertiary);
+}
+
+.select-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.select-label.placeholder {
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+.select-chevron {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: transform 0.25s var(--ease-apple), color 0.2s ease;
+}
+
+.apple-custom-select.open .select-chevron {
+  transform: rotate(180deg);
+  color: var(--accent-color);
+}
+
+/* Glassmorphic VisionOS Dropdown Menu */
+.apple-select-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  background: var(--card-bg);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 0.4rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-height: 280px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.22s var(--ease-apple),
+              transform 0.25s var(--ease-apple),
+              visibility 0.22s;
+}
+
+[data-theme="dark"] .apple-select-dropdown {
+  background: rgba(28, 28, 30, 0.88);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.apple-custom-select.open .apple-select-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Custom Slim Scrollbar for Dropdown */
+.apple-select-dropdown::-webkit-scrollbar {
+  width: 5px;
+}
+
+.apple-select-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.apple-select-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(125, 125, 125, 0.25);
+  border-radius: 9999px;
+}
+
+.apple-select-dropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(125, 125, 125, 0.45);
+}
+
+/* Option Items */
+.apple-select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  outline: none;
+}
+
+.apple-select-option:hover,
+.apple-select-option:focus-visible {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+.apple-select-option:active {
+  transform: scale(0.985);
+}
+
+.apple-select-option.selected {
+  background: var(--accent-subtle);
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.option-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.option-icon-wrapper {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(125, 125, 125, 0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.apple-select-option:hover .option-icon-wrapper,
+.apple-select-option.selected .option-icon-wrapper {
+  background: var(--accent-color);
+  color: #ffffff;
+}
+
+.option-text {
+  font-size: 0.92rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.option-sublabel {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  margin-left: 0.35rem;
+  font-weight: 400;
+}
+
+.apple-select-option.selected .option-sublabel {
+  color: var(--accent-color);
+  opacity: 0.8;
+}
+
+.check-icon {
+  font-size: 1rem;
+  color: var(--accent-color);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.2s var(--ease-apple), transform 0.2s var(--ease-apple);
+  flex-shrink: 0;
+}
+
+.apple-select-option.selected .check-icon {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .submit-btn {

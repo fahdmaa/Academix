@@ -477,15 +477,73 @@
             <!-- Academic Subject -->
             <div class="form-group">
               <label for="subject-select" data-i18n="subjectLabel">Matière</label>
-              <select id="subject-select" name="subject" required>
-                <option value="" disabled selected data-i18n="chooseSubject">Choisir une matière...</option>
-                <option value="financial-accounting">Comptabilité Financière</option>
-                <option value="management-accounting">Comptabilité de Gestion</option>
-                <option value="corporate-finance">Finance d'Entreprise</option>
-                <option value="financial-analysis">Analyse Financière</option>
-                <option value="taxation">Fiscalité des Entreprises</option>
-                <option value="auditing">Audit & Contrôle Interne</option>
-              </select>
+              <div class="apple-custom-select" data-select-id="subject-select">
+                <!-- Native hidden select for form submission & HTML5 validation -->
+                <select id="subject-select" name="subject" required tabindex="-1" class="native-hidden-select">
+                  <option value="" disabled selected data-i18n="chooseSubject">Choisir une matière...</option>
+                  <option value="financial-accounting" data-icon="ti-calculator">Comptabilité Financière</option>
+                  <option value="management-accounting" data-icon="ti-chart-pie">Comptabilité de Gestion</option>
+                  <option value="corporate-finance" data-icon="ti-building-bank">Finance d'Entreprise</option>
+                  <option value="financial-analysis" data-icon="ti-trending-up">Analyse Financière</option>
+                  <option value="taxation" data-icon="ti-receipt-tax">Fiscalité des Entreprises</option>
+                  <option value="auditing" data-icon="ti-shield-check">Audit & Contrôle Interne</option>
+                </select>
+
+                <!-- Modern Apple Select Trigger Button -->
+                <button type="button" class="apple-select-trigger" id="subject-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Choisir une matière">
+                  <span class="select-trigger-content">
+                    <i class="ti ti-book select-icon placeholder-icon"></i>
+                    <span class="select-label placeholder" data-i18n="chooseSubject">Choisir une matière...</span>
+                  </span>
+                  <i class="ti ti-chevron-down select-chevron" aria-hidden="true"></i>
+                </button>
+
+                <!-- Apple VisionOS Frosted Dropdown Menu -->
+                <div class="apple-select-dropdown" role="listbox" id="subject-select-dropdown" aria-label="Matières enseignées">
+                  <div class="apple-select-option" role="option" data-value="financial-accounting" data-icon="ti-calculator" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-calculator"></i></div>
+                      <span class="option-text" data-subject-val="financial-accounting">Comptabilité Financière</span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                  <div class="apple-select-option" role="option" data-value="management-accounting" data-icon="ti-chart-pie" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-chart-pie"></i></div>
+                      <span class="option-text" data-subject-val="management-accounting">Comptabilité de Gestion</span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                  <div class="apple-select-option" role="option" data-value="corporate-finance" data-icon="ti-building-bank" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-building-bank"></i></div>
+                      <span class="option-text" data-subject-val="corporate-finance">Finance d'Entreprise</span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                  <div class="apple-select-option" role="option" data-value="financial-analysis" data-icon="ti-trending-up" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-trending-up"></i></div>
+                      <span class="option-text" data-subject-val="financial-analysis">Analyse Financière</span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                  <div class="apple-select-option" role="option" data-value="taxation" data-icon="ti-receipt-tax" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-receipt-tax"></i></div>
+                      <span class="option-text" data-subject-val="taxation">Fiscalité des Entreprises</span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                  <div class="apple-select-option" role="option" data-value="auditing" data-icon="ti-shield-check" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-shield-check"></i></div>
+                      <span class="option-text" data-subject-val="auditing">Audit & Contrôle Interne</span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Preferred Date -->
@@ -494,18 +552,76 @@
               <input type="date" id="preferred-date" name="preferredDate" required />
             </div>
 
-            <!-- Preferred Time -->
+            <!-- Preferred Time Slot -->
             <div class="form-group full-width">
               <label for="preferred-time" data-i18n="timeLabel">Créneau Horaire</label>
-              <select id="preferred-time" name="preferredTime" required>
-                <option value="" disabled selected data-i18n="chooseTime">Choisir une heure...</option>
-                <option value="09:00 - 10:30">09:00 - 10:30</option>
-                <option value="11:00 - 12:30">11:00 - 12:30</option>
-                <option value="14:00 - 15:30">14:00 - 15:30</option>
-                <option value="16:00 - 17:30">16:00 - 17:30</option>
-                <option value="18:00 - 19:30">18:00 - 19:30</option>
-                <option value="20:00 - 21:30">20:00 - 21:30</option>
-              </select>
+              <div class="apple-custom-select" data-select-id="preferred-time">
+                <!-- Native hidden select for form submission & HTML5 validation -->
+                <select id="preferred-time" name="preferredTime" required tabindex="-1" class="native-hidden-select">
+                  <option value="" disabled selected data-i18n="chooseTime">Choisir une heure...</option>
+                  <option value="09:00 - 10:30" data-icon="ti-sun">09:00 - 10:30</option>
+                  <option value="11:00 - 12:30" data-icon="ti-sun-high">11:00 - 12:30</option>
+                  <option value="14:00 - 15:30" data-icon="ti-clock">14:00 - 15:30</option>
+                  <option value="16:00 - 17:30" data-icon="ti-clock-hour-4">16:00 - 17:30</option>
+                  <option value="18:00 - 19:30" data-icon="ti-sunset-2">18:00 - 19:30</option>
+                  <option value="20:00 - 21:30" data-icon="ti-moon-stars">20:00 - 21:30</option>
+                </select>
+
+                <!-- Modern Apple Select Trigger Button -->
+                <button type="button" class="apple-select-trigger" id="preferred-time-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Choisir un créneau horaire">
+                  <span class="select-trigger-content">
+                    <i class="ti ti-clock select-icon placeholder-icon"></i>
+                    <span class="select-label placeholder" data-i18n="chooseTime">Choisir une heure...</span>
+                  </span>
+                  <i class="ti ti-chevron-down select-chevron" aria-hidden="true"></i>
+                </button>
+
+                <!-- Apple VisionOS Frosted Dropdown Menu -->
+                <div class="apple-select-dropdown" role="listbox" id="preferred-time-dropdown" aria-label="Créneaux horaires disponibles">
+                  <div class="apple-select-option" role="option" data-value="09:00 - 10:30" data-icon="ti-sun" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-sun"></i></div>
+                      <span class="option-text">09:00 - 10:30 <span class="option-sublabel" data-time-slot="09:00 - 10:30">Matinée</span></span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                  <div class="apple-select-option" role="option" data-value="11:00 - 12:30" data-icon="ti-sun-high" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-sun-high"></i></div>
+                      <span class="option-text">11:00 - 12:30 <span class="option-sublabel" data-time-slot="11:00 - 12:30">Fin de matinée</span></span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                  <div class="apple-select-option" role="option" data-value="14:00 - 15:30" data-icon="ti-clock" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-clock"></i></div>
+                      <span class="option-text">14:00 - 15:30 <span class="option-sublabel" data-time-slot="14:00 - 15:30">Début d'après-midi</span></span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                  <div class="apple-select-option" role="option" data-value="16:00 - 17:30" data-icon="ti-clock-hour-4" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-clock-hour-4"></i></div>
+                      <span class="option-text">16:00 - 17:30 <span class="option-sublabel" data-time-slot="16:00 - 17:30">Après-midi</span></span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                  <div class="apple-select-option" role="option" data-value="18:00 - 19:30" data-icon="ti-sunset-2" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-sunset-2"></i></div>
+                      <span class="option-text">18:00 - 19:30 <span class="option-sublabel" data-time-slot="18:00 - 19:30">Début de soirée</span></span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                  <div class="apple-select-option" role="option" data-value="20:00 - 21:30" data-icon="ti-moon-stars" tabindex="0">
+                    <div class="option-left">
+                      <div class="option-icon-wrapper"><i class="ti ti-moon-stars"></i></div>
+                      <span class="option-text">20:00 - 21:30 <span class="option-sublabel" data-time-slot="20:00 - 21:30">Soirée</span></span>
+                    </div>
+                    <i class="ti ti-check check-icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Additional Message -->

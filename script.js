@@ -348,6 +348,12 @@ const TRANSLATIONS = {
     chooseTime: 'Choisir une heure...',
     messageLabel: 'Objectifs & Message (Optionnel)',
     messagePlaceholder: 'Décrivez vos échéances, examens cibles ou difficultés particulières...',
+    timeMorning: 'Matinée',
+    timeLateMorning: 'Fin de matinée',
+    timeEarlyAfternoon: 'Début d\'après-midi',
+    timeAfternoon: 'Après-midi',
+    timeEarlyEvening: 'Début de soirée',
+    timeEvening: 'Soirée',
     submitBtn: 'Confirmer la Réservation',
     submitting: 'Envoi en cours...',
     modalClose: 'Fermer',
@@ -436,6 +442,12 @@ const TRANSLATIONS = {
     chooseTime: 'Select a time slot...',
     messageLabel: 'Goals & Message (Optional)',
     messagePlaceholder: 'Tell us about your upcoming exams, specific topics, or learning goals...',
+    timeMorning: 'Morning',
+    timeLateMorning: 'Late Morning',
+    timeEarlyAfternoon: 'Early Afternoon',
+    timeAfternoon: 'Afternoon',
+    timeEarlyEvening: 'Early Evening',
+    timeEvening: 'Evening',
     submitBtn: 'Confirm Booking Request',
     submitting: 'Submitting...',
     modalClose: 'Close',
@@ -514,6 +526,211 @@ function applyTheme(theme) {
   }
 }
 
+// === APPLE CUSTOM SELECT CLASS ===
+class AppleSelect {
+  constructor(containerEl) {
+    this.container = containerEl;
+    this.selectId = containerEl.dataset.selectId;
+    this.nativeSelect = containerEl.querySelector('select');
+    this.trigger = containerEl.querySelector('.apple-select-trigger');
+    this.dropdown = containerEl.querySelector('.apple-select-dropdown');
+    this.labelEl = containerEl.querySelector('.select-label');
+    this.iconEl = containerEl.querySelector('.select-icon');
+    this.options = containerEl.querySelectorAll('.apple-select-option');
+
+    this.init();
+  }
+
+  init() {
+    if (!this.trigger || !this.dropdown) return;
+
+    // Toggle dropdown on trigger click
+    this.trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggle();
+    });
+
+    // Keyboard support on trigger
+    this.trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        this.open();
+        const selected = this.dropdown.querySelector('.apple-select-option.selected') || this.options[0];
+        if (selected) selected.focus();
+      }
+    });
+
+    // Option clicks & keyboard navigation
+    this.options.forEach((opt, idx) => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.selectValue(opt.dataset.value);
+        this.close();
+        this.trigger.focus();
+      });
+
+      opt.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.selectValue(opt.dataset.value);
+          this.close();
+          this.trigger.focus();
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          const next = this.options[idx + 1] || this.options[0];
+          next.focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          const prev = this.options[idx - 1] || this.options[this.options.length - 1];
+          prev.focus();
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          this.close();
+          this.trigger.focus();
+        }
+      });
+    });
+
+    // Sync when native select changes (e.g. from modal booking button)
+    this.nativeSelect.addEventListener('change', () => {
+      this.syncFromNative();
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!this.container.contains(e.target)) {
+        this.close();
+      }
+    });
+
+    // Close on ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.isOpen()) {
+        this.close();
+        this.trigger.focus();
+      }
+    });
+
+    // Initial sync
+    this.syncFromNative();
+  }
+
+  isOpen() {
+    return this.container.classList.contains('open');
+  }
+
+  open() {
+    document.querySelectorAll('.apple-custom-select.open').forEach(el => {
+      if (el !== this.container) {
+        el.classList.remove('open');
+        const trig = el.querySelector('.apple-select-trigger');
+        if (trig) trig.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    this.container.classList.add('open');
+    this.trigger.setAttribute('aria-expanded', 'true');
+  }
+
+  close() {
+    this.container.classList.remove('open');
+    this.trigger.setAttribute('aria-expanded', 'false');
+  }
+
+  toggle() {
+    if (this.isOpen()) {
+      this.close();
+    } else {
+      this.open();
+    }
+  }
+
+  selectValue(val) {
+    if (!val) return;
+    this.nativeSelect.value = val;
+    this.nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    this.syncFromNative();
+  }
+
+  syncFromNative() {
+    const val = this.nativeSelect.value;
+    const selectedOption = Array.from(this.options).find(opt => opt.dataset.value === val);
+
+    this.options.forEach(opt => {
+      const isSelected = opt.dataset.value === val;
+      opt.classList.toggle('selected', isSelected);
+      opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+    });
+
+    if (selectedOption) {
+      const icon = selectedOption.dataset.icon;
+      const textEl = selectedOption.querySelector('.option-text');
+      const text = textEl ? textEl.childNodes[0].textContent.trim() : selectedOption.textContent.trim();
+      const sublabel = selectedOption.querySelector('.option-sublabel');
+
+      this.labelEl.textContent = text + (sublabel ? ` (${sublabel.textContent.trim()})` : '');
+      this.labelEl.classList.remove('placeholder');
+
+      if (icon) {
+        this.iconEl.className = `ti ${icon} select-icon`;
+        this.iconEl.classList.remove('placeholder-icon');
+      }
+    } else {
+      // Placeholder state
+      const placeholderKey = this.selectId === 'subject-select' ? 'chooseSubject' : 'chooseTime';
+      const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
+      this.labelEl.textContent = dict[placeholderKey] || 'Choisir...';
+      this.labelEl.classList.add('placeholder');
+      this.iconEl.className = `ti ${this.selectId === 'subject-select' ? 'ti-book' : 'ti-clock'} select-icon placeholder-icon`;
+    }
+  }
+
+  updateTranslations() {
+    const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.fr;
+
+    // Update subject option texts
+    if (this.selectId === 'subject-select') {
+      this.options.forEach(opt => {
+        const subId = opt.dataset.value;
+        const subData = SUBJECTS_DATA[subId];
+        if (subData && subData.title && subData.title[currentLang]) {
+          const textEl = opt.querySelector('.option-text');
+          if (textEl) textEl.textContent = subData.title[currentLang];
+        }
+      });
+    }
+
+    // Update time option sublabels
+    if (this.selectId === 'preferred-time') {
+      const sublabelMap = {
+        '09:00 - 10:30': dict.timeMorning || 'Matinée',
+        '11:00 - 12:30': dict.timeLateMorning || 'Fin de matinée',
+        '14:00 - 15:30': dict.timeEarlyAfternoon || 'Début d\'après-midi',
+        '16:00 - 17:30': dict.timeAfternoon || 'Après-midi',
+        '18:00 - 19:30': dict.timeEarlyEvening || 'Début de soirée',
+        '20:00 - 21:30': dict.timeEvening || 'Soirée'
+      };
+
+      this.options.forEach(opt => {
+        const timeVal = opt.dataset.value;
+        const subText = sublabelMap[timeVal];
+        const sublabelEl = opt.querySelector('.option-sublabel');
+        if (sublabelEl && subText) {
+          sublabelEl.textContent = subText;
+        }
+      });
+    }
+
+    this.syncFromNative();
+  }
+}
+
+// Instantiate all custom selects
+const appleSelectInstances = [];
+document.querySelectorAll('.apple-custom-select').forEach(el => {
+  appleSelectInstances.push(new AppleSelect(el));
+});
+
 // === LANGUAGE MANAGER ===
 function applyLanguage(lang) {
   currentLang = lang;
@@ -552,6 +769,9 @@ function applyLanguage(lang) {
       el.setAttribute('placeholder', dict[key]);
     }
   });
+
+  // Update custom select translations
+  appleSelectInstances.forEach(instance => instance.updateTranslations());
 
   // Re-populate modal if open
   if (currentSubjectId && subjectModal && subjectModal.classList.contains('active')) {
@@ -687,7 +907,17 @@ if (modalBookingBtn) {
     closeSubjectModal();
     if (currentSubjectId) {
       const subjectSelect = document.getElementById('subject-select');
-      if (subjectSelect) subjectSelect.value = currentSubjectId;
+      if (subjectSelect) {
+        subjectSelect.value = currentSubjectId;
+        subjectSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      // Smooth scroll to booking section
+      const appointmentSection = document.getElementById('appointment');
+      if (appointmentSection) {
+        setTimeout(() => {
+          appointmentSection.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+      }
     }
   });
 }
@@ -762,6 +992,8 @@ if (bookingForm) {
 
       // Success
       bookingForm.reset();
+      appleSelectInstances.forEach(inst => inst.syncFromNative());
+
       // Restore default segmented control
       segmentBtns.forEach((b, i) => {
         b.classList.toggle('active', i === 0);
